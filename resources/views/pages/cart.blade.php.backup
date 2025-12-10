@@ -1,0 +1,678 @@
+@extends('layouts.app')
+
+@section('title', 'Keranjang Belanja - ' . config('app.name'))
+
+@section('meta_description', 'Lihat dan kelola keranjang belanja Anda di ' . config('app.name') . '. Belanja produk berkualitas dengan mudah dan aman.')
+
+@section('meta_keywords', 'keranjang belanja, shopping cart, belanja, checkout, ' . config('app.name') . ', toko online')
+
+@section('og_image', asset('storage/defaults/og-cart.jpg'))
+
+@section('content')
+    
+
+    <!-- Single Page Header start -->
+    <div class="container-fluid page-header py-5">
+        <h1 class="text-center text-white display-6">Cart</h1>
+        <ol class="breadcrumb justify-content-center mb-0">
+            <li class="breadcrumb-item"><a href="{{ url('/') }}">Home</a></li>
+            <li class="breadcrumb-item"><a href="#">Pages</a></li>
+            <li class="breadcrumb-item active text-white">Cart</li>
+        </ol>
+    </div>
+    <!-- Single Page Header End -->
+
+    <!-- Cart Page Start -->
+    <div class="container-fluid py-5">
+        <div class="container py-5">
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                      <tr>
+                        <th scope="col">Products</th>
+                        <th scope="col">Name</th>
+                        <th scope="col">Price</th>
+                        <th scope="col">Quantity</th>
+                        <th scope="col">Total</th>
+                        <th scope="col">Handle</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                        @forelse(($cart ?? []) as $item)
+                        <tr>
+                            <th scope="row">
+                                <div class="d-flex align-items-center">
+                                    <img src="{{ $item['image'] ? asset($item['image']) : asset('fruitables/img/vegetable-item-3.png') }}" class="img-fluid me-5 rounded-circle" style="width: 80px; height: 80px;" alt="">
+                                </div>
+                            </th>
+                            <td>
+                                <p class="mb-0 mt-4">
+                                    {{ $item['name'] }}
+                                    @if(isset($item['product']) && $item['product']->shelf_life_days <= 7)
+                                        <span class="badge bg-warning ms-2">🥬 Segar</span>
+                                        @if($item['product']->shelf_life_days <= 3)
+                                            <span class="badge bg-danger ms-1">⚡ Extra Segar</span>
+                                        @endif
+                                    @endif
+                                </p>
+                                @if(isset($item['product']) && $item['product']->shelf_life_days)
+                                    <small class="text-muted">Kadaluarsa: {{ $item['product']->shelf_life_days }} hari</small>
+                                @endif
+                            </td>
+                            <td>
+                                <p class="mb-0 mt-4">IDR {{ number_format($item['price'], 0, ',', '.') }}</p>
+                            </td>
+                            <td>
+                                <div class="input-group quantity mt-4" style="width: 120px;">
+                                    <div class="input-group-btn">
+                                        <form method="POST" action="{{ route('cart.update') }}">
+                                            @csrf
+                                            <input type="hidden" name="id" value="{{ $item['id'] }}">
+                                            <input type="hidden" name="qty" value="{{ max(1, $item['qty'] - 1) }}">
+                                            <button class="btn btn-sm btn-minus rounded-circle bg-light border" >
+                                                <i class="fa fa-minus"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                    <input type="text" class="form-control form-control-sm text-center border-0" value="{{ $item['qty'] }}" readonly>
+                                    <div class="input-group-btn">
+                                        <form method="POST" action="{{ route('cart.update') }}">
+                                            @csrf
+                                            <input type="hidden" name="id" value="{{ $item['id'] }}">
+                                            <input type="hidden" name="qty" value="{{ $item['qty'] + 1 }}">
+                                            <button class="btn btn-sm btn-plus rounded-circle bg-light border">
+                                                <i class="fa fa-plus"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <p class="mb-0 mt-4">IDR {{ number_format($item['price'] * $item['qty'], 0, ',', '.') }}</p>
+                            </td>
+                            <td>
+                                <form method="POST" action="{{ route('cart.remove') }}" class="mt-4">
+                                    @csrf
+                                    <input type="hidden" name="id" value="{{ $item['id'] }}">
+                                    <button class="btn btn-md rounded-circle bg-light border" >
+                                        <i class="fa fa-times text-danger"></i>
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                        @empty
+                        <tr>
+                            <td colspan="6" class="text-center py-5">Your cart is empty.</td>
+                        </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Fresh Product Warnings -->
+            <div id="fresh-warnings" class="mt-4" style="display:none;">
+                <!-- Will be populated by JavaScript -->
+            </div>
+
+                                <h6 class="mb-0">Shipping:</h6>
+                                <p class="mb-0 fw-bold text-primary" id="shipping-cost-display">-</p>
+                            </div>
+                            
+                            @if(($discount ?? 0) > 0)
+                            <div class="d-flex justify-content-between mb-2">
+                                <h6 class="mb-0">Discount:</h6>
+                                <p class="mb-0 text-danger">- IDR {{ number_format($discount, 0, ',', '.') }}</p>
+                            </div>
+                            @endif
+                            
+                            <hr>
+                            
+                            <div class="d-flex justify-content-between">
+                                <h5 class="mb-0">Total:</h5>
+                                <p class="mb-0 fw-bold text-success" id="total-amount">IDR {{ number_format($total ?? 0, 0, ',', '.') }}</p>
+                            </div>
+                            
+                            <input type="hidden" id="shipping-cost" value="0">
+                            <input type="hidden" id="shipping-method-id" value="">
+                            
+                            <div class="mt-3">
+                                <button onclick="proceedToCheckout()" class="btn btn-success w-100" id="checkout-btn" disabled>
+                                    <i class="bx bx-right-arrow-alt"></i> Checkout dengan Pengiriman
+                                </button>
+                                <a href="{{ route('checkout') }}" class="btn btn-outline-secondary w-4 mt-2" id="legacy-checkout">
+                                    <i class="bx bx-time-five"></i> Checkout Biasa
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-5 d-flex align-items-center">
+                <form method="POST" action="{{ route('cart.coupon') }}" class="d-flex flex-wrap align-items-center">
+                    @csrf
+                    <input name="code" type="text" class="border-0 border-bottom rounded me-3 py-3 mb-3" placeholder="Coupon Code" value="{{ $coupon['code'] ?? '' }}">
+                    <button class="btn border-secondary rounded-pill px-4 py-3 text-primary mb-3" type="submit">Apply Coupon</button>
+                </form>
+                <form method="POST" action="{{ route('cart.clear') }}" class="ms-auto">
+                    @csrf
+                    <button class="btn btn-outline-danger rounded-pill px-4 py-3 mb-3" type="submit">Clear Cart</button>
+                </form>
+            </div>
+            <div class="row g-4 justify-content-end">
+                <div class="col-8"></div>
+                <div class="col-sm-8 col-md-7 col-lg-6 col-xl-4">
+                    <div class="bg-light rounded">
+                        <div class="p-4">
+                            <h1 class="display-6 mb-4">Cart <span class="fw-normal">Total</span></h1>
+                            <div class="d-flex justify-content-between mb-2">
+                                <h5 class="mb-0 me-4">Subtotal:</h5>
+                                <p class="mb-0">IDR {{ number_format($subtotal ?? 0, 0, ',', '.') }}</p>
+                            </div>
+                            @if(($discount ?? 0) > 0)
+                            <div class="d-flex justify-content-between mb-2">
+                                <h5 class="mb-0 me-4">Discount{{ isset($coupon['code']) ? ' ('.$coupon['code'].')' : '' }}:</h5>
+                                <p class="mb-0">- IDR {{ number_format($discount, 0, ',', '.') }}</p>
+                            </div>
+                            @endif
+                            <div class="d-flex justify-content-between">
+                                <h5 class="mb-0 me-4">Shipping</h5>
+                                <div class="">
+                                    <p class="mb-0">IDR {{ number_format($shipping ?? 0, 0, ',', '.') }}</p>
+                                </div>
+                            </div>
+                            <p class="mb-0 text-end">Shipping to your address.</p>
+                        </div>
+                        <div class="py-4 mb-4 border-top border-bottom d-flex justify-content-between">
+                            <h5 class="mb-0 ps-4 me-4">Total</h5>
+                            <p class="mb-0 pe-4">IDR {{ number_format($total ?? 0, 0, ',', '.') }}</p>
+                        </div>
+                        <a href="{{ route('checkout') }}" class="btn border-secondary rounded-pill px-4 py-3 text-primary text-uppercase mb-4 ms-4">Proceed Checkout</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Cart Page End -->
+
+@endsection
+
+@push('styles')
+<style>
+.shipping-method-card {
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+}
+
+.shipping-method-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.shipping-method-card.selected {
+    background-color: #f8fff9;
+    border-color: #28a745 !important;
+}
+
+.shipping-method-card .select-shipping {
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.shipping-method-card:hover .select-shipping,
+.shipping-method-card.selected .select-shipping {
+    opacity: 1;
+}
+
+.badge {
+    font-size: 0.75em;
+}
+
+.alert {
+    border: none;
+    border-radius: 8px;
+}
+
+.instant-badge {
+    background: linear-gradient(45deg, #ff6b6b, #ff8e53);
+    color: white;
+}
+
+.same-day-badge {
+    background: linear-gradient(45deg, #4ecdc4, #44a08d);
+    color: white;
+}
+
+.regular-badge {
+    background: linear-gradient(45deg, #6c757d, #495057);
+    color: white;
+}
+</style>
+@endpush
+
+@push('scripts')
+<script src="{{ asset('js/shipping.js') }}"></script>
+<script>
+// Cart-specific shipping integration
+class CartShippingManager extends ShippingManager {
+    constructor() {
+        super();
+        this.originCity = 'Semarang'; // Fixed origin
+        this.initCartSpecific();
+    }
+
+    initCartSpecific() {
+        this.updateCartSummary();
+        this.bindCartEvents();
+        this.setupPickupLogic();
+    }
+
+    setupPickupLogic() {
+        // Handle shipping type change
+        $('#shipping_type').on('change', (e) => {
+            const shippingType = e.target.value;
+            
+            if (shippingType === 'pickup') {
+                this.showPickupOption();
+            } else if (shippingType === 'delivery') {
+                this.showDeliveryOption();
+            } else {
+                this.hideAllOptions();
+            }
+        });
+    }
+
+    showPickupOption() {
+        $('#pickup-info').show();
+        $('#delivery-options').hide();
+        $('#shipping-methods').hide();
+        
+        // Auto-select pickup method
+        this.selectPickupMethod();
+    }
+
+    showDeliveryOption() {
+        $('#pickup-info').hide();
+        $('#delivery-options').show();
+        $('#shipping-methods').show();
+        
+        // Reset and load delivery methods
+        this.destinationCity = null;
+        this.selectedMethod = null;
+        this.updateOrderTotal(0);
+        document.getElementById('checkout-btn').disabled = true;
+    }
+
+    hideAllOptions() {
+        $('#pickup-info').hide();
+        $('#delivery-options').hide();
+        $('#shipping-methods').hide();
+    }
+
+    selectPickupMethod() {
+        // Simulate pickup selection
+        const pickupMethod = {
+            id: 'pickup',
+            name: 'Ambil Sendiri ke Store',
+            cost: 0,
+            formatted_cost: 'GRATIS',
+            type: 'pickup'
+        };
+        
+        this.selectedMethod = pickupMethod;
+        document.getElementById('shipping-method-id').value = pickupMethod.id;
+        document.getElementById('shipping-cost').value = pickupMethod.cost;
+        
+        // Update display
+        this.updateOrderTotal(pickupMethod.cost);
+        document.getElementById('shipping-cost-display').textContent = pickupMethod.formatted_cost;
+        document.getElementById('checkout-btn').disabled = false;
+        
+        // Show success message
+        this.showPickupSuccess();
+    }
+
+    showPickupSuccess() {
+        const successDiv = document.getElementById('shipping-error');
+        successDiv.innerHTML = `
+            <div class="alert alert-success">
+                <i class="bx bx-check-circle"></i>
+                <strong>🏪 Pickup Selected!</strong><br>
+                Anda akan mengambil pesanan langsung di store kami di Semarang. Gratis biaya pengiriman!
+            </div>
+        `;
+        successDiv.style.display = 'block';
+        
+        // Hide after 3 seconds
+        setTimeout(() => {
+            successDiv.style.display = 'none';
+        }, 3000);
+    }
+
+    bindCartEvents() {
+        // City change event (only for delivery)
+        $('#destination_city').on('change', () => {
+            if ($('#shipping_type').val() === 'delivery') {
+                this.onCityChange();
+            }
+        });
+    }
+
+    async onCityChange() {
+        this.destinationCity = $('#destination_city').val();
+        
+        if (this.destinationCity) {
+            await this.loadShippingMethods();
+        }
+    }
+
+    async loadShippingMethods() {
+        try {
+            this.showLoading();
+            
+            // Simulate API call (since we can't make real API calls from static HTML)
+            const destinationCity = this.destinationCity;
+            const mockResponse = await this.getMockShippingResponse(destinationCity);
+            
+            if (mockResponse.success) {
+                this.displayShippingMethods(mockResponse.data);
+                this.displayWarnings(mockResponse.data.warnings);
+                this.updateCartSummary(mockResponse.data.cart_summary);
+            } else {
+                this.showError(mockResponse.message);
+            }
+        } catch (error) {
+            console.error('Error loading shipping methods:', error);
+            this.showError('Failed to load shipping methods');
+        } finally {
+            this.hideLoading();
+        }
+    }
+
+    async getMockShippingResponse(destinationCity) {
+        // Mock data based on destination
+        const responses = {
+            'Semarang': {
+                success: true,
+                data: {
+                    methods: [
+                        {
+                            id: 'pickup',
+                            name: 'Ambil Sendiri ke Store',
+                            code: 'pickup_store',
+                            type: 'pickup',
+                            cost: 0,
+                            formatted_cost: 'GRATIS',
+                            estimated_days: 'Langsung Ambil',
+                            estimated_text: 'Langsung Ambil',
+                            fresh_product_score: 100,
+                            is_fresh_friendly: true,
+                            badge: '🏪 PERFECT - Ambil Langsung',
+                            badge_type: 'success',
+                            recommended: true,
+                            urgency_text: '🏪 Siap Diambil',
+                            cost_text: '🆓 GRATIS'
+                        },
+                        {
+                            id: 1,
+                            name: 'GoSend Instant',
+                            code: 'gosend_instant',
+                            type: 'instant',
+                            cost: 22000,
+                            formatted_cost: 'Rp 22.000',
+                            estimated_days: '60 menit',
+                            estimated_text: '60 menit',
+                            fresh_product_score: 100,
+                            is_fresh_friendly: true,
+                            badge: '🌟 PERFECT untuk Produk Segar',
+                            badge_type: 'success',
+                            recommended: false,
+                            urgency_text: '🚀 Kirim Sekarang',
+                            cost_text: '💎 Premium'
+                        },
+                        {
+                            id: 2,
+                            name: 'GrabExpress Instant',
+                            code: 'grab_express',
+                            type: 'instant',
+                            cost: 20000,
+                            formatted_cost: 'Rp 20.000',
+                            estimated_days: '60-90 menit',
+                            estimated_text: '60-90 menit',
+                            fresh_product_score: 100,
+                            is_fresh_friendly: true,
+                            badge: '🌟 PERFECT untuk Produk Segar',
+                            badge_type: 'success',
+                            recommended: false,
+                            urgency_text: '🚀 Kirim Sekarang',
+                            cost_text: '💎 Premium'
+                        },
+                        {
+                            id: 3,
+                            name: 'SiCepat Same Day',
+                            code: 'sicepat_same_day',
+                            type: 'same_day',
+                            cost: 18000,
+                            formatted_cost: 'Rp 18.000',
+                            estimated_days: '6 jam',
+                            estimated_text: '6 jam',
+                            fresh_product_score: 80,
+                            is_fresh_friendly: true,
+                            badge: '✅ Bagus untuk Produk Segar',
+                            badge_type: 'info',
+                            urgency_text: '⚡ Hari Ini',
+                            cost_text: '⚖️ Sedang'
+                        },
+                        {
+                            id: 4,
+                            name: 'JNE REG',
+                            code: 'jne_reg',
+                            type: 'regular',
+                            cost: 9000,
+                            formatted_cost: 'Rp 9.000',
+                            estimated_days: '1-2',
+                            estimated_text: '1-2 hari',
+                            fresh_product_score: 40,
+                            is_fresh_friendly: false,
+                            warning: '⚠️ Tidak direkomendasikan untuk produk segar',
+                            warning_type: 'danger',
+                            urgency_text: '🚚 Reguler',
+                            cost_text: '💰 Hemat'
+                        }
+                    ],
+                    warnings: [
+                        {
+                            type: 'success',
+                            title: '✅ Instant Available',
+                            message: 'Pengiriman instan tersedia untuk Semarang. Produk segar akan sampai dalam 1 jam!',
+                            icon: 'bx-check-circle'
+                        }
+                    ],
+                    cart_summary: {
+                        total_items: {{ count($cart ?? []) }},
+                        has_fresh_products: {{ collect($cart ?? [])->filter(function($item) { return isset($item['product']) && $item['product']->shelf_life_days <= 7; })->count() > 0 ? 'true' : 'false' }},
+                        total_weight: 2.5
+                    }
+                }
+            },
+            'Jakarta': {
+                success: true,
+                data: {
+                    methods: [
+                        {
+                            id: 5,
+                            name: 'SiCepat Same Day',
+                            code: 'sicepat_same_day',
+                            type: 'same_day',
+                            cost: 75000,
+                            formatted_cost: 'Rp 75.000',
+                            estimated_days: '12 jam',
+                            estimated_text: '12 jam',
+                            fresh_product_score: 80,
+                            is_fresh_friendly: true,
+                            badge: '✅ Bagus untuk Produk Segar',
+                            badge_type: 'warning',
+                            urgency_text: '⚡ Hari Ini',
+                            cost_text: '💎 Premium'
+                        },
+                        {
+                            id: 6,
+                            name: 'JNE YES',
+                            code: 'jne_yes',
+                            type: 'express',
+                            cost: 30000,
+                            formatted_cost: 'Rp 30.000',
+                            estimated_days: '1-2',
+                            estimated_text: '1-2 hari',
+                            fresh_product_score: 60,
+                            is_fresh_friendly: true,
+                            badge: '✅ Cukup Baik untuk Produk Segar',
+                            badge_type: 'warning',
+                            urgency_text: '📦 Cepat',
+                            cost_text: '⚖️ Sedang'
+                        },
+                        {
+                            id: 7,
+                            name: 'JNE REG',
+                            code: 'jne_reg',
+                            type: 'regular',
+                            cost: 20000,
+                            formatted_cost: 'Rp 20.000',
+                            estimated_days: '2-3',
+                            estimated_text: '2-3 hari',
+                            fresh_product_score: 40,
+                            is_fresh_friendly: false,
+                            warning: '⚠️ Risiko tinggi untuk produk segar',
+                            warning_type: 'warning',
+                            urgency_text: '🚚 Reguler',
+                            cost_text: '💰 Hemat'
+                        }
+                    ],
+                    warnings: [
+                        {
+                            type: 'warning',
+                            title: '🥬 Produk Segar',
+                            message: 'Pengiriman ke Jakarta membutuhkan 12 jam untuk same day. Pilih tercepat untuk menjaga kesegaran.',
+                            icon: 'bx-info-circle'
+                        }
+                    ],
+                    cart_summary: {
+                        total_items: {{ count($cart ?? []) }},
+                        has_fresh_products: {{ collect($cart ?? [])->filter(function($item) { return isset($item['product']) && $item['product']->shelf_life_days <= 7; })->count() > 0 ? 'true' : 'false' }},
+                        total_weight: 2.5
+                    }
+                }
+            }
+        };
+
+        // Default response for other cities
+        const defaultResponse = {
+            success: true,
+            data: {
+                methods: [
+                    {
+                        id: 8,
+                        name: 'JNE REG',
+                        code: 'jne_reg',
+                        type: 'regular',
+                        cost: 15000,
+                        formatted_cost: 'Rp 15.000',
+                        estimated_days: '2-3',
+                        estimated_text: '2-3 hari',
+                        fresh_product_score: 40,
+                        is_fresh_friendly: false,
+                        warning: '⚠️ Risiko tinggi untuk produk segar',
+                        warning_type: 'danger',
+                        urgency_text: '🚚 Reguler',
+                        cost_text: '💰 Hemat'
+                    }
+                ],
+                warnings: [
+                    {
+                        type: 'danger',
+                        title: '⚠️ Pengiriman Terbatas',
+                        message: 'Hanya pengiriman reguler yang tersedia. Tidak direkomendasikan untuk produk segar.',
+                        icon: 'bx-x-circle'
+                    }
+                ],
+                cart_summary: {
+                    total_items: {{ count($cart ?? []) }},
+                    has_fresh_products: {{ collect($cart ?? [])->filter(function($item) { return isset($item['product']) && $item['product']->shelf_life_days <= 7; })->count() > 0 ? 'true' : 'false' }},
+                    total_weight: 2.5
+                }
+            }
+        };
+
+        return responses[destinationCity] || defaultResponse;
+    }
+
+    updateCartSummary(summary) {
+        // Update fresh indicator
+        const freshIndicator = document.getElementById('fresh-indicator');
+        if (summary && summary.has_fresh_products) {
+            freshIndicator.innerHTML = '<span class="text-success">🥬 Segar</span>';
+        } else {
+            freshIndicator.innerHTML = '<span class="text-muted">Regular</span>';
+        }
+
+        // Update weight indicator
+        const weightIndicator = document.getElementById('weight-indicator');
+        if (summary) {
+            weightIndicator.textContent = summary.total_weight + ' kg';
+        }
+
+        // Update parent method
+        if (summary) {
+            super.updateCartSummary(summary);
+        }
+    }
+
+    selectShippingMethod(e) {
+        super.selectShippingMethod(e);
+        
+        // Enable checkout button
+        document.getElementById('checkout-btn').disabled = false;
+        
+        // Store selection for checkout
+        const methodId = e.currentTarget.dataset.methodId;
+        const cost = e.currentTarget.dataset.cost;
+        
+        // Update checkout URL with shipping data
+        const checkoutBtn = document.getElementById('checkout-btn');
+        checkoutBtn.onclick = () => this.proceedToCheckoutWithShipping(methodId, cost);
+    }
+
+    proceedToCheckoutWithShipping(methodId, cost) {
+        // Store shipping data in session (simulate)
+        sessionStorage.setItem('selectedShipping', JSON.stringify({
+            destination_city: this.destinationCity,
+            shipping_method_id: methodId,
+            shipping_cost: cost,
+            origin_city: this.originCity
+        }));
+
+        // Redirect to shipping checkout
+        window.location.href = '/checkout/shipping';
+    }
+}
+
+// Initialize cart shipping manager
+$(document).ready(function() {
+    window.cartShippingManager = new CartShippingManager();
+});
+
+// Global function for checkout
+function proceedToCheckout() {
+    if (!window.cartShippingManager.selectedMethod) {
+        alert('Silakan pilih metode pengiriman terlebih dahulu');
+        return;
+    }
+    
+    const methodId = document.getElementById('shipping-method-id').value;
+    const cost = document.getElementById('shipping-cost').value;
+    
+    window.cartShippingManager.proceedToCheckoutWithShipping(methodId, cost);
+}
+</script>
+@endpush

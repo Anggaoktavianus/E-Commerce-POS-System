@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Carousel</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.theme.default.min.css">
+    <style>
+        .service-item {
+            height: 300px;
+            overflow: hidden;
+        }
+        .service-item img {
+            object-fit: contain;
+            height: 180px;
+        }
+        .owl-nav button {
+            width: 35px !important;
+            height: 35px !important;
+            background: white !important;
+            border: 2px solid #007bff !important;
+            border-radius: 50% !important;
+        }
+        .owl-nav button i {
+            font-size: 16px !important;
+            color: #007bff !important;
+        }
+        .owl-nav button:hover {
+            background: #007bff !important;
+        }
+        .owl-nav button:hover i {
+            color: white !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="container py-5">
+        <h2>Test Banner Carousel</h2>
+        <div class="owl-carousel banners-middle-carousel">
+            <div class="item px-2">
+                <div class="service-item bg-secondary rounded border border-secondary">
+                    <img src="https://via.placeholder.com/300x180/007bff/ffffff?text=Store+1" class="img-fluid w-100 mt-2" alt="">
+                    <div class="px-4 rounded-bottom">
+                        <div class="service-content bg-primary text-center p-4 rounded mt-4">
+                            <h5 class="text-white">Store Gayamsari</h5>
+                            <a href="#" class="btn btn-outline-secondary btn-sm w-100 mt-3">
+                                <i class="bx bx-map me-2"></i> Lihat Lokasi
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="item px-2">
+                <div class="service-item bg-secondary rounded border border-secondary">
+                    <img src="https://via.placeholder.com/300x180/007bff/ffffff?text=Store+2" class="img-fluid w-100 mt-2" alt="">
+                    <div class="px-4 rounded-bottom">
+                        <div class="service-content bg-primary text-center p-4 rounded mt-4">
+                            <h5 class="text-white">Store Ngaliyan</h5>
+                            <a href="#" class="btn btn-outline-secondary btn-sm w-100 mt-3">
+                                <i class="bx bx-map me-2"></i> Lihat Lokasi
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="item px-2">
+                <div class="service-item bg-secondary rounded border border-secondary">
+                    <img src="https://via.placeholder.com/300x180/007bff/ffffff?text=Store+3" class="img-fluid w-100 mt-2" alt="">
+                    <div class="px-4 rounded-bottom">
+                        <div class="service-content bg-primary text-center p-4 rounded mt-4">
+                            <h5 class="text-white">Store Jatingaleh</h5>
+                            <a href="#" class="btn btn-outline-secondary btn-sm w-100 mt-3">
+                                <i class="bx bx-map me-2"></i> Lihat Lokasi
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="item px-2">
+                <div class="service-item bg-secondary rounded border border-secondary">
+                    <img src="https://via.placeholder.com/300x180/007bff/ffffff?text=Store+4" class="img-fluid w-100 mt-2" alt="">
+                    <div class="px-4 rounded-bottom">
+                        <div class="service-content bg-primary text-center p-4 rounded mt-4">
+                            <h5 class="text-white">Store Tembalang</h5>
+                            <a href="#" class="btn btn-outline-secondary btn-sm w-100 mt-3">
+                                <i class="bx bx-map me-2"></i> Lihat Lokasi
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $('.banners-middle-carousel').owlCarousel({
+                items: 3,
+                margin: 16,
+                loop: true,
+                autoplay: true,
+                autoplayTimeout: 3000,
+                nav: true,
+                navText: ['<i class="bx bx-chevron-left"></i>', '<i class="bx bx-chevron-right"></i>'],
+                dots: true,
+                responsive: {
+                    0: { items: 1 },
+                    768: { items: 2 },
+                    992: { items: 3 }
+                }
+            });
+        });
+    </script>
+</body>
+</html>

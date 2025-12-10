@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Shipping System Test</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container mt-4">
+        <h1>🚚 Fresh Product Shipping System Test</h1>
+        
+        <div class="row">
+            <div class="col-md-6">
+                <h3>Test Shipping Calculation</h3>
+                <div class="mb-3">
+                    <label class="form-label">Origin City</label>
+                    <select id="origin_city" class="form-select">
+                        <option value="Jakarta">Jakarta</option>
+                        <option value="Surabaya">Surabaya</option>
+                        <option value="Bandung">Bandung</option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Destination City</label>
+                    <select id="destination_city" class="form-select">
+                        <option value="Jakarta">Jakarta</option>
+                        <option value="Surabaya">Surabaya</option>
+                        <option value="Bandung">Bandung</option>
+                    </select>
+                </div>
+                <button onclick="testShipping()" class="btn btn-primary">Test Shipping Methods</button>
+            </div>
+            
+            <div class="col-md-6">
+                <h3>Fresh Product Warnings</h3>
+                <div id="warnings" class="alert alert-warning" style="display:none;"></div>
+                <div id="shipping-methods" class="mt-3"></div>
+            </div>
+        </div>
+        
+        <div class="row mt-4">
+            <div class="col-12">
+                <h3>System Status</h3>
+                <div id="system-status"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Mock cart with fresh products
+        const mockCart = [
+            {
+                product: {
+                    id: 1,
+                    name: 'Sayuran Segar Mix',
+                    shelf_life_days: 3,
+                    requires_cold_chain: true,
+                    shipping_type: 'fresh',
+                    weight: 0.5,
+                    isFreshProduct: function() { return this.shelf_life_days <= 7; }
+                },
+                quantity: 2
+            }
+        ];
+
+        function testShipping() {
+            const origin = document.getElementById('origin_city').value;
+            const destination = document.getElementById('destination_city').value;
+            
+            // Simulate API response
+            const mockResponse = {
+                success: true,
+                data: {
+                    methods: [
+                        {
+                            id: 1,
+                            name: 'GoSend Instant',
+                            code: 'gosend_instant',
+                            type: 'instant',
+                            cost: 25000,
+                            formatted_cost: 'Rp 25.000',
+                            estimated_days: '60 menit',
+                            estimated_text: '60 menit',
+                            fresh_product_score: 100,
+                            is_fresh_friendly: true,
+                            badge: '🌟 PERFECT untuk Produk Segar',
+                            badge_type: 'success',
+                            recommended: true
+                        },
+                        {
+                            id: 2,
+                            name: 'JNE REG',
+                            code: 'jne_reg',
+                            type: 'regular',
+                            cost: 10000,
+                            formatted_cost: 'Rp 10.000',
+                            estimated_days: '1-2',
+                            estimated_text: '1-2 hari',
+                            fresh_product_score: 40,
+                            is_fresh_friendly: false,
+                            warning: '⚠️ Tidak direkomendasikan untuk produk segar',
+                            warning_type: 'danger'
+                        }
+                    ],
+                    warnings: [
+                        {
+                            type: 'warning',
+                            title: '🥬 Produk Segar',
+                            message: 'Keranjang Anda mengandung produk segar. Pilih pengiriman tercepat untuk menjaga kesegaran.',
+                            icon: 'bx-info-circle'
+                        }
+                    ],
+                    cart_summary: {
+                        total_items: 1,
+                        has_fresh_products: true,
+                        total_weight: 1.0
+                    }
+                }
+            };
+            
+            displayResults(mockResponse);
+        }
+        
+        function displayResults(response) {
+            const methodsDiv = document.getElementById('shipping-methods');
+            const warningsDiv = document.getElementById('warnings');
+            const statusDiv = document.getElementById('system-status');
+            
+            // Display warnings
+            if (response.data.warnings.length > 0) {
+                warningsDiv.style.display = 'block';
+                warningsDiv.innerHTML = response.data.warnings.map(w => 
+                    `<div class="alert alert-${w.type} alert-sm">
+                        <strong>${w.title}</strong><br>
+                        ${w.message}
+                    </div>`
+                ).join('');
+            } else {
+                warningsDiv.style.display = 'none';
+            }
+            
+            // Display shipping methods
+            methodsDiv.innerHTML = response.data.methods.map(method => {
+                const badge = method.badge ? 
+                    `<span class="badge bg-${method.badge_type} me-2">${method.badge}</span>` : '';
+                const warning = method.warning ? 
+                    `<span class="badge bg-${method.warning_type} me-2">${method.warning}</span>` : '';
+                const recommended = method.recommended ? 
+                    '<span class="badge bg-primary me-2">RECOMMENDED</span>' : '';
+                
+                return `
+                    <div class="card mb-2 ${method.recommended ? 'border-success' : ''}">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="mb-1">${recommended}${badge}${warning}${method.name}</h6>
+                                    <small class="text-muted">${method.estimated_text} • Score: ${method.fresh_product_score}/100</small>
+                                </div>
+                                <div class="text-end">
+                                    <div class="fw-bold">${method.formatted_cost}</div>
+                                    <button class="btn btn-sm btn-${method.recommended ? 'success' : 'outline-primary'}">Pilih</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+            
+            // Display system status
+            statusDiv.innerHTML = `
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5>🥬 Fresh Products</h5>
+                                <h3 class="text-warning">${response.data.cart_summary.has_fresh_products ? 'YES' : 'NO'}</h3>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5>📦 Total Items</h5>
+                                <h3>${response.data.cart_summary.total_items}</h3>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5>⚖️ Total Weight</h5>
+                                <h3>${response.data.cart_summary.total_weight} kg</h3>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+        
+        // Auto-test on page load
+        window.onload = function() {
+            testShipping();
+        };
+    </script>
+</body>
+</html>
