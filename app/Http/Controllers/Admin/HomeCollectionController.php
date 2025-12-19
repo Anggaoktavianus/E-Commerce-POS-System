@@ -76,6 +76,15 @@ class HomeCollectionController extends Controller
             DB::table('home_collections')->where('id',$id)->delete();
             $this->flushCollectionsCache($c->key);
         }
+        
+        // Return JSON response for AJAX requests
+        if (request()->ajax() || request()->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Collection deleted successfully'
+            ]);
+        }
+        
         return redirect()->route('admin.collections.index')->with('success','Collection deleted');
     }
 

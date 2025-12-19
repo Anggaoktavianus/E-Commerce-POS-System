@@ -12,6 +12,7 @@ class Outlet extends Model
     protected $fillable = [
         'store_id',
         'name',
+        'short_name',
         'code',
         'type',
         'manager_name',
@@ -168,6 +169,7 @@ class Outlet extends Model
     {
         return $query->where(function($q) use ($search) {
             $q->where('name', 'like', "%{$search}%")
+              ->orWhere('short_name', 'like', "%{$search}%")
               ->orWhere('code', 'like', "%{$search}%")
               ->orWhere('manager_name', 'like', "%{$search}%")
               ->orWhere('city', 'like', "%{$search}%")

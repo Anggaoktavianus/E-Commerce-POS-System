@@ -5,16 +5,16 @@
 @section('content')
 <div class="container-xxl flex-grow-1 container-p-y">
   <!-- Header Section -->
-  <div class="card mb-4">
+  <div class="card page-header-card mb-4">
     <div class="card-body">
-      <div class="d-flex justify-content-between align-items-center">
+      <div class="d-flex justify-content-between align-items-center flex-wrap">
         <div>
           <h4 class="mb-1">
-            <i class="bx bx-category me-2"></i>Kelola Kategori
+            <i class="bx bx-category me-2 text-primary"></i>Kelola Kategori
           </h4>
           <p class="text-muted mb-0">Buat dan kelola kategori produk untuk organisasi yang lebih baik</p>
         </div>
-        <a href="{{ route('admin.categories.create') }}" class="btn btn-primary">
+        <a href="{{ route('admin.categories.create') }}" class="btn btn-primary btn-modern mt-2 mt-md-0">
           <i class="bx bx-plus me-1"></i> Tambah Kategori
         </a>
       </div>
@@ -22,55 +22,63 @@
   </div>
 
   <!-- Quick Stats -->
-  <div class="row mb-4">
-    <div class="col-md-3">
-      <div class="card bg-primary text-white">
-        <div class="card-body">
-          <div class="d-flex justify-content-between">
-            <div>
-              <h6 class="card-title">Total Kategori</h6>
-              <h3 class="mb-0" id="totalCategories">0</h3>
+  <div class="row g-4 mb-4">
+    <div class="col-6 col-md-3">
+      <div class="card stat-card bg-primary text-white">
+        <div class="card-body p-4">
+          <div class="d-flex justify-content-between align-items-start">
+            <div class="flex-grow-1">
+              <p class="stat-label mb-2 ">Total Kategori</p>
+              <h3 class="stat-value mb-0 text-white" id="totalCategories">0</h3>
             </div>
-            <i class="bx bx-category bx-lg"></i>
+            <div class="stat-icon">
+              <i class="bx bx-category"></i>
+            </div>
           </div>
         </div>
       </div>
     </div>
-    <div class="col-md-3">
-      <div class="card bg-success text-white">
-        <div class="card-body">
-          <div class="d-flex justify-content-between">
-            <div>
-              <h6 class="card-title">Aktif</h6>
-              <h3 class="mb-0" id="activeCategories">0</h3>
+    <div class="col-6 col-md-3">
+      <div class="card stat-card bg-success text-white">
+        <div class="card-body p-4">
+          <div class="d-flex justify-content-between align-items-start">
+            <div class="flex-grow-1">
+              <p class="stat-label mb-2">Aktif</p>
+              <h3 class="stat-value mb-0 text-white" id="activeCategories">0</h3>
             </div>
-            <i class="bx bx-show bx-lg"></i>
+            <div class="stat-icon">
+              <i class="bx bx-show"></i>
+            </div>
           </div>
         </div>
       </div>
     </div>
-    <div class="col-md-3">
-      <div class="card bg-warning text-white">
-        <div class="card-body">
-          <div class="d-flex justify-content-between">
-            <div>
-              <h6 class="card-title">Non-Aktif</h6>
-              <h3 class="mb-0" id="inactiveCategories">0</h3>
+    <div class="col-6 col-md-3">
+      <div class="card stat-card bg-warning text-white">
+        <div class="card-body p-4">
+          <div class="d-flex justify-content-between align-items-start">
+            <div class="flex-grow-1">
+              <p class="stat-label mb-2">Non-Aktif</p>
+              <h3 class="stat-value mb-0 text-white" id="inactiveCategories">0</h3>
             </div>
-            <i class="bx bx-hide bx-lg"></i>
+            <div class="stat-icon">
+              <i class="bx bx-hide"></i>
+            </div>
           </div>
         </div>
       </div>
     </div>
-    <div class="col-md-3">
-      <div class="card bg-info text-white">
-        <div class="card-body">
-          <div class="d-flex justify-content-between">
-            <div>
-              <h6 class="card-title">Sub-Kategori</h6>
-              <h3 class="mb-0" id="subCategories">0</h3>
+    <div class="col-6 col-md-3">
+      <div class="card stat-card bg-info text-white">
+        <div class="card-body p-4">
+          <div class="d-flex justify-content-between align-items-start">
+            <div class="flex-grow-1">
+              <p class="stat-label mb-2">Sub-Kategori</p>
+              <h3 class="stat-value mb-0 text-white" id="subCategories">0</h3>
             </div>
-            <i class="bx bx-list-ul bx-lg"></i>
+            <div class="stat-icon">
+              <i class="bx bx-list-ul"></i>
+            </div>
           </div>
         </div>
       </div>
@@ -138,7 +146,7 @@
             <li>Filter berdasarkan status (Aktif/Non-Aktif)</li>
             <li>Hasil akan muncul secara otomatis</li>
           </ul>
-          
+
           <h6><i class="bx bx-edit text-success me-2"></i>Cara Mengedit Kategori</h6>
           <ul class="mb-3">
             <li>Klik tombol <span class="badge bg-primary">Edit</span> pada kategori yang ingin diubah</li>
@@ -157,7 +165,7 @@
             <li>Pilih parent kategori (opsional)</li>
             <li>Pilih status aktif/non-aktif</li>
           </ul>
-          
+
           <h6><i class="bx bx-cog text-warning me-2"></i>Fitur Tersedia</h6>
           <ul class="mb-3">
             <li><strong>Hierarchical Structure:</strong> Parent dan sub-kategori</li>
@@ -224,7 +232,7 @@
             initComplete: function() {
                 // Hide default search input since we have custom search
                 $('#categories-table_filter').hide();
-                
+
                 // Update stats from initial data
                 updateStats();
             }
@@ -249,7 +257,7 @@
         $(document).on('click', '.delete-category', function(e) {
             e.preventDefault();
             var categoryId = $(this).data('id');
-            
+
             Swal.fire({
                 title: 'Hapus Kategori?',
                 text: "Kategori ini akan dihapus secara permanen!",
@@ -298,7 +306,7 @@
                     var total = data.recordsTotal || 0;
                     var active = 0;
                     var subCategories = 0;
-                    
+
                     if (data.data && data.data.length > 0) {
                         data.data.forEach(function(category) {
                             if (category.is_active == '1' || category.is_active == true) {
@@ -309,7 +317,7 @@
                             }
                         });
                     }
-                    
+
                     $('#totalCategories').text(total);
                     $('#activeCategories').text(active);
                     $('#inactiveCategories').text(total - active);

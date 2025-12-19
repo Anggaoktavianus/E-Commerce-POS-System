@@ -64,7 +64,7 @@
             </div>
             @endif
             <div class="col-md-6">
-              <i class="bx bx-show me-1"></i> Views: {{ $artikel->views->format() }}
+              <i class="bx bx-show me-1"></i> Views: {{ number_format($artikel->views) }}
             </div>
           </div>
 
@@ -189,7 +189,7 @@
         <div class="card-body">
           <div class="row text-center">
             <div class="col-6 mb-3">
-              <h4 class="text-primary">{{ $artikel->views->format() }}</h4>
+              <h4 class="text-primary">{{ number_format($artikel->views) }}</h4>
               <small class="text-muted">Total Views</small>
             </div>
             <div class="col-6 mb-3">

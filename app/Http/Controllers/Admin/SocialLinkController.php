@@ -73,6 +73,15 @@ class SocialLinkController extends Controller
             DB::table('social_links')->where('id',$id)->delete();
             Cache::forget('home.social_links');
         }
+        
+        // Return JSON response for AJAX requests
+        if (request()->ajax() || request()->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Social link deleted successfully'
+            ]);
+        }
+        
         return redirect()->route('admin.social_links.index')->with('success','Social link deleted');
     }
 }

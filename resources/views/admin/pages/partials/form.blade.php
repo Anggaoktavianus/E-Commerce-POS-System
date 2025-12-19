@@ -7,7 +7,7 @@
                 <h6 class="mb-0">
                     <i class="bx bx-edit me-2"></i>Konten Utama
                 </h6>
-            </div>
+            </div> 
             <div class="card-body">
                 <div class="mb-3">
                     <label for="title" class="form-label">
@@ -50,6 +50,17 @@
                         Konten Halaman
                         <span class="text-danger">*</span>
                     </label>
+                    <div class="mb-2">
+                        <button type="button" class="btn btn-sm btn-outline-primary" onclick="document.getElementById('imageUpload').click()">
+                            <i class="bx bx-image me-1"></i>Upload Gambar ke Editor
+                        </button>
+                        <button type="button" class="btn btn-sm btn-outline-success ms-2" onclick="document.getElementById('videoUpload').click()">
+                            <i class="bx bx-video me-1"></i>Upload Video ke Editor
+                        </button>
+                        <input type="file" id="imageUpload" style="display: none;" accept="image/*" multiple>
+                        <input type="file" id="videoUpload" style="display: none;" accept="video/*" multiple>
+                        <small class="text-muted ms-2">Atau drag & drop gambar/video langsung ke editor</small>
+                    </div>
                     <textarea class="form-control @error('content') is-invalid @enderror" id="content" name="content" 
                               rows="15" required placeholder="Tulis konten halaman di sini...">{{ old('content', $page->content ?? '') }}</textarea>
                     @error('content')
@@ -83,21 +94,40 @@
                         ['style', ['style']],
                         ['font', ['bold', 'italic', 'underline', 'strikethrough', 'clear']],
                         ['para', ['ul', 'ol', 'paragraph', 'height']],
-                        ['insert', ['link', 'picture', 'video', 'table', 'hr']],
+                        ['insert', ['link', 'video', 'table', 'hr']],
                         ['view', ['fullscreen', 'codeview', 'help', 'undo', 'redo']]
                       ],
                       callbacks: {
                         onInit: function() {
                           console.log('Summernote initialized successfully');
+                          // Add delete buttons to existing videos after initialization
+                          setTimeout(addDeleteButtonsToExistingVideos, 500);
                         },
                         onImageUpload: function(files) {
-                          // Handle image upload if needed
+                          // Handle image upload to server
                           for (let i = 0; i < files.length; i++) {
-                            const reader = new FileReader();
-                            reader.onload = function(e) {
-                              $(el).summernote('insertImage', e.target.result, files[i].name);
-                            };
-                            reader.readAsDataURL(files[i]);
+                            const formData = new FormData();
+                            formData.append('image', files[i]);
+                            
+                            fetch('{{ route("admin.pages.upload-image") }}', {
+                              method: 'POST',
+                              body: formData,
+                              headers: {
+                                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                              }
+                            })
+                            .then(response => response.json())
+                            .then(data => {
+                              if (data.url) {
+                                $(el).summernote('insertImage', data.url, files[i].name);
+                              } else {
+                                alert('Gagal mengupload gambar: ' + (data.error || 'Unknown error'));
+                              }
+                            })
+                            .catch(error => {
+                              console.error('Upload error:', error);
+                              alert('Gagal mengupload gambar. Silakan coba lagi.');
+                            });
                           }
                         }
                       }
@@ -217,7 +247,7 @@
                             <ul class="list-unstyled">
                                 @foreach($page->attachments as $index => $attachment)
                                     <li class="d-flex justify-content-between align-items-center mb-2 p-2 border rounded">
-                                        <a href="{{ asset('storage/' . $attachment['path']) }}" target="_blank" class="text-decoration-none">
+                                        <a href="{{ asset($attachment['path']) }}" target="_blank" class="text-decoration-none">
                                             <i class="bx bx-file me-1"></i> {{ $attachment['name'] }}
                                             <small class="text-muted">({{ number_format($attachment['size']/1024, 2) }} KB)</small>
                                         </a>
@@ -308,6 +338,129 @@
 
 @push('scripts')
 <script>
+    // Handle manual image upload
+    document.getElementById('imageUpload').addEventListener('change', function(e) {
+        const files = e.target.files;
+        for (let i = 0; i < files.length; i++) {
+            uploadImageToEditor(files[i]);
+        }
+        // Clear input
+        this.value = '';
+    });
+    
+    // Handle manual video upload
+    document.getElementById('videoUpload').addEventListener('change', function(e) {
+        const files = e.target.files;
+        for (let i = 0; i < files.length; i++) {
+            uploadVideoToEditor(files[i]);
+        }
+        // Clear input
+        this.value = '';
+    });
+    
+    function uploadImageToEditor(file) {
+        const formData = new FormData();
+        formData.append('image', file);
+        
+        fetch('{{ route("admin.pages.upload-image") }}', {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.url) {
+                $('#content').summernote('insertImage', data.url, file.name);
+            } else {
+                alert('Gagal mengupload gambar: ' + (data.error || 'Unknown error'));
+            }
+        })
+        .catch(error => {
+            console.error('Upload error:', error);
+            alert('Gagal mengupload gambar. Silakan coba lagi.');
+        });
+    }
+    
+    function uploadVideoToEditor(file) {
+        const formData = new FormData();
+        formData.append('video', file);
+        
+        fetch('{{ route("admin.pages.upload-video") }}', {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            }
+        })
+        .then(response => {
+            console.log('Response status:', response.status);
+            console.log('Response headers:', response.headers);
+            return response.text(); // Get as text first to debug
+        })
+        .then(text => {
+            console.log('Response text:', text);
+            try {
+                const data = JSON.parse(text);
+                if (data.url) {
+                    // Insert video with delete button
+                    const videoHtml = `<div class="video-wrapper" style="position: relative; display: inline-block;">
+                        <button type="button" class="btn btn-danger btn-sm video-delete-btn" style="position: absolute; top: 5px; right: 5px; z-index: 1000; display: none;" onclick="this.parentElement.remove()">
+                            <i class="bx bx-trash"></i>
+                        </button>
+                        <video controls width="400" height="225" style="max-width: 100%;">
+                            <source src="${data.url}" type="${file.type}">
+                            Your browser does not support the video tag.
+                        </video>
+                    </div>`;
+                    $('#content').summernote('pasteHTML', videoHtml);
+                    
+                    // Add hover effect for delete button
+                    setTimeout(() => {
+                        $('.video-wrapper').hover(
+                            function() { $(this).find('.video-delete-btn').show(); },
+                            function() { $(this).find('.video-delete-btn').hide(); }
+                        );
+                    }, 100);
+                } else {
+                    alert('Gagal mengupload video: ' + (data.error || 'Unknown error'));
+                }
+            } catch (e) {
+                console.error('JSON parse error:', e);
+                alert('Server error: ' + text.substring(0, 200) + '...');
+            }
+        })
+        .catch(error => {
+            console.error('Upload error:', error);
+            alert('Gagal mengupload video. Silakan coba lagi.');
+        });
+    }
+    
+    function addDeleteButtonsToExistingVideos() {
+        // Find all videos without wrapper
+        const videos = $('.note-editable video').not('.video-wrapper video');
+        
+        videos.each(function() {
+            const $video = $(this);
+            const videoSrc = $video.find('source').attr('src') || $video.attr('src');
+            const videoType = $video.find('source').attr('type') || 'video/mp4';
+            
+            // Wrap video and add delete button
+            const wrapper = $('<div class="video-wrapper" style="position: relative; display: inline-block; max-width: 600px;">');
+            const deleteBtn = $('<button type="button" class="btn btn-danger btn-sm video-delete-btn" style="position: absolute; top: 5px; right: 5px; z-index: 1000; display: none;" onclick="this.parentElement.remove()"><i class="bx bx-trash"></i></button>');
+            
+            $video.wrap(wrapper);
+            $video.parent().prepend(deleteBtn);
+        });
+        
+        // Add hover effect to all video wrappers
+        $('.video-wrapper').hover(
+            function() { $(this).find('.video-delete-btn').show(); },
+            function() { $(this).find('.video-delete-btn').hide(); }
+        );
+    }
+    
     // Handle remove attachment
     document.querySelectorAll('.remove-attachment').forEach(button => {
         button.addEventListener('click', function() {

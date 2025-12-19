@@ -4,12 +4,29 @@
 
 @section('content')
 <div class="container-xxl flex-grow-1 container-p-y">
-  <div class="d-flex justify-content-between align-items-center mb-3">
-    <h4 class="mb-0">{{ $user ? 'Edit' : 'Create' }} User</h4>
-    <a href="{{ route('admin.users.index') }}" class="btn btn-secondary">Back</a>
+  <!-- Header Section -->
+  <div class="card page-header-card mb-4">
+    <div class="card-body">
+      <div class="d-flex justify-content-between align-items-center flex-wrap">
+        <div>
+          <h4 class="mb-1">
+            <i class="bx bx-{{ $user ? 'edit' : 'plus' }} me-2 text-primary"></i>{{ $user ? 'Edit' : 'Tambah' }} Pengguna
+          </h4>
+          <p class="text-muted mb-0">{{ $user ? 'Ubah informasi pengguna' : 'Buat pengguna baru untuk sistem' }}</p>
+        </div>
+        <a href="{{ route('admin.users.index') }}" class="btn btn-secondary btn-modern mt-2 mt-md-0">
+          <i class="bx bx-arrow-back me-1"></i>Kembali
+        </a>
+      </div>
+    </div>
   </div>
 
-  <div class="card">
+  <div class="card form-card">
+    <div class="card-header">
+      <h5 class="card-title mb-0 fw-bold">
+        <i class="bx bx-info-circle me-2"></i>Informasi Pengguna
+      </h5>
+    </div>
     <div class="card-body">
       <form action="{{ $user ? route('admin.users.update', $user) : route('admin.users.store') }}" method="POST">
         @csrf

@@ -12,6 +12,7 @@ class Store extends Model
 
     protected $fillable = [
         'name',
+        'short_name',
         'code',
         'domain',
         'owner_name',
@@ -25,6 +26,8 @@ class Store extends Model
         'loc_kabkota_id',
         'loc_kecamatan_id',
         'loc_desa_id',
+        'latitude',
+        'longitude',
         'tax_id',
         'business_license',
         'logo_url',
@@ -36,6 +39,8 @@ class Store extends Model
     protected $casts = [
         'is_active' => 'boolean',
         'settings' => 'array',
+        'latitude' => 'decimal:8',
+        'longitude' => 'decimal:8',
     ];
 
     public function outlets()
@@ -136,6 +141,7 @@ class Store extends Model
     {
         return $query->where(function($q) use ($search) {
             $q->where('name', 'like', "%{$search}%")
+              ->orWhere('short_name', 'like', "%{$search}%")
               ->orWhere('code', 'like', "%{$search}%")
               ->orWhere('owner_name', 'like', "%{$search}%")
               ->orWhere('email', 'like', "%{$search}%")

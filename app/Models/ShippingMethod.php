@@ -16,13 +16,19 @@ class ShippingMethod extends Model
         'logo_url',
         'is_active',
         'service_areas',
-        'max_distance_km'
+        'max_distance_km',
+        'price_per_km',
+        'is_distance_based',
+        'min_cost'
     ];
 
     protected $casts = [
         'is_active' => 'boolean',
         'service_areas' => 'array',
-        'max_distance_km' => 'integer'
+        'max_distance_km' => 'integer',
+        'price_per_km' => 'decimal:0',
+        'is_distance_based' => 'boolean',
+        'min_cost' => 'decimal:0'
     ];
 
     public function costs()

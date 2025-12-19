@@ -41,10 +41,10 @@
 
     @if($hasChildren)
         @if(!$dropdown)
-            <div class="nav-item dropdown d-flex align-items-center">
+            <div class="nav-item dropdown d-flex align-items-center" style="position: relative; z-index: 10000 !important; overflow: visible !important;">
                 <a href="{{ $url }}" class="nav-link pe-1 {{ ($isActive || $childActive) ? 'active' : '' }}">{{ $link->label }}</a>
                 <a href="#" class="nav-link dropdown-toggle p-0 ms-0" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Toggle dropdown"></a>
-                <div class="dropdown-menu rounded-0 m-0">
+                <div class="dropdown-menu rounded-0 m-0" style="z-index: 10000 !important; overflow: visible !important;">
                     @include('partials.nav-items', ['items' => $link->children, 'dropdown' => true])
                 </div>
             </div>

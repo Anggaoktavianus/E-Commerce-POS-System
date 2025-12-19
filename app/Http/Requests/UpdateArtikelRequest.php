@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class UpdateArtikelRequest extends FormRequest
 {
@@ -13,11 +14,35 @@ class UpdateArtikelRequest extends FormRequest
 
     public function rules(): array
     {
+        // Get artikel from route - handle both model binding and ID
         $artikel = $this->route('artikel');
         
+        // Get artikel ID - handle both object (model binding) and ID cases
+        if (is_object($artikel) && isset($artikel->id)) {
+            $artikelId = $artikel->id;
+        } elseif (is_numeric($artikel)) {
+            $artikelId = $artikel;
+        } else {
+            // Fallback: try to get from route parameter directly
+            $artikelId = $this->route()->parameter('artikel');
+            if (is_object($artikelId)) {
+                $artikelId = $artikelId->id;
+            }
+        }
+        
         return [
-            'judul' => 'required|string|max:255|unique:artikels,judul,' . $artikel->id,
-            'slug' => 'nullable|string|max:255|unique:artikels,slug,' . $artikel->id,
+            'judul' => [
+                'required',
+                'string',
+                'max:255',
+                Rule::unique('artikels', 'judul')->ignore($artikelId)
+            ],
+            'slug' => [
+                'nullable',
+                'string',
+                'max:255',
+                Rule::unique('artikels', 'slug')->ignore($artikelId)
+            ],
             'konten' => 'required|string',
             'gambar_utama' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'gambar_thumbnail' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:512',

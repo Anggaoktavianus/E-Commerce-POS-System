@@ -5,72 +5,80 @@
 @section('content')
 <div class="container-xxl flex-grow-1 container-p-y">
   <!-- Header Section -->
-  <div class="card mb-4">
+  <div class="card page-header-card mb-4">
     <div class="card-body">
-      <div class="d-flex justify-content-between align-items-center">
+      <div class="d-flex justify-content-between align-items-center flex-wrap">
         <div>
           <h4 class="mb-1">
-            <i class="bx bxl-linkedin me-2"></i>Kelola Media Sosial
+            <i class="bx bxl-linkedin me-2 text-primary"></i>Kelola Media Sosial
           </h4>
           <p class="text-muted mb-0">Buat dan kelola link media sosial untuk koneksi dengan pelanggan</p>
         </div>
-        <a href="{{ route('admin.social_links.create') }}" class="btn btn-primary">
-          <i class="bx bx-plus me-1"></i> Tambah Media Sosial
+        <a href="{{ route('admin.social_links.create') }}" class="btn btn-primary btn-modern mt-2 mt-md-0">
+          <i class="bx bx-plus me-1"></i>Tambah Media Sosial
         </a>
       </div>
     </div>
   </div>
 
   <!-- Quick Stats -->
-  <div class="row mb-4">
-    <div class="col-md-3">
-      <div class="card bg-primary text-white">
-        <div class="card-body">
-          <div class="d-flex justify-content-between">
-            <div>
-              <h6 class="card-title">Total Media Sosial</h6>
-              <h3 class="mb-0" id="totalSocialLinks">0</h3>
+  <div class="row g-4 mb-4">
+    <div class="col-6 col-md-3">
+      <div class="card stat-card bg-primary text-white">
+        <div class="card-body p-4">
+          <div class="d-flex justify-content-between align-items-start">
+            <div class="flex-grow-1">
+              <p class="stat-label mb-2">Total Media Sosial</p>
+              <h3 class="stat-value mb-0" id="totalSocialLinks">0</h3>
             </div>
-            <i class="bx bxl-linkedin bx-lg"></i>
+            <div class="stat-icon">
+              <i class="bx bxl-linkedin"></i>
+            </div>
           </div>
         </div>
       </div>
     </div>
-    <div class="col-md-3">
-      <div class="card bg-success text-white">
-        <div class="card-body">
-          <div class="d-flex justify-content-between">
-            <div>
-              <h6 class="card-title">Aktif</h6>
-              <h3 class="mb-0" id="activeSocialLinks">0</h3>
+    <div class="col-6 col-md-3">
+      <div class="card stat-card bg-success text-white">
+        <div class="card-body p-4">
+          <div class="d-flex justify-content-between align-items-start">
+            <div class="flex-grow-1">
+              <p class="stat-label mb-2">Aktif</p>
+              <h3 class="stat-value mb-0" id="activeSocialLinks">0</h3>
             </div>
-            <i class="bx bx-show bx-lg"></i>
+            <div class="stat-icon">
+              <i class="bx bx-show"></i>
+            </div>
           </div>
         </div>
       </div>
     </div>
-    <div class="col-md-3">
-      <div class="card bg-warning text-white">
-        <div class="card-body">
-          <div class="d-flex justify-content-between">
-            <div>
-              <h6 class="card-title">Non-Aktif</h6>
-              <h3 class="mb-0" id="inactiveSocialLinks">0</h3>
+    <div class="col-6 col-md-3">
+      <div class="card stat-card bg-warning text-white">
+        <div class="card-body p-4">
+          <div class="d-flex justify-content-between align-items-start">
+            <div class="flex-grow-1">
+              <p class="stat-label mb-2">Non-Aktif</p>
+              <h3 class="stat-value mb-0" id="inactiveSocialLinks">0</h3>
             </div>
-            <i class="bx bx-hide bx-lg"></i>
+            <div class="stat-icon">
+              <i class="bx bx-hide"></i>
+            </div>
           </div>
         </div>
       </div>
     </div>
-    <div class="col-md-3">
-      <div class="card bg-info text-white">
-        <div class="card-body">
-          <div class="d-flex justify-content-between">
-            <div>
-              <h6 class="card-title">Platform Types</h6>
-              <h3 class="mb-0" id="platformTypes">0</h3>
+    <div class="col-6 col-md-3">
+      <div class="card stat-card bg-info text-white">
+        <div class="card-body p-4">
+          <div class="d-flex justify-content-between align-items-start">
+            <div class="flex-grow-1">
+              <p class="stat-label mb-2">Platform Types</p>
+              <h3 class="stat-value mb-0" id="platformTypes">0</h3>
             </div>
-            <i class="bx bx-category bx-lg"></i>
+            <div class="stat-icon">
+              <i class="bx bx-category"></i>
+            </div>
           </div>
         </div>
       </div>
@@ -99,14 +107,14 @@
   </div>
 
   <!-- Social Links Table -->
-  <div class="card">
+  <div class="card card-modern">
     <div class="card-header">
-      <h5 class="mb-0">
+      <h5 class="card-title mb-0 fw-bold">
         <i class="bx bx-list-ul me-2"></i>Daftar Media Sosial
       </h5>
     </div>
     <div class="card-body table-responsive">
-      <table class="table table-striped table-hover" id="social-links-table">
+      <table class="table table-striped table-hover table-modern" id="social-links-table">
         <thead>
           <tr>
             <th width="5%">No</th>

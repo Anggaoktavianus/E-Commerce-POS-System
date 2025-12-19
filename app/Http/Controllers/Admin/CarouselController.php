@@ -85,6 +85,15 @@ class CarouselController extends Controller
                 Cache::forget('home.slides.home_hero');
             }
         }
+        
+        // Return JSON response for AJAX requests
+        if (request()->ajax() || request()->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Carousel deleted successfully'
+            ]);
+        }
+        
         return redirect()->route('admin.carousels.index')->with('success','Carousel deleted');
     }
 }

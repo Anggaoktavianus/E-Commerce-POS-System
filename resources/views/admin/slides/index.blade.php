@@ -5,21 +5,21 @@
 @section('content')
 <div class="container-xxl flex-grow-1 container-p-y">
   <!-- Header Section -->
-  <div class="card mb-4">
+  <div class="card page-header-card mb-4">
     <div class="card-body">
-      <div class="d-flex justify-content-between align-items-center">
+      <div class="d-flex justify-content-between align-items-center flex-wrap">
         <div>
           <h4 class="mb-1">
-            <i class="bx bx-image me-2"></i>Slide Carousel: {{ $parent->name }}
+            <i class="bx bx-image me-2 text-primary"></i>Slide Carousel: {{ $parent->name }}
           </h4>
           <p class="text-muted mb-0">Kelola slide untuk carousel "{{ $parent->name }}"</p>
         </div>
-        <div>
-          <a href="{{ route('admin.carousels.index') }}" class="btn btn-secondary me-2">
+        <div class="d-flex gap-2 mt-2 mt-md-0">
+          <a href="{{ route('admin.carousels.index') }}" class="btn btn-secondary btn-modern">
             <i class="bx bx-arrow-back me-1"></i>Kembali ke Carousel
           </a>
-          <a href="{{ route('admin.slides.create', $parent->id) }}" class="btn btn-primary">
-            <i class="bx bx-plus me-1"></i> Tambah Slide
+          <a href="{{ route('admin.slides.create', $parent->id) }}" class="btn btn-primary btn-modern">
+            <i class="bx bx-plus me-1"></i>Tambah Slide
           </a>
         </div>
       </div>
@@ -27,55 +27,61 @@
   </div>
 
   <!-- Quick Stats -->
-  <div class="row mb-4">
-    <div class="col-md-3">
-      <div class="card bg-primary text-white">
-        <div class="card-body">
-          <div class="d-flex justify-content-between">
-            <div>
-              <h6 class="card-title">Total Slide</h6>
-              <h3 class="mb-0" id="totalSlides">0</h3>
+  <div class="row g-4 mb-4">
+    <div class="col-6 col-md-3">
+      <div class="card stat-card bg-primary text-white">
+        <div class="card-body p-4">
+          <div class="d-flex justify-content-between align-items-start">
+            <div class="flex-grow-1">
+              <p class="stat-label mb-2">Total Slide</p>
+              <h3 class="stat-value mb-0" id="totalSlides">0</h3>
             </div>
-            <i class="bx bx-image bx-lg"></i>
+            <div class="stat-icon">
+              <i class="bx bx-image"></i>
+            </div>
           </div>
         </div>
       </div>
     </div>
-    <div class="col-md-3">
-      <div class="card bg-success text-white">
-        <div class="card-body">
-          <div class="d-flex justify-content-between">
-            <div>
-              <h6 class="card-title">Aktif</h6>
-              <h3 class="mb-0" id="activeSlides">0</h3>
+    <div class="col-6 col-md-3">
+      <div class="card stat-card bg-success text-white">
+        <div class="card-body p-4">
+          <div class="d-flex justify-content-between align-items-start">
+            <div class="flex-grow-1">
+              <p class="stat-label mb-2">Aktif</p>
+              <h3 class="stat-value mb-0" id="activeSlides">0</h3>
             </div>
             <i class="bx bx-show bx-lg"></i>
           </div>
         </div>
       </div>
     </div>
-    <div class="col-md-3">
-      <div class="card bg-warning text-white">
-        <div class="card-body">
-          <div class="d-flex justify-content-between">
-            <div>
-              <h6 class="card-title">Non-Aktif</h6>
-              <h3 class="mb-0" id="inactiveSlides">0</h3>
+    <div class="col-6 col-md-3">
+      <div class="card stat-card bg-warning text-white">
+        <div class="card-body p-4">
+          <div class="d-flex justify-content-between align-items-start">
+            <div class="flex-grow-1">
+              <p class="stat-label mb-2">Non-Aktif</p>
+              <h3 class="stat-value mb-0" id="inactiveSlides">0</h3>
             </div>
-            <i class="bx bx-hide bx-lg"></i>
+            <div class="stat-icon">
+              <i class="bx bx-hide"></i>
+            </div>
           </div>
         </div>
       </div>
     </div>
-    <div class="col-md-3">
-      <div class="card bg-info text-white">
-        <div class="card-body">
-          <div class="d-flex justify-content-between">
-            <div>
-              <h6 class="card-title">Carousel Key</h6>
-              <h3 class="mb-0">{{ $parent->key }}</h3>
+    <div class="col-6 col-md-3">
+      <div class="card stat-card bg-info text-white">
+        <div class="card-body p-4">
+          <div class="d-flex justify-content-between align-items-start">
+            <div class="flex-grow-1">
+              <p class="stat-label mb-2">Carousel Key</p>
+              <h3 class="stat-value mb-0" style="font-size: 1.5rem;">{{ $parent->key }}</h3>
             </div>
-            <i class="bx bx-key bx-lg"></i>
+            <div class="stat-icon">
+              <i class="bx bx-key"></i>
+            </div>
           </div>
         </div>
       </div>

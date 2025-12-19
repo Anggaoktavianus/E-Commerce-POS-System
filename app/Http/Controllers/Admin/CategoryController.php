@@ -74,6 +74,15 @@ class CategoryController extends Controller
             DB::table('categories')->where('id',$id)->delete();
             $this->flushProductsCache();
         }
+        
+        // Return JSON response for AJAX requests
+        if (request()->ajax() || request()->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Category deleted successfully'
+            ]);
+        }
+        
         return redirect()->route('admin.categories.index')->with('success','Category deleted');
     }
 

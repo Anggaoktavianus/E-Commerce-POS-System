@@ -35,7 +35,7 @@
                                 </div>
                             </div>
                         </div>
-                        
+
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="mb-3">
@@ -64,7 +64,7 @@
                                 </div>
                             </div>
                         </div>
-                        
+
                         <div class="mb-3">
                             <label for="logo_url" class="form-label">URL Logo</label>
                             <input type="url" class="form-control" id="logo_url" name="logo_url" value="{{ old('logo_url', $method->logo_url) }}" placeholder="https://example.com/logo.png">
@@ -73,7 +73,7 @@
                                 <div class="text-danger small">{{ $message }}</div>
                             @enderror
                         </div>
-                        
+
                         <div class="mb-3">
                             <label class="form-label">Area Layanan</label>
                             <div id="serviceAreasContainer">
@@ -105,7 +105,7 @@
                             </button>
                             <small class="text-muted d-block">Kota-kota yang dilayani oleh metode ini</small>
                         </div>
-                        
+
                         <div class="mb-3">
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox" id="is_active" name="is_active" value="1" {{ old('is_active', $method->is_active) ? 'checked' : '' }}>
@@ -114,9 +114,9 @@
                                 </label>
                             </div>
                         </div>
-                        
+
                         <div class="d-flex justify-content-between">
-                            <a href="{{ route('admin.admin.shipping.methods') }}" class="btn btn-secondary">
+                            <a href="{{ route('admin.shipping.methods') }}" class="btn btn-secondary">
                                 <i class="bx bx-arrow-back me-1"></i>Kembali
                             </a>
                             <button type="submit" class="btn btn-primary">

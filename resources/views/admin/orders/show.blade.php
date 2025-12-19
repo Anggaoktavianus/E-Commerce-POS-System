@@ -5,34 +5,34 @@
 @section('content')
 <div class="container-xxl flex-grow-1 container-p-y">
   <!-- Header Section -->
-  <div class="card mb-4">
+  <div class="card page-header-card mb-4">
     <div class="card-body">
-      <div class="d-flex justify-content-between align-items-center">
+      <div class="d-flex justify-content-between align-items-center flex-wrap">
         <div>
           <h4 class="mb-1">
-            <i class="bx bx-shopping-bag me-2"></i>Detail Pesanan #{{ $order->order_number }}
+            <i class="bx bx-shopping-bag me-2 text-primary"></i>Detail Pesanan #{{ $order->order_number }}
           </h4>
           <p class="text-muted mb-0">
-            <span class="badge bg-{{ $order->status_color }}">{{ $order->formatted_status }}</span>
-            <span class="ms-2">Tanggal: {{ $order->created_at->format('d M Y H:i') }}</span>
+            <span class="badge badge-modern bg-{{ $order->status_color }}">{{ $order->formatted_status }}</span>
+            <span class="ms-2"><i class="bx bx-calendar me-1"></i>{{ $order->created_at->format('d M Y H:i') }}</span>
           </p>
         </div>
-        <div>
-          <a href="{{ route('admin.orders.index') }}" class="btn btn-outline-secondary">
-            <i class="bx bx-arrow-back me-1"></i> Kembali
+        <div class="mt-2 mt-md-0">
+          <a href="{{ route('admin.orders.index') }}" class="btn btn-secondary btn-modern">
+            <i class="bx bx-arrow-back me-1"></i>Kembali
           </a>
         </div>
       </div>
     </div>
   </div>
 
-  <div class="row">
+  <div class="row g-4">
     <!-- Order Details -->
     <div class="col-md-8">
       <!-- Customer Information -->
-      <div class="card mb-4">
+      <div class="card card-modern mb-4">
         <div class="card-header">
-          <h5 class="mb-0">
+          <h5 class="mb-0 fw-bold">
             <i class="bx bx-user me-2"></i>Informasi Pelanggan
           </h5>
         </div>
@@ -40,7 +40,7 @@
           <div class="row">
             <div class="col-md-6">
               <h6>Nama Lengkap</h6>
-              <p class="text-muted">{{ $order->shipping_address['first_name'] }} {{ $order->shipping_address['last_name'] }}</p>
+              <p class="text-muted">{{ $order->shipping_address['first_name'] }} </p>
               
               <h6>Email</h6>
               <p class="text-muted">{{ $order->user?->email ?? 'Guest Customer' }}</p>
@@ -61,15 +61,15 @@
       </div>
 
       <!-- Order Items -->
-      <div class="card mb-4">
+      <div class="card card-modern mb-4">
         <div class="card-header">
-          <h5 class="mb-0">
+          <h5 class="mb-0 fw-bold">
             <i class="bx bx-package me-2"></i>Produk yang Dipesan
           </h5>
         </div>
         <div class="card-body">
           <div class="table-responsive">
-            <table class="table table-striped">
+            <table class="table table-striped table-modern">
               <thead>
                 <tr>
                   <th>Produk</th>
@@ -126,9 +126,9 @@
     <!-- Payment Information -->
     <div class="col-md-4">
       <!-- Payment Status -->
-      <div class="card mb-4">
+      <div class="card card-modern mb-4">
         <div class="card-header">
-          <h5 class="mb-0">
+          <h5 class="mb-0 fw-bold">
             <i class="bx bx-credit-card me-2"></i>Status Pembayaran
           </h5>
         </div>
@@ -162,9 +162,9 @@
 
       <!-- Payment Transactions -->
       @if($order->paymentTransactions->count() > 0)
-      <div class="card mb-4">
+      <div class="card card-modern mb-4">
         <div class="card-header">
-          <h5 class="mb-0">
+          <h5 class="mb-0 fw-bold">
             <i class="bx bx-history me-2"></i>Riwayat Transaksi
           </h5>
         </div>
@@ -191,9 +191,9 @@
       @endif
 
       <!-- Actions -->
-      <div class="card">
+      <div class="card card-modern">
         <div class="card-header">
-          <h5 class="mb-0">
+          <h5 class="mb-0 fw-bold">
             <i class="bx bx-cog me-2"></i>Aksi
           </h5>
         </div>

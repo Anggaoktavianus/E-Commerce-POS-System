@@ -84,6 +84,15 @@ class TestimonialController extends Controller
             DB::table('testimonials')->where('id',$id)->delete();
             Cache::forget('home.testimonials');
         }
+        
+        // Return JSON response for AJAX requests
+        if (request()->ajax() || request()->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Testimonial deleted successfully'
+            ]);
+        }
+        
         return redirect()->route('admin.testimonials.index')->with('success','Testimonial deleted');
     }
 }

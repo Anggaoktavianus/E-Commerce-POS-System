@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Services\SmartShippingService;
+use App\Models\Cart;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ShippingController extends Controller
 {
@@ -15,11 +17,42 @@ class ShippingController extends Controller
     }
     
     /**
+     * Get cart data from database or session
+     */
+    private function getCart(Request $request): array
+    {
+        $user = Auth::user();
+        $sessionId = $request->session()->getId();
+        
+        // If user is logged in, get cart from database
+        if ($user) {
+            $cart = Cart::getOrCreateCart($user->id, null);
+            if ($cart && $cart->items->count() > 0) {
+                return $cart->toSessionArray();
+            }
+        }
+        
+        // Fallback to session cart
+        $sessionCart = $request->session()->get('cart', []);
+        
+        // If user is logged in and has session cart, merge it
+        if ($user && !empty($sessionCart)) {
+            $cart = Cart::getOrCreateCart($user->id, null);
+            $cart->mergeWithSessionCart($sessionCart);
+            // Clear session cart after merge
+            $request->session()->forget('cart');
+            return $cart->toSessionArray();
+        }
+        
+        return $sessionCart;
+    }
+    
+    /**
      * Get available shipping methods for cart
      */
     public function getAvailableMethods(Request $request)
     {
-        $cart = session('cart', []);
+        $cart = $this->getCart($request);
         $destination = $request->destination_city;
         $origin = $request->origin_city ?? 'Jakarta';
         
@@ -37,7 +70,7 @@ class ShippingController extends Controller
             if ($product) {
                 $cartItems[] = [
                     'product' => $product,
-                    'quantity' => $item['quantity']
+                    'quantity' => $item['qty'] ?? $item['quantity'] ?? 1
                 ];
             }
         }

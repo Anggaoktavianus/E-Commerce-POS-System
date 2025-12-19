@@ -85,8 +85,11 @@
                                         <p class="card-text small text-muted">{{ Str::limit($product->description, 80) }}</p>
                                         <div class="d-flex justify-content-between align-items-center">
                                             <span class="fw-bold text-primary">Rp {{ number_format($product->price, 0, ',', '.') }}</span>
-                                            @if($product->stock > 0)
-                                                <span class="badge bg-success">Stok: {{ $product->stock }}</span>
+                                            @php
+                                                $stockQty = $product->stock_qty ?? $product->stock ?? 0;
+                                            @endphp
+                                            @if($stockQty > 0)
+                                                <span class="badge bg-success">Stok: {{ $stockQty }}</span>
                                             @else
                                                 <span class="badge bg-danger">Habis</span>
                                             @endif
@@ -97,7 +100,15 @@
                                             <a href="{{ route('shop.detail', $product->slug) }}" class="btn btn-primary btn-sm">
                                                 <i class="bx bx-search"></i> Detail
                                             </a>
-                                            @if($product->stock > 0)
+                                            @php
+                                                $stockQty = $product->stock_qty ?? $product->stock ?? 0;
+                                                $isOutOfStock = $stockQty <= 0;
+                                            @endphp
+                                            @if($isOutOfStock)
+                                                <button class="btn btn-secondary btn-sm" disabled>
+                                                    <i class="bx bx-ban"></i> Stok Habis
+                                                </button>
+                                            @else
                                                 <button class="btn btn-success btn-sm" onclick="addToCart({{ $product->id }})">
                                                     <i class="bx bx-cart"></i> +Keranjang
                                                 </button>

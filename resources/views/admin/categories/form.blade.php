@@ -4,12 +4,29 @@
 
 @section('content')
 <div class="container-xxl flex-grow-1 container-p-y">
-  <div class="d-flex justify-content-between align-items-center mb-3">
-    <h4 class="mb-0">{{ $category ? 'Edit' : 'Create' }} Category</h4>
-    <a href="{{ route('admin.categories.index') }}" class="btn btn-secondary">Back</a>
+  <!-- Header Section -->
+  <div class="card page-header-card mb-4">
+    <div class="card-body">
+      <div class="d-flex justify-content-between align-items-center flex-wrap">
+        <div>
+          <h4 class="mb-1">
+            <i class="bx bx-{{ $category ? 'edit' : 'plus' }} me-2 text-primary"></i>{{ $category ? 'Edit' : 'Tambah' }} Kategori
+          </h4>
+          <p class="text-muted mb-0">{{ $category ? 'Ubah informasi kategori' : 'Buat kategori baru untuk produk' }}</p>
+        </div>
+        <a href="{{ route('admin.categories.index') }}" class="btn btn-secondary btn-modern mt-2 mt-md-0">
+          <i class="bx bx-arrow-back me-1"></i>Kembali
+        </a>
+      </div>
+    </div>
   </div>
 
-  <div class="card">
+  <div class="card form-card">
+    <div class="card-header">
+      <h5 class="card-title mb-0 fw-bold text-white">
+        <i class="bx bx-info-circle me-2"></i>Informasi Kategori
+      </h5>
+    </div>
     <div class="card-body">
       <form action="{{ $category ? route('admin.categories.update', $category->id) : route('admin.categories.store') }}" method="POST">
         @csrf

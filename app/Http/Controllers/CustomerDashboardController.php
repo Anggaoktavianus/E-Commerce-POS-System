@@ -33,14 +33,22 @@ class CustomerDashboardController extends Controller
         $monthlySpent = $currentMonthOrders->sum('total_amount');
         
         // Order status breakdown (all orders for this user)
+        // Note: Based on actual enum values in orders table: pending, paid, failed, cancelled, expired
         $orderStats = [
             'pending' => Order::where('user_id', $user->id)->where('status', 'pending')->count(),
             'paid' => Order::where('user_id', $user->id)->where('status', 'paid')->count(),
-            'processing' => Order::where('user_id', $user->id)->where('status', 'processing')->count(),
-            'shipped' => Order::where('user_id', $user->id)->where('status', 'shipped')->count(),
-            'delivered' => Order::where('user_id', $user->id)->where('status', 'delivered')->count(),
+            'failed' => Order::where('user_id', $user->id)->where('status', 'failed')->count(),
             'cancelled' => Order::where('user_id', $user->id)->where('status', 'cancelled')->count(),
+            'expired' => Order::where('user_id', $user->id)->where('status', 'expired')->count(),
         ];
+        
+        // Total orders
+        $totalOrders = Order::where('user_id', $user->id)->count();
+        
+        // Total spent (all time)
+        $totalSpent = Order::where('user_id', $user->id)
+            ->where('status', 'paid')
+            ->sum('total_amount');
         
         // Recent orders (all orders for this user)
         $recentOrders = Order::where('user_id', $user->id)
@@ -52,8 +60,16 @@ class CustomerDashboardController extends Controller
         // Debug logging
         \Log::info('Customer Dashboard - Recent orders count: ' . $recentOrders->count());
         
-        // Wishlist items count
-        $wishlistCount = Wishlist::where('user_id', $user->id)->count();
+        // Wishlist items count (if wishlist table exists)
+        $wishlistCount = 0;
+        if (DB::getSchemaBuilder()->hasTable('wishlists')) {
+            $wishlistCount = DB::table('wishlists')->where('user_id', $user->id)->count();
+        }
+        
+        // Get user addresses count
+        $addressCount = \App\Models\UserAddress::where('user_id', $user->id)
+            ->where('is_active', true)
+            ->count();
         
         // Monthly spending data for chart (last 6 months)
         $monthlySpending = Order::where('user_id', $user->id)
@@ -82,7 +98,10 @@ class CustomerDashboardController extends Controller
             'recentOrders',
             'wishlistCount',
             'monthlySpending',
-            'favoriteProducts'
+            'favoriteProducts',
+            'addressCount',
+            'totalOrders',
+            'totalSpent'
         ));
     }
     
@@ -160,15 +179,15 @@ class CustomerDashboardController extends Controller
         $buttons .= '<i class="bx bx-show"></i>';
         $buttons .= '</a>';
         
-        // Track button for paid/processing/shipped orders
-        if (in_array($order->status, ['paid', 'processing', 'shipped'])) {
+        // Track button for paid orders
+        if (in_array($order->status, ['paid'])) {
             $buttons .= '<a href="#" class="btn btn-action btn-outline-success" data-bs-toggle="tooltip" title="Lacak Pesanan" onclick="trackOrder(\'' . $encryptedOrderNumber . '\')">';
             $buttons .= '<i class="bx bx-map"></i>';
             $buttons .= '</a>';
         }
         
-        // Download invoice for paid and completed orders
-        if (in_array($order->status, ['paid', 'delivered', 'completed'])) {
+        // Download invoice for paid orders
+        if (in_array($order->status, ['paid'])) {
             $buttons .= '<a href="#" class="btn btn-action btn-outline-info" data-bs-toggle="tooltip" title="Download Invoice" onclick="downloadInvoice(\'' . $encryptedOrderNumber . '\')">';
             $buttons .= '<i class="bx bx-download"></i>';
             $buttons .= '</a>';
@@ -181,8 +200,8 @@ class CustomerDashboardController extends Controller
             $buttons .= '</a>';
         }
         
-        // Reorder button for delivered/cancelled orders
-        if (in_array($order->status, ['delivered', 'cancelled'])) {
+        // Reorder button for cancelled/expired orders
+        if (in_array($order->status, ['cancelled', 'expired'])) {
             $buttons .= '<a href="#" class="btn btn-action btn-outline-secondary" data-bs-toggle="tooltip" title="Pesan Lagi" onclick="reorderItems(\'' . $encryptedOrderNumber . '\')">';
             $buttons .= '<i class="bx bx-refresh"></i>';
             $buttons .= '</a>';

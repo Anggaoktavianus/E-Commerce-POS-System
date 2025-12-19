@@ -5,72 +5,80 @@
 @section('content')
 <div class="container-xxl flex-grow-1 container-p-y">
   <!-- Header Section -->
-  <div class="card mb-4">
+  <div class="card page-header-card mb-4">
     <div class="card-body">
-      <div class="d-flex justify-content-between align-items-center">
+      <div class="d-flex justify-content-between align-items-center flex-wrap">
         <div>
           <h4 class="mb-1">
-            <i class="bx bx-file me-2"></i>Kelola Artikel
+            <i class="bx bx-file me-2 text-primary"></i>Kelola Artikel
           </h4>
           <p class="text-muted mb-0">Buat dan kelola artikel untuk website</p>
         </div>
-        <a href="{{ route('admin.artikel.create') }}" class="btn btn-primary">
-          <i class="bx bx-plus me-1"></i> Tambah Artikel
+        <a href="{{ route('admin.artikel.create') }}" class="btn btn-primary btn-modern mt-2 mt-md-0">
+          <i class="bx bx-plus me-1"></i>Tambah Artikel
         </a>
       </div>
     </div>
   </div>
 
   <!-- Quick Stats -->
-  <div class="row mb-4">
-    <div class="col-md-3">
-      <div class="card bg-primary text-white">
-        <div class="card-body">
-          <div class="d-flex justify-content-between">
-            <div>
-              <h6 class="card-title">Total Artikel</h6>
-              <h3 class="mb-0" id="totalArtikel">0</h3>
+  <div class="row g-4 mb-4">
+    <div class="col-6 col-md-3">
+      <div class="card stat-card bg-primary text-white">
+        <div class="card-body p-4">
+          <div class="d-flex justify-content-between align-items-start">
+            <div class="flex-grow-1">
+              <p class="stat-label mb-2">Total Artikel</p>
+              <h3 class="stat-value mb-0 text-white" id="totalArtikel">0</h3>
             </div>
-            <i class="bx bx-file bx-lg"></i>
+            <div class="stat-icon">
+              <i class="bx bx-file"></i>
+            </div>
           </div>
         </div>
       </div>
     </div>
-    <div class="col-md-3">
-      <div class="card bg-success text-white">
-        <div class="card-body">
-          <div class="d-flex justify-content-between">
-            <div>
-              <h6 class="card-title">Published</h6>
-              <h3 class="mb-0" id="publishedArtikel">0</h3>
+    <div class="col-6 col-md-3">
+      <div class="card stat-card bg-success text-white">
+        <div class="card-body p-4">
+          <div class="d-flex justify-content-between align-items-start">
+            <div class="flex-grow-1">
+              <p class="stat-label mb-2">Published</p>
+              <h3 class="stat-value mb-0 text-white" id="publishedArtikel">0</h3>
             </div>
-            <i class="bx bx-show bx-lg"></i>
+            <div class="stat-icon">
+              <i class="bx bx-show"></i>
+            </div>
           </div>
         </div>
       </div>
     </div>
-    <div class="col-md-3">
-      <div class="card bg-warning text-white">
-        <div class="card-body">
-          <div class="d-flex justify-content-between">
-            <div>
-              <h6 class="card-title">Draft</h6>
-              <h3 class="mb-0" id="draftArtikel">0</h3>
+    <div class="col-6 col-md-3">
+      <div class="card stat-card bg-warning text-white">
+        <div class="card-body p-4">
+          <div class="d-flex justify-content-between align-items-start">
+            <div class="flex-grow-1">
+              <p class="stat-label mb-2">Draft</p>
+              <h3 class="stat-value mb-0 text-white" id="draftArtikel">0</h3>
             </div>
-            <i class="bx bx-edit bx-lg"></i>
+            <div class="stat-icon">
+              <i class="bx bx-edit"></i>
+            </div>
           </div>
         </div>
       </div>
     </div>
-    <div class="col-md-3">
-      <div class="card bg-info text-white">
-        <div class="card-body">
-          <div class="d-flex justify-content-between">
-            <div>
-              <h6 class="card-title">Total Views</h6>
-              <h3 class="mb-0" id="totalViews">0</h3>
+    <div class="col-6 col-md-3">
+      <div class="card stat-card bg-info text-white">
+        <div class="card-body p-4">
+          <div class="d-flex justify-content-between align-items-start">
+            <div class="flex-grow-1">
+              <p class="stat-label mb-2">Total Views</p>
+              <h3 class="stat-value mb-0 text-white" id="totalViews">0</h3>
             </div>
-            <i class="bx bx-show-alt bx-lg"></i>
+            <div class="stat-icon">
+              <i class="bx bx-show-alt"></i>
+            </div>
           </div>
         </div>
       </div>
@@ -120,7 +128,7 @@
       </h5>
     </div>
     <div class="card-body table-responsive">
-      <table class="table table-striped table-hover" id="artikel-table">
+      <table class="table table-striped table-hover" id="artikel-table" width="100%">
         <thead>
           <tr>
             <th width="5%">No</th>
@@ -129,8 +137,8 @@
             <th width="15%">Kategori</th>
             <th width="10%">Status</th>
             <th width="10%">Author</th>
-            <th width="10%">Tanggal</th>
-            <th width="10%">Aksi</th>
+            {{-- <th width="10%">Tanggal</th> --}}
+            <th width="20%">Aksi</th>
           </tr>
         </thead>
       </table>
@@ -154,7 +162,7 @@
             <li>Filter berdasarkan kategori artikel</li>
             <li>Pencarian bersifat real-time</li>
           </ul>
-          
+
           <h6><i class="bx bx-edit text-success me-2"></i>Status Artikel</h6>
           <ul class="mb-3">
             <li><span class="badge bg-secondary">Draft</span> - Artikel masih dalam proses penulisan</li>
@@ -172,7 +180,7 @@
             <li>Upload gambar utama dan thumbnail (opsional)</li>
             <li>Set meta tags untuk SEO</li>
           </ul>
-          
+
           <h6><i class="bx bx-cog text-warning me-2"></i>Fitur Tersedia</h6>
           <ul class="mb-3">
             <li><strong>Rich Content:</strong> Support HTML dan media</li>
@@ -219,7 +227,6 @@
                 { data: 'kategori', name: 'kategori', orderable: false, searchable: false },
                 { data: 'status', name: 'status', orderable: false, searchable: false },
                 { data: 'user.name', name: 'user.name', orderable: false, searchable: false },
-                { data: 'created_at', name: 'created_at', orderable: false, searchable: false },
                 { data: 'actions', name: 'actions', orderable: false, searchable: false, className: 'text-center' }
             ],
             language: {
@@ -241,7 +248,7 @@
             initComplete: function() {
                 // Hide default search input since we have custom search
                 $('#artikel-table_filter').hide();
-                
+
                 // Update stats from initial data
                 updateStats();
             }
@@ -297,13 +304,24 @@
                         },
                         success: function(response) {
                             if (response.success) {
-                                Swal.fire(
-                                    'Terhapus!',
-                                    response.message,
-                                    'success'
-                                );
-                                table.ajax.reload();
-                                updateStats();
+                                Swal.fire({
+                                    title: 'Terhapus!',
+                                    text: response.message,
+                                    icon: 'success',
+                                    confirmButtonText: 'OK',
+                                    confirmButtonColor: '#3085d6',
+                                    timer: 1500,
+                                    timerProgressBar: true,
+                                    allowOutsideClick: false
+                                }).then(() => {
+                                    // Redirect ke halaman artikel index
+                                    window.location.href = '{{ route("admin.artikel.index") }}';
+                                });
+                                
+                                // Auto redirect setelah timer selesai
+                                setTimeout(function() {
+                                    window.location.href = '{{ route("admin.artikel.index") }}';
+                                }, 1500);
                             } else {
                                 Swal.fire(
                                     'Error!',
@@ -335,7 +353,7 @@
                     var published = 0;
                     var draft = 0;
                     var totalViews = 0;
-                    
+
                     if (data.data && data.data.length > 0) {
                         data.data.forEach(function(artikel) {
                             if (artikel.status === 'published') {
@@ -348,7 +366,7 @@
                             }
                         });
                     }
-                    
+
                     $('#totalArtikel').text(total);
                     $('#publishedArtikel').text(published);
                     $('#draftArtikel').text(draft);

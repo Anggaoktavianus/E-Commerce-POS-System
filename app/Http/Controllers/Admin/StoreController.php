@@ -49,8 +49,9 @@ class StoreController extends Controller
                 return '<img src="https://via.placeholder.com/40x40/6c757d/ffffff?text=' . substr($store->name, 0, 1) . '" alt="' . $store->name . '" style="width: 40px; height: 40px; object-fit: cover; border-radius: 8px;">';
             })
             ->addColumn('store_info', function($store) {
+                $shortName = $store->short_name ? '<small class="text-muted">(' . e($store->short_name) . ')</small>' : '';
                 return '<div>
-                    <strong>' . e($store->name) . '</strong><br>
+                    <strong>' . e($store->name) . '</strong> ' . $shortName . '<br>
                     <small class="text-muted">Kode: ' . e($store->code) . '</small><br>
                     <small class="text-muted">' . ($store->domain ? e($store->domain) : '-') . '</small>
                 </div>';
@@ -96,13 +97,19 @@ class StoreController extends Controller
             'subtitle' => 'Registrasi toko baru',
         ];
         
-        return view('admin.stores.stores-create', $data);
+        $response = response()->view('admin.stores.stores-create', $data);
+        // Set Permissions-Policy header for geolocation
+        if (!$response->headers->has('Permissions-Policy')) {
+            $response->headers->set('Permissions-Policy', 'geolocation=(self)');
+        }
+        return $response;
     }
 
     public function storesStore(Request $request)
     {
         $request->validate([
             'name' => 'required|string|max:255',
+            'short_name' => 'required|string|max:20',
             'code' => 'required|string|max:50|unique:stores,code',
             'owner_name' => 'required|string|max:255',
             'email' => 'required|email|unique:stores,email',
@@ -115,6 +122,8 @@ class StoreController extends Controller
             'loc_kecamatan_id' => 'required|integer|exists:loc_kecamatans,id',
             'loc_desa_id' => 'required|integer|exists:loc_desas,id',
             'postal_code' => 'required|string|max:10',
+            'latitude' => 'nullable|numeric|between:-90,90',
+            'longitude' => 'nullable|numeric|between:-180,180',
             'tax_id' => 'nullable|string|max:50',
             'business_license' => 'nullable|string|max:100',
             'logo_url' => 'nullable|url',
@@ -123,6 +132,7 @@ class StoreController extends Controller
 
         $store = Store::create([
             'name' => $request->name,
+            'short_name' => $request->short_name,
             'code' => $request->code,
             'owner_name' => $request->owner_name,
             'email' => $request->email,
@@ -135,6 +145,8 @@ class StoreController extends Controller
             'loc_kecamatan_id' => $request->loc_kecamatan_id,
             'loc_desa_id' => $request->loc_desa_id,
             'postal_code' => $request->postal_code,
+            'latitude' => $request->latitude,
+            'longitude' => $request->longitude,
             'tax_id' => $request->tax_id,
             'business_license' => $request->business_license,
             'logo_url' => $request->logo_url,
@@ -171,7 +183,12 @@ class StoreController extends Controller
             'store' => $store,
         ];
         
-        return view('admin.stores.stores-edit', $data);
+        $response = response()->view('admin.stores.stores-edit', $data);
+        // Set Permissions-Policy header for geolocation
+        if (!$response->headers->has('Permissions-Policy')) {
+            $response->headers->set('Permissions-Policy', 'geolocation=(self)');
+        }
+        return $response;
     }
 
     public function storesUpdate(Request $request, $id)
@@ -180,6 +197,7 @@ class StoreController extends Controller
 
         $request->validate([
             'name' => 'required|string|max:255',
+            'short_name' => 'required|string|max:20',
             'code' => 'required|string|max:50|unique:stores,code,' . $id,
             'owner_name' => 'required|string|max:255',
             'email' => 'required|email|unique:stores,email,' . $id,
@@ -192,6 +210,8 @@ class StoreController extends Controller
             'loc_kecamatan_id' => 'required|integer|exists:loc_kecamatans,id',
             'loc_desa_id' => 'required|integer|exists:loc_desas,id',
             'postal_code' => 'required|string|max:10',
+            'latitude' => 'nullable|numeric|between:-90,90',
+            'longitude' => 'nullable|numeric|between:-180,180',
             'tax_id' => 'nullable|string|max:50',
             'business_license' => 'nullable|string|max:100',
             'logo_url' => 'nullable|url',
@@ -200,6 +220,7 @@ class StoreController extends Controller
 
         $store->update([
             'name' => $request->name,
+            'short_name' => $request->short_name,
             'code' => $request->code,
             'owner_name' => $request->owner_name,
             'email' => $request->email,
@@ -212,10 +233,12 @@ class StoreController extends Controller
             'loc_kecamatan_id' => $request->loc_kecamatan_id,
             'loc_desa_id' => $request->loc_desa_id,
             'postal_code' => $request->postal_code,
+            'latitude' => $request->latitude ?: null,
+            'longitude' => $request->longitude ?: null,
             'tax_id' => $request->tax_id,
             'business_license' => $request->business_license,
             'logo_url' => $request->logo_url,
-            'is_active' => $request->is_active ?? true,
+            'is_active' => $request->has('is_active') ? (bool)$request->is_active : true,
         ]);
 
         return redirect()

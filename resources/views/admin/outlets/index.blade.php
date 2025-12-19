@@ -7,45 +7,54 @@
 @endpush
 
 @section('content')
-<div class="container-fluid">
-    <div class="row mb-4">
-        <div class="col-12">
-            <div class="card">
-                <div class="card-header d-flex justify-content-between align-items-center">
-                    <div>
-                        <h5 class="mb-0">{{ $title }}</h5>
-                        <small class="text-muted">{{ $subtitle }}</small>
-                    </div>
-                    <div>
-                        <select id="storeFilter" class="form-select d-inline-block" style="width: 200px;">
-                            <option value="">Semua Toko</option>
-                            @foreach($stores as $store)
-                                <option value="{{ $store->id }}">{{ $store->name }}</option>
-                            @endforeach
-                        </select>
-                        <a href="{{ route('admin.outlets.create') }}" class="btn btn-success ms-2">
-                            <i class="bx bx-plus me-1"></i>Tambah Outlet
-                        </a>
-                    </div>
+<div class="container-xxl flex-grow-1 container-p-y">
+    <!-- Header Section -->
+    <div class="card page-header-card mb-4">
+        <div class="card-body">
+            <div class="d-flex justify-content-between align-items-center flex-wrap">
+                <div>
+                    <h4 class="mb-1">
+                        <i class="bx bx-store me-2 text-primary"></i>{{ $title }}
+                    </h4>
+                    <p class="text-muted mb-0">{{ $subtitle }}</p>
                 </div>
-                <div class="card-body">
-                    <div class="table-responsive">
-                        <table class="table table-striped" id="outletsTable">
-                            <thead>
-                                <tr>
-                                    <th>Toko</th>
-                                    <th>Nama Outlet</th>
-                                    <th>Tipe</th>
-                                    <th>Manajer</th>
-                                    <th>Lokasi</th>
-                                    <th>Maps</th>
-                                    <th>Status</th>
-                                    <th>Aksi</th>
-                                </tr>
-                            </thead>
-                        </table>
-                    </div>
+                <div class="d-flex gap-2 mt-2 mt-md-0">
+                    <select id="storeFilter" class="form-select" style="width: 200px;">
+                        <option value="">Semua Toko</option>
+                        @foreach($stores as $store)
+                            <option value="{{ $store->id }}">{{ $store->name }}</option>
+                        @endforeach
+                    </select>
+                    <a href="{{ route('admin.outlets.create') }}" class="btn btn-primary btn-modern">
+                        <i class="bx bx-plus me-1"></i>Tambah Outlet
+                    </a>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card card-modern">
+        <div class="card-header">
+            <h5 class="card-title mb-0 fw-bold">
+                <i class="bx bx-list-ul me-2"></i>Daftar Outlet
+            </h5>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-striped table-modern" id="outletsTable">
+                    <thead>
+                        <tr>
+                            <th class="text-white">Toko</th>
+                            <th class="text-white">Nama Outlet</th>
+                            <th class="text-white">Tipe</th>
+                            <th class="text-white">Manajer</th>
+                            <th class="text-white">Lokasi</th>
+                            <th class="text-white">Maps</th>
+                            <th class="text-white">Status</th>
+                            <th class="text-white">Aksi</th>
+                        </tr>
+                    </thead>
+                </table>
             </div>
         </div>
     </div>

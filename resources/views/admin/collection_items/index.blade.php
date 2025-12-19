@@ -5,21 +5,21 @@
 @section('content')
 <div class="container-xxl flex-grow-1 container-p-y">
   <!-- Header Section -->
-  <div class="card mb-4">
+  <div class="card page-header-card mb-4">
     <div class="card-body">
-      <div class="d-flex justify-content-between align-items-center">
+      <div class="d-flex justify-content-between align-items-center flex-wrap">
         <div>
           <h4 class="mb-1">
-            <i class="bx bx-collection me-2"></i>Item Koleksi: {{ $parent->name }}
+            <i class="bx bx-collection me-2 text-primary"></i>Item Koleksi: {{ $parent->name }}
           </h4>
           <p class="text-muted mb-0">Kelola produk dalam koleksi "{{ $parent->name }}" ({{ $parent->key }})</p>
         </div>
-        <div>
-          <a href="{{ route('admin.collections.index') }}" class="btn btn-secondary me-2">
+        <div class="d-flex gap-2 mt-2 mt-md-0">
+          <a href="{{ route('admin.collections.index') }}" class="btn btn-secondary btn-modern">
             <i class="bx bx-arrow-back me-1"></i>Kembali ke Koleksi
           </a>
-          <a href="{{ route('admin.collection_items.create', $parent->id) }}" class="btn btn-primary">
-            <i class="bx bx-plus me-1"></i> Tambah Item
+          <a href="{{ route('admin.collection_items.create', $parent->id) }}" class="btn btn-primary btn-modern">
+            <i class="bx bx-plus me-1"></i>Tambah Item
           </a>
         </div>
       </div>
@@ -27,55 +27,63 @@
   </div>
 
   <!-- Quick Stats -->
-  <div class="row mb-4">
-    <div class="col-md-3">
-      <div class="card bg-primary text-white">
-        <div class="card-body">
-          <div class="d-flex justify-content-between">
-            <div>
-              <h6 class="card-title">Total Item</h6>
-              <h3 class="mb-0" id="totalItems">0</h3>
+  <div class="row g-4 mb-4">
+    <div class="col-6 col-md-3">
+      <div class="card stat-card bg-primary text-white">
+        <div class="card-body p-4">
+          <div class="d-flex justify-content-between align-items-start">
+            <div class="flex-grow-1">
+              <p class="stat-label mb-2">Total Item</p>
+              <h3 class="stat-value mb-0" id="totalItems">0</h3>
             </div>
-            <i class="bx bx-collection bx-lg"></i>
+            <div class="stat-icon">
+              <i class="bx bx-collection"></i>
+            </div>
           </div>
         </div>
       </div>
     </div>
-    <div class="col-md-3">
-      <div class="card bg-success text-white">
-        <div class="card-body">
-          <div class="d-flex justify-content-between">
-            <div>
-              <h6 class="card-title">Urutan Terendah</h6>
-              <h3 class="mb-0" id="lowestOrder">-</h3>
+    <div class="col-6 col-md-3">
+      <div class="card stat-card bg-success text-white">
+        <div class="card-body p-4">
+          <div class="d-flex justify-content-between align-items-start">
+            <div class="flex-grow-1">
+              <p class="stat-label mb-2">Urutan Terendah</p>
+              <h3 class="stat-value mb-0" id="lowestOrder" style="font-size: 1.5rem;">-</h3>
             </div>
-            <i class="bx bx-sort-asc bx-lg"></i>
+            <div class="stat-icon">
+              <i class="bx bx-sort-asc"></i>
+            </div>
           </div>
         </div>
       </div>
     </div>
-    <div class="col-md-3">
-      <div class="card bg-warning text-white">
-        <div class="card-body">
-          <div class="d-flex justify-content-between">
-            <div>
-              <h6 class="card-title">Urutan Tertinggi</h6>
-              <h3 class="mb-0" id="highestOrder">-</h3>
+    <div class="col-6 col-md-3">
+      <div class="card stat-card bg-warning text-white">
+        <div class="card-body p-4">
+          <div class="d-flex justify-content-between align-items-start">
+            <div class="flex-grow-1">
+              <p class="stat-label mb-2">Urutan Tertinggi</p>
+              <h3 class="stat-value mb-0" id="highestOrder" style="font-size: 1.5rem;">-</h3>
             </div>
-            <i class="bx bx-sort-desc bx-lg"></i>
+            <div class="stat-icon">
+              <i class="bx bx-sort-desc"></i>
+            </div>
           </div>
         </div>
       </div>
     </div>
-    <div class="col-md-3">
-      <div class="card bg-info text-white">
-        <div class="card-body">
-          <div class="d-flex justify-content-between">
-            <div>
-              <h6 class="card-title">Koleksi Key</h6>
-              <h3 class="mb-0">{{ $parent->key }}</h3>
+    <div class="col-6 col-md-3">
+      <div class="card stat-card bg-info text-white">
+        <div class="card-body p-4">
+          <div class="d-flex justify-content-between align-items-start">
+            <div class="flex-grow-1">
+              <p class="stat-label mb-2">Koleksi Key</p>
+              <h3 class="stat-value mb-0" style="font-size: 1.5rem;">{{ $parent->key }}</h3>
             </div>
-            <i class="bx bx-key bx-lg"></i>
+            <div class="stat-icon">
+              <i class="bx bx-key"></i>
+            </div>
           </div>
         </div>
       </div>
@@ -83,7 +91,7 @@
   </div>
 
   <!-- Search and Filter -->
-  <div class="card mb-4">
+  <div class="card search-card mb-4">
     <div class="card-body">
       <div class="row g-3">
         <div class="col-md-8">
@@ -105,14 +113,14 @@
   </div>
 
   <!-- Collection Items Table -->
-  <div class="card">
+  <div class="card card-modern">
     <div class="card-header">
-      <h5 class="mb-0">
+      <h5 class="card-title mb-0 fw-bold">
         <i class="bx bx-list-ul me-2"></i>Daftar Item Koleksi
       </h5>
     </div>
     <div class="card-body table-responsive">
-      <table class="table table-striped table-hover" id="items-table">
+      <table class="table table-striped table-hover table-modern" id="items-table">
         <thead>
           <tr>
             <th width="5%">No</th>

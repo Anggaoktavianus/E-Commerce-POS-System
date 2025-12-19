@@ -5,56 +5,68 @@
 @section('content')
 <div class="container-xxl flex-grow-1 container-p-y">
   <!-- Header -->
-  <div class="d-flex justify-content-between align-items-center mb-4">
-    <div>
-      <h4 class="mb-1">
-        <i class="bx bx-plus me-2"></i>Tambah Halaman Baru
-      </h4>
-      <p class="text-muted mb-0">Buat halaman statis baru untuk website Anda</p>
+  <div class="card page-header-card mb-4">
+    <div class="card-body">
+      <div class="d-flex justify-content-between align-items-center flex-wrap">
+        <div>
+          <h4 class="mb-1">
+            <i class="bx bx-plus me-2 text-primary"></i>Tambah Halaman Baru
+          </h4>
+          <p class="text-muted mb-0">Buat halaman statis baru untuk website Anda</p>
+        </div>
+        <a href="{{ route('admin.pages.index') }}" class="btn btn-secondary btn-modern mt-2 mt-md-0">
+          <i class="bx bx-arrow-back me-1"></i>Kembali
+        </a>
+      </div>
     </div>
-    <a href="{{ route('admin.pages.index') }}" class="btn btn-secondary">
-      <i class="bx bx-arrow-back me-1"></i> Kembali
-    </a>
   </div>
 
   <!-- Alert Info -->
-  <div class="alert alert-info alert-dismissible" role="alert">
-    <i class="bx bx-info-circle me-2"></i>
-    <strong>Info:</strong> Gunakan editor rich text untuk membuat konten yang menarik. 
-    Upload gambar dan file lampiran untuk melengkapi halaman Anda.
-    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+  <div class="alert alert-modern alert-info alert-dismissible" role="alert">
+    <div class="d-flex align-items-start">
+      <div class="flex-shrink-0">
+        <i class="bx bx-info-circle fs-4"></i>
+      </div>
+      <div class="flex-grow-1 ms-3">
+        <strong>Info:</strong> Gunakan editor rich text untuk membuat konten yang menarik. 
+        Upload gambar dan file lampiran untuk melengkapi halaman Anda.
+      </div>
+      <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
   </div>
 
   <!-- Form -->
   <div class="row">
     <div class="col-12">
-      <div class="card">
+      <div class="card form-card">
         <div class="card-header">
-          <h5 class="mb-0">
+          <h5 class="card-title mb-0 fw-bold text-white">
             <i class="bx bx-file me-2"></i>Detail Halaman
           </h5>
         </div>
         <div class="card-body">
-          <form action="{{ route('admin.pages.store') }}" method="POST" enctype="multipart/form-data">
-            @csrf
-            @include('admin.pages.partials.form')
-          </form>
+          
         </div>
       </div>
     </div>
   </div>
+  <hr>
+  <form action="{{ route('admin.pages.store') }}" method="POST" enctype="multipart/form-data">
+    @csrf
+    @include('admin.pages.partials.form')
+  </form>
 
   <!-- Help Guide -->
-  <div class="card mt-4">
+  <div class="card card-modern mt-4">
     <div class="card-header">
-      <h5 class="mb-0">
+      <h5 class="card-title mb-0 fw-bold text-white">
         <i class="bx bx-help-circle me-2"></i>Panduan Pembuatan Halaman
       </h5>
     </div>
     <div class="card-body">
       <div class="row">
         <div class="col-md-6">
-          <h6><i class="bx bx-edit text-primary me-2"></i>Konten Utama</h6>
+          <h6 class="text-white"><i class="bx bx-edit me-2 "></i>Konten Utama</h6>
           <ul class="mb-3">
             <li><strong>Judul:</strong> Judul halaman yang akan muncul di browser dan menu</li>
             <li><strong>Konten:</strong> Gunakan editor untuk format teks, gambar, link</li>
@@ -62,7 +74,7 @@
             <li><strong>Gambar Unggulan:</strong> Gambar utama untuk halaman</li>
           </ul>
           
-          <h6><i class="bx bx-cog text-success me-2"></i>Pengaturan SEO</h6>
+          <h6><i class="bx bx-cog me-2 text-white"></i>Pengaturan SEO</h6>
           <ul class="mb-3">
             <li><strong>Meta Title:</strong> Judul untuk search engine (maks 60 karakter)</li>
             <li><strong>Meta Description:</strong> Deskripsi untuk search engine (maks 160 karakter)</li>

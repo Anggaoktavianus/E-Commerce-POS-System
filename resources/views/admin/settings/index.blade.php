@@ -5,21 +5,21 @@
 @section('content')
 <div class="container-xxl flex-grow-1 container-p-y">
   <!-- Header Section -->
-  <div class="card mb-4">
+  <div class="card page-header-card mb-4">
     <div class="card-body">
-      <div class="d-flex justify-content-between align-items-center">
+      <div class="d-flex justify-content-between align-items-center flex-wrap">
         <div>
           <h4 class="mb-1">
-            <i class="bx bx-cog me-2"></i>Pengaturan Website
+            <i class="bx bx-cog me-2 text-primary"></i>Pengaturan Website
           </h4>
           <p class="text-muted mb-0">Kelola semua tampilan dan teks website Anda dari satu tempat</p>
         </div>
-        <div class="d-flex gap-2">
-          <a href="{{ route('admin.settings.logo') }}" class="btn btn-info">
-            <i class="bx bx-image me-1"></i> Kelola Logo
+        <div class="d-flex gap-2 mt-2 mt-md-0">
+          <a href="{{ route('admin.settings.logo') }}" class="btn btn-info btn-modern">
+            <i class="bx bx-image me-1"></i>Kelola Logo
           </a>
-          <a href="{{ route('admin.settings.create') }}" class="btn btn-primary">
-            <i class="bx bx-plus me-1"></i> Tambah Pengaturan
+          <a href="{{ route('admin.settings.create') }}" class="btn btn-primary btn-modern">
+            <i class="bx bx-plus me-1"></i>Tambah Pengaturan
           </a>
         </div>
       </div>
@@ -27,55 +27,63 @@
   </div>
 
   <!-- Quick Stats -->
-  <div class="row mb-4">
-    <div class="col-md-3">
-      <div class="card bg-primary text-white">
-        <div class="card-body">
-          <div class="d-flex justify-content-between">
-            <div>
-              <h6 class="card-title">Total Pengaturan</h6>
-              <h3 class="mb-0">95+</h3>
+  <div class="row g-4 mb-4">
+    <div class="col-6 col-md-3">
+      <div class="card stat-card bg-primary text-white">
+        <div class="card-body p-4">
+          <div class="d-flex justify-content-between align-items-start">
+            <div class="flex-grow-1">
+              <p class="stat-label mb-2">Total Pengaturan</p>
+              <h3 class="stat-value mb-0 text-white">95+</h3>
             </div>
-            <i class="bx bx-cog bx-lg"></i>
+            <div class="stat-icon">
+              <i class="bx bx-cog"></i>
+            </div>
           </div>
         </div>
       </div>
     </div>
-    <div class="col-md-3">
-      <div class="card bg-success text-white">
-        <div class="card-body">
-          <div class="d-flex justify-content-between">
-            <div>
-              <h6 class="card-title">Homepage</h6>
-              <h3 class="mb-0">25+</h3>
+    <div class="col-6 col-md-3">
+      <div class="card stat-card bg-success text-white">
+        <div class="card-body p-4">
+          <div class="d-flex justify-content-between align-items-start">
+            <div class="flex-grow-1">
+              <p class="stat-label mb-2">Homepage</p>
+              <h3 class="stat-value mb-0 text-white">25+</h3>
             </div>
-            <i class="bx bx-home bx-lg"></i>
+            <div class="stat-icon">
+              <i class="bx bx-home"></i>
+            </div>
           </div>
         </div>
       </div>
     </div>
-    <div class="col-md-3">
-      <div class="card bg-info text-white">
-        <div class="card-body">
-          <div class="d-flex justify-content-between">
-            <div>
-              <h6 class="card-title">Produk</h6>
-              <h3 class="mb-0">20+</h3>
+    <div class="col-6 col-md-3">
+      <div class="card stat-card bg-info text-white">
+        <div class="card-body p-4">
+          <div class="d-flex justify-content-between align-items-start">
+            <div class="flex-grow-1">
+              <p class="stat-label mb-2">Produk</p>
+              <h3 class="stat-value mb-0 text-white">20+</h3>
             </div>
-            <i class="bx bx-package bx-lg"></i>
+            <div class="stat-icon">
+              <i class="bx bx-package"></i>
+            </div>
           </div>
         </div>
       </div>
     </div>
-    <div class="col-md-3">
-      <div class="card bg-warning text-white">
-        <div class="card-body">
-          <div class="d-flex justify-content-between">
-            <div>
-              <h6 class="card-title">Kontak</h6>
-              <h3 class="mb-0">15+</h3>
+    <div class="col-6 col-md-3">
+      <div class="card stat-card bg-warning text-white">
+        <div class="card-body p-4">
+          <div class="d-flex justify-content-between align-items-start">
+            <div class="flex-grow-1">
+              <p class="stat-label mb-2">Kontak</p>
+              <h3 class="stat-value mb-0 text-white">15+</h3>
             </div>
-            <i class="bx bx-phone bx-lg"></i>
+            <div class="stat-icon">
+              <i class="bx bx-phone"></i>
+            </div>
           </div>
         </div>
       </div>
@@ -83,7 +91,7 @@
   </div>
 
   <!-- Search and Filter -->
-  <div class="card mb-4">
+  <div class="card search-card mb-4">
     <div class="card-body">
       <div class="row g-3">
         <div class="col-md-8">
@@ -109,22 +117,22 @@
   </div>
 
   <!-- Settings Table -->
-  <div class="card">
+  <div class="card card-modern">
     <div class="card-header">
-      <h5 class="mb-0">
+      <h5 class="card-title mb-0 fw-bold">
         <i class="bx bx-list-ul me-2"></i>Daftar Pengaturan
       </h5>
     </div>
     <div class="card-body table-responsive">
-      <table id="settings-table" class="table table-striped table-hover w-100">
+      <table id="settings-table" class="table table-striped table-hover table-modern w-100">
         <thead>
           <tr>
-            <th width="5%">ID</th>
-            <th width="20%">Kategori</th>
-            <th width="25%">Pengaturan</th>
-            <th width="30%">Nilai Saat Ini</th>
-            <th width="15%">Status</th>
-            <th width="5%">Aksi</th>
+            <th width="5%" class="text-white">ID</th>
+            <th width="20%" class="text-white">Kategori</th>
+            <th width="25%" class="text-white">Pengaturan</th>
+            <th width="30%" class="text-white">Nilai Saat Ini</th>
+            <th width="15%" class="text-white">Status</th>
+            <th width="5%" class="text-white">Aksi</th>
           </tr>
         </thead>
       </table>
@@ -132,9 +140,9 @@
   </div>
 
   <!-- Help Guide -->
-  <div class="card mt-4">
+  <div class="card card-modern mt-4">
     <div class="card-header">
-      <h5 class="mb-0">
+      <h5 class="card-title mb-0 fw-bold">
         <i class="bx bx-help-circle me-2"></i>Panduan Penggunaan
       </h5>
     </div>
@@ -147,7 +155,7 @@
             <li>Gunakan filter kategori untuk mempersempit hasil</li>
             <li>Pencarian bersifat real-time</li>
           </ul>
-          
+
           <h6><i class="bx bx-edit text-success me-2"></i>Cara Mengubah Nilai</h6>
           <ul class="mb-3">
             <li>Klik tombol <span class="badge bg-primary">Edit</span> pada pengaturan yang ingin diubah</li>
@@ -167,7 +175,7 @@
             <li><strong>Footer:</strong> Teks footer, hak cipta, link</li>
             <li><strong>Mitra:</strong> Dashboard mitra, status pesanan</li>
           </ul>
-          
+
           <h6><i class="bx bx-error text-warning me-2"></i>Tips Penting</h6>
           <ul class="mb-3">
             <li>Perubahan langsung terlihat di website</li>
@@ -212,7 +220,7 @@
         info: "Menampilkan _START_ sampai _END_ dari _TOTAL_ data",
         paginate: {
           first: "Pertama",
-          last: "Terakhir", 
+          last: "Terakhir",
           next: "Selanjutnya",
           previous: "Sebelumnya"
         },
@@ -230,7 +238,7 @@
     $('#searchInput').on('keyup', function() {
       clearTimeout(searchTimeout);
       const searchValue = $(this).val();
-      
+
       searchTimeout = setTimeout(function() {
         table.search(searchValue).draw();
       }, 300); // 300ms delay
@@ -245,7 +253,7 @@
     $(document).on('click', '.delete-setting', function(e) {
       e.preventDefault();
       var deleteUrl = $(this).data('id');
-      
+
       Swal.fire({
         title: 'Hapus Pengaturan?',
         text: "Pengaturan yang dihapus tidak dapat dikembalikan!",

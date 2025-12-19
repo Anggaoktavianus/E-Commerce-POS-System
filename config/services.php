@@ -35,4 +35,9 @@ return [
         ],
     ],
 
+    'whatsapp' => [
+        'token' => env('WHATSAPP_TOKEN'),
+        'api_url' => env('WHATSAPP_API_URL', 'http://nusagateway.com/api/send-message.php'),
+    ],
+
 ];

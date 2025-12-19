@@ -46,7 +46,14 @@ class UserController extends Controller
     public function create()
     {
         $user = null;
-        $roles = ['admin' => 'Admin', 'mitra' => 'Mitra', 'customer' => 'Customer'];
+        $roles = [
+            'admin' => 'Admin',
+            'manager' => 'Manager (Store/Outlet Manager)',
+            'cashier' => 'Cashier (Kasir Utama)',
+            'staff' => 'Staff (Kasir Junior)',
+            'mitra' => 'Mitra',
+            'customer' => 'Customer'
+        ];
         return view('admin.users.form', compact('user','roles'));
     }
 
@@ -63,7 +70,14 @@ class UserController extends Controller
 
     public function edit(User $user)
     {
-        $roles = ['admin' => 'Admin', 'mitra' => 'Mitra', 'customer' => 'Customer'];
+        $roles = [
+            'admin' => 'Admin',
+            'manager' => 'Manager (Store/Outlet Manager)',
+            'cashier' => 'Cashier (Kasir Utama)',
+            'staff' => 'Staff (Kasir Junior)',
+            'mitra' => 'Mitra',
+            'customer' => 'Customer'
+        ];
         return view('admin.users.form', compact('user','roles'));
     }
 
@@ -87,6 +101,14 @@ class UserController extends Controller
     {
         // Soft delete sudah diaktifkan di model User
         $user->delete();
+
+        // Return JSON response for AJAX requests
+        if (request()->ajax() || request()->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'User deleted successfully'
+            ]);
+        }
 
         return redirect()->route('admin.users.index')->with('success', 'User deleted');
     }

@@ -20,6 +20,7 @@ return Application::configure(basePath: dirname(__DIR__))
             \Illuminate\Session\Middleware\StartSession::class,
             \Illuminate\View\Middleware\ShareErrorsFromSession::class,
             \App\Http\Middleware\VerifyCsrfToken::class,
+            \App\Http\Middleware\LoadUserCart::class,
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
         ]);
 
@@ -33,6 +34,8 @@ return Application::configure(basePath: dirname(__DIR__))
             'admin' => \App\Http\Middleware\AdminMiddleware::class,
             'mitra' => \App\Http\Middleware\MitraMiddleware::class,
             'store.context' => \App\Http\Middleware\StoreContextMiddleware::class,
+            'pos.access' => \App\Http\Middleware\PosAccess::class,
+            'pos.shift.open' => \App\Http\Middleware\PosShiftOpen::class,
         ]);
 
         // Global middleware

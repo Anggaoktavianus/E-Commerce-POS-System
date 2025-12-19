@@ -11,19 +11,16 @@
 @section('content')
     
 
-    <!-- Single Page Header start -->
-    <div class="container-fluid page-header py-5">
-        <h1 class="text-center text-white display-6">Testimonial</h1>
-        <ol class="breadcrumb justify-content-center mb-0">
-            <li class="breadcrumb-item"><a href="{{ url('/') }}">Home</a></li>
-            <li class="breadcrumb-item"><a href="#">Pages</a></li>
-            <li class="breadcrumb-item active text-white">Testimonial</li>
-        </ol> 
-    </div>
-    <!-- Single Page Header End -->
+    @include('partials.modern-page-header', [
+        'pageTitle' => $siteSettings['testimonial_page_title'] ?? 'Testimoni Pelanggan',
+        'breadcrumbItems' => [
+            ['label' => 'Beranda', 'url' => url('/')],
+            ['label' => 'Testimoni', 'url' => null]
+        ]
+    ])
 
     <!-- Tastimonial Start -->
-    <div class="container-fluid testimonial py-5">
+    <div class="container-fluid testimonial py-5" style="background: linear-gradient(180deg, #f8f9fa 0%, #ffffff 100%);">
         <div class="container py-5">
             <div class="testimonial-header text-center">
                 <h4 class="text-primary">Our Testimonial</h4>
