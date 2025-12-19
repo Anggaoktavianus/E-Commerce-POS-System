@@ -24,9 +24,9 @@ class PosPaymentFlowTest extends TestCase
     /** @test */
     public function it_can_process_cash_payment()
     {
-        $outlet = Outlet::factory()->create();
-        $user = User::factory()->create(['role' => 'cashier']);
-        $product = Product::factory()->create(['price' => 50000]);
+        $outlet = Outlet::create();
+        $user = User::create(['role' => 'cashier']);
+        $product = Product::create(['price' => 50000]);
 
         OutletProductInventory::create([
             'outlet_id' => $outlet->id,
@@ -77,9 +77,9 @@ class PosPaymentFlowTest extends TestCase
     /** @test */
     public function it_can_process_split_payment()
     {
-        $outlet = Outlet::factory()->create();
-        $user = User::factory()->create(['role' => 'cashier']);
-        $product = Product::factory()->create(['price' => 100000]);
+        $outlet = Outlet::create();
+        $user = User::create(['role' => 'cashier']);
+        $product = Product::create(['price' => 100000]);
 
         OutletProductInventory::create([
             'outlet_id' => $outlet->id,
@@ -143,9 +143,9 @@ class PosPaymentFlowTest extends TestCase
     /** @test */
     public function it_can_process_card_payment()
     {
-        $outlet = Outlet::factory()->create();
-        $user = User::factory()->create(['role' => 'cashier']);
-        $product = Product::factory()->create(['price' => 50000]);
+        $outlet = Outlet::create();
+        $user = User::create(['role' => 'cashier']);
+        $product = Product::create(['price' => 50000]);
 
         OutletProductInventory::create([
             'outlet_id' => $outlet->id,

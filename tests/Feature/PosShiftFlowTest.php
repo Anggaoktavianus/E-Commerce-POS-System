@@ -21,8 +21,8 @@ class PosShiftFlowTest extends TestCase
     /** @test */
     public function it_can_open_shift()
     {
-        $outlet = Outlet::factory()->create();
-        $user = User::factory()->create(['role' => 'cashier']);
+        $outlet = Outlet::create();
+        $user = User::create(['role' => 'cashier']);
 
         $this->actingAs($user);
 
@@ -48,8 +48,8 @@ class PosShiftFlowTest extends TestCase
     /** @test */
     public function it_cannot_open_shift_if_one_already_open()
     {
-        $outlet = Outlet::factory()->create();
-        $user = User::factory()->create(['role' => 'cashier']);
+        $outlet = Outlet::create();
+        $user = User::create(['role' => 'cashier']);
 
         // Open first shift
         PosShift::create([
@@ -78,8 +78,8 @@ class PosShiftFlowTest extends TestCase
     /** @test */
     public function it_can_close_shift()
     {
-        $outlet = Outlet::factory()->create();
-        $user = User::factory()->create(['role' => 'cashier']);
+        $outlet = Outlet::create();
+        $user = User::create(['role' => 'cashier']);
 
         $shift = PosShift::create([
             'outlet_id' => $outlet->id,
@@ -110,8 +110,8 @@ class PosShiftFlowTest extends TestCase
     /** @test */
     public function it_cannot_close_shift_without_transactions()
     {
-        $outlet = Outlet::factory()->create();
-        $user = User::factory()->create(['role' => 'cashier']);
+        $outlet = Outlet::create();
+        $user = User::create(['role' => 'cashier']);
 
         $shift = PosShift::create([
             'outlet_id' => $outlet->id,
@@ -136,8 +136,8 @@ class PosShiftFlowTest extends TestCase
     /** @test */
     public function it_calculates_expected_cash_correctly()
     {
-        $outlet = Outlet::factory()->create();
-        $user = User::factory()->create(['role' => 'cashier']);
+        $outlet = Outlet::create();
+        $user = User::create(['role' => 'cashier']);
 
         $shift = PosShift::create([
             'outlet_id' => $outlet->id,

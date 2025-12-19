@@ -23,9 +23,9 @@ class PosRefundFlowTest extends TestCase
     /** @test */
     public function it_can_refund_transaction()
     {
-        $outlet = Outlet::factory()->create();
-        $manager = User::factory()->create(['role' => 'manager']);
-        $product = Product::factory()->create(['price' => 50000]);
+        $outlet = Outlet::create();
+        $manager = User::create(['role' => 'manager']);
+        $product = Product::create(['price' => 50000]);
 
         $inventory = OutletProductInventory::create([
             'outlet_id' => $outlet->id,
@@ -86,8 +86,8 @@ class PosRefundFlowTest extends TestCase
     /** @test */
     public function it_can_partial_refund_transaction()
     {
-        $outlet = Outlet::factory()->create();
-        $manager = User::factory()->create(['role' => 'manager']);
+        $outlet = Outlet::create();
+        $manager = User::create(['role' => 'manager']);
 
         $shift = PosShift::create([
             'outlet_id' => $outlet->id,
@@ -127,8 +127,8 @@ class PosRefundFlowTest extends TestCase
     /** @test */
     public function it_prevents_refund_by_non_manager()
     {
-        $outlet = Outlet::factory()->create();
-        $cashier = User::factory()->create(['role' => 'cashier']);
+        $outlet = Outlet::create();
+        $cashier = User::create(['role' => 'cashier']);
 
         $shift = PosShift::create([
             'outlet_id' => $outlet->id,

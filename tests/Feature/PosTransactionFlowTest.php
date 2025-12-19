@@ -25,9 +25,26 @@ class PosTransactionFlowTest extends TestCase
     public function it_can_complete_full_transaction_flow()
     {
         // Create test data
-        $outlet = Outlet::factory()->create();
-        $user = User::factory()->create(['role' => 'cashier']);
-        $product = Product::factory()->create(['price' => 50000]);
+        $outlet = Outlet::create([
+            'store_id' => 1,
+            'name' => 'Test Outlet',
+            'address' => 'Test Address',
+            'phone' => '081234567890',
+            'is_active' => true
+        ]);
+        $user = User::create([
+            'name' => 'Test Cashier',
+            'email' => 'cashier@test.com',
+            'password' => bcrypt('password'),
+            'role' => 'cashier'
+        ]);
+        $product = Product::create([
+            'store_id' => 1,
+            'name' => 'Test Product',
+            'price' => 50000,
+            'stock_qty' => 10,
+            'is_active' => true
+        ]);
 
         // Create outlet inventory
         OutletProductInventory::create([
@@ -90,9 +107,9 @@ class PosTransactionFlowTest extends TestCase
     /** @test */
     public function it_can_cancel_transaction_and_restore_inventory()
     {
-        $outlet = Outlet::factory()->create();
-        $user = User::factory()->create(['role' => 'cashier']);
-        $product = Product::factory()->create(['price' => 50000]);
+        $outlet = Outlet::create();
+        $user = User::create(['role' => 'cashier']);
+        $product = Product::create(['price' => 50000]);
 
         OutletProductInventory::create([
             'outlet_id' => $outlet->id,
@@ -158,9 +175,9 @@ class PosTransactionFlowTest extends TestCase
     /** @test */
     public function it_validates_stock_before_transaction()
     {
-        $outlet = Outlet::factory()->create();
-        $user = User::factory()->create(['role' => 'cashier']);
-        $product = Product::factory()->create(['price' => 50000]);
+        $outlet = Outlet::create();
+        $user = User::create(['role' => 'cashier']);
+        $product = Product::create(['price' => 50000]);
 
         OutletProductInventory::create([
             'outlet_id' => $outlet->id,

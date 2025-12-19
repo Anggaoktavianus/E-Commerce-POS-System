@@ -24,9 +24,9 @@ class PosInventoryFlowTest extends TestCase
     /** @test */
     public function it_decreases_inventory_on_transaction()
     {
-        $outlet = Outlet::factory()->create();
-        $user = User::factory()->create(['role' => 'cashier']);
-        $product = Product::factory()->create(['price' => 50000]);
+        $outlet = Outlet::create();
+        $user = User::create(['role' => 'cashier']);
+        $product = Product::create(['price' => 50000]);
 
         $inventory = OutletProductInventory::create([
             'outlet_id' => $outlet->id,
@@ -86,9 +86,9 @@ class PosInventoryFlowTest extends TestCase
     /** @test */
     public function it_restores_inventory_on_cancel()
     {
-        $outlet = Outlet::factory()->create();
-        $user = User::factory()->create(['role' => 'cashier']);
-        $product = Product::factory()->create(['price' => 50000]);
+        $outlet = Outlet::create();
+        $user = User::create(['role' => 'cashier']);
+        $product = Product::create(['price' => 50000]);
 
         $inventory = OutletProductInventory::create([
             'outlet_id' => $outlet->id,
@@ -149,9 +149,9 @@ class PosInventoryFlowTest extends TestCase
     /** @test */
     public function it_prevents_transaction_with_insufficient_stock()
     {
-        $outlet = Outlet::factory()->create();
-        $user = User::factory()->create(['role' => 'cashier']);
-        $product = Product::factory()->create(['price' => 50000]);
+        $outlet = Outlet::create();
+        $user = User::create(['role' => 'cashier']);
+        $product = Product::create(['price' => 50000]);
 
         OutletProductInventory::create([
             'outlet_id' => $outlet->id,
