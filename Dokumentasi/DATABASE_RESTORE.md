@@ -9,10 +9,11 @@ Jika database Anda terhapus, ikuti langkah-langkah berikut untuk restore dari ba
 ### Opsi 1: Menggunakan Script Restore (Recommended)
 
 ```bash
-# Restore dari backup terbaru
-./restore_database.sh db_samsae_new_2025-12-12.sql
+# Restore dari backup TERBARU (disarankan)
+./restore_database.sh db_samsae_new_2025-12-18.sql
 
 # Atau backup lain
+./restore_database.sh db_samsae_new_2025-12-12.sql
 ./restore_database.sh db_samsae_2025-12-01.sql
 ```
 
@@ -28,15 +29,15 @@ Script akan:
 # 1. Buat database (jika belum ada)
 mysql -u root -p -e "CREATE DATABASE IF NOT EXISTS samsae CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
 
-# 2. Restore dari backup
-mysql -u root -p samsae < db_samsae_new_2025-12-12.sql
+# 2. Restore dari backup TERBARU
+mysql -u root -P 8889 db_samsae_new < db_samsae_new_2025-12-18.sql
 ```
 
 ### Opsi 3: Via phpMyAdmin atau MySQL Workbench
 
 1. Buka phpMyAdmin atau MySQL Workbench
 2. Pilih database `samsae` (atau buat baru)
-3. Import file SQL: `db_samsae_new_2025-12-12.sql`
+3. Import file SQL: `db_samsae_new_2025-12-18.sql` (backup terbaru)
 
 ## 📁 File Backup yang Tersedia
 

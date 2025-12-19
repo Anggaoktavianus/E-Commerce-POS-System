@@ -338,6 +338,13 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
         Route::get('reports/payment', [App\Http\Controllers\Admin\Pos\PosReportController::class, 'payment'])->name('reports.payment');
         Route::get('reports/cashier', [App\Http\Controllers\Admin\Pos\PosReportController::class, 'cashier'])->name('reports.cashier');
         Route::get('reports/export', [App\Http\Controllers\Admin\Pos\PosReportController::class, 'export'])->name('reports.export');
+    });
+
+    // Unified Reports (Online + POS)
+    Route::prefix('reports')->name('reports.')->group(function() {
+        Route::get('unified', [App\Http\Controllers\Admin\UnifiedReportController::class, 'index'])->name('unified.index');
+        Route::get('unified/products', [App\Http\Controllers\Admin\UnifiedReportController::class, 'products'])->name('unified.products');
+        Route::get('unified/categories', [App\Http\Controllers\Admin\UnifiedReportController::class, 'categories'])->name('unified.categories');
         
         // Receipts
         Route::get('receipts/{transaction_id}/print', [App\Http\Controllers\Admin\Pos\PosReceiptController::class, 'print'])->name('receipts.print');
