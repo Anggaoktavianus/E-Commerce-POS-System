@@ -18,6 +18,20 @@
         </include>
     </source>
     <php>
+        <!-- 
+        ╔════════════════════════════════════════════════════════════════╗
+        ║  🚨 CRITICAL: DATABASE SAFETY CONFIGURATION 🚨                ║
+        ╠════════════════════════════════════════════════════════════════╣
+        ║  ⚠️  NEVER DELETE DATA FROM PRODUCTION/LOCAL DATABASE ⚠️      ║
+        ║                                                                ║
+        ║  This configuration ensures:                                  ║
+        ║  1. Tests ONLY use SQLite in-memory database (:memory:)       ║
+        ║  2. Tests NEVER touch your MySQL/PostgreSQL database          ║
+        ║  3. All test data is created in memory and destroyed          ║
+        ║  4. Your production/local database is 100% safe               ║
+        ╚════════════════════════════════════════════════════════════════╝
+        -->
+        
         <!-- CRITICAL: Force testing environment to prevent production database access -->
         <env name="APP_ENV" value="testing" force="true"/>
         <env name="APP_DEBUG" value="false" force="true"/>
@@ -25,13 +39,18 @@
         <env name="BCRYPT_ROUNDS" value="4"/>
         <env name="BROADCAST_CONNECTION" value="null"/>
         <env name="CACHE_STORE" value="array"/>
+        
         <!-- CRITICAL: Use SQLite in-memory database ONLY for tests -->
+        <!-- This prevents ANY access to your MySQL/PostgreSQL database -->
         <env name="DB_CONNECTION" value="sqlite" force="true"/>
         <env name="DB_DATABASE" value=":memory:" force="true"/>
-        <!-- Prevent any MySQL/Production database access -->
+        
+        <!-- CRITICAL: Clear MySQL/PostgreSQL credentials to prevent access -->
         <env name="DB_HOST" value="" force="true"/>
+        <env name="DB_PORT" value="" force="true"/>
         <env name="DB_USERNAME" value="" force="true"/>
         <env name="DB_PASSWORD" value="" force="true"/>
+        
         <env name="MAIL_MAILER" value="array"/>
         <env name="QUEUE_CONNECTION" value="sync"/>
         <env name="SESSION_DRIVER" value="array"/>
