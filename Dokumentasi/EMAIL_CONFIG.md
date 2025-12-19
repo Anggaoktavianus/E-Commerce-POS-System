@@ -35,22 +35,27 @@ MAIL_FROM_NAME="${APP_NAME}"
 ## Penjelasan Konfigurasi
 
 - **MAIL_MAILER**: Menggunakan `smtp` untuk mengirim email melalui SMTP server
-- **MAIL_HOST**: Server SMTP (`mail.yourdomain.com`)
+- **MAIL_HOST**: Server SMTP (contoh: `mail.yourdomain.com` atau `smtp.gmail.com`)
 - **MAIL_PORT**: Port SMTP (`465` untuk SSL, `587` untuk TLS)
-- **MAIL_USERNAME**: Username untuk autentikasi (`your-email@yourdomain.com`)
-- **MAIL_PASSWORD**: Password cPanel Anda (`your-secure-password` - di-quote untuk konsistensi)
+- **MAIL_USERNAME**: Username untuk autentikasi (email atau username SMTP Anda)
+- **MAIL_PASSWORD**: Password SMTP Anda (di-quote jika mengandung karakter khusus)
 - **MAIL_ENCRYPTION**: Enkripsi SSL untuk port 465, atau TLS untuk port 587
 - **MAIL_FROM_ADDRESS**: Alamat email pengirim (bisa berbeda dengan username)
 - **MAIL_FROM_NAME**: Nama pengirim (menggunakan APP_NAME dari .env)
 
-## Informasi Server
+## Informasi Server (Contoh untuk cPanel)
 
 - **Server Masuk (IMAP)**: mail.yourdomain.com (Port: 993)
 - **Server Masuk (POP3)**: mail.yourdomain.com (Port: 995)
 - **Server Keluar (SMTP)**: mail.yourdomain.com (Port: 465 untuk SSL)
 - **Nama Pengguna**: your-email@yourdomain.com
-- **Kata Sandi**: Gunakan kata sandi cPanel Anda
+- **Kata Sandi**: Gunakan kata sandi email atau cPanel Anda
 - **IMAP, POP3, dan SMTP requires authentication**: Ya
+
+**PENTING KEAMANAN:**
+- Jangan pernah commit file `.env` ke repository
+- Jangan sertakan password real di dokumentasi
+- Simpan credentials di environment variables atau secret management
 
 ## Testing Email
 

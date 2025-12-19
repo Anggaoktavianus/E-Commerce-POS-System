@@ -7,11 +7,13 @@ Password yang mengandung karakter khusus harus di-quote:
 
 ```env
 # SALAH:
-MAIL_PASSWORD=password-with-special-chars
+MAIL_PASSWORD=password-with-special-chars=^{
 
 # BENAR:
-MAIL_PASSWORD="password-with-special-chars"
+MAIL_PASSWORD="password-with-special-chars=^{"
 ```
+
+**PENTING:** Ganti dengan password Anda yang sebenarnya. Jangan commit password ke repository!
 
 ### Solusi 2: Coba Port 587 dengan TLS
 Beberapa server email lebih kompatibel dengan port 587:
@@ -69,9 +71,9 @@ Cek error detail di:
 
 ### Solusi 7: Verifikasi Kredensial
 Pastikan:
-1. Email `your-email@yourdomain.com` sudah aktif
+1. Email Anda sudah aktif
 2. Password benar (copy-paste untuk menghindari typo)
-3. Server SMTP `mail.yourdomain.com` dapat diakses dari server aplikasi
+3. Server SMTP dapat diakses dari server aplikasi
 4. Firewall tidak memblokir port 465 atau 587
 
 ### Solusi 8: Gunakan Mailtrap untuk Testing
