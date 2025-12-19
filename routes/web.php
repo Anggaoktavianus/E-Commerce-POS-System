@@ -338,24 +338,17 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
         Route::get('reports/payment', [App\Http\Controllers\Admin\Pos\PosReportController::class, 'payment'])->name('reports.payment');
         Route::get('reports/cashier', [App\Http\Controllers\Admin\Pos\PosReportController::class, 'cashier'])->name('reports.cashier');
         Route::get('reports/export', [App\Http\Controllers\Admin\Pos\PosReportController::class, 'export'])->name('reports.export');
-    });
-
-    // Unified Reports (Online + POS)
-    Route::prefix('reports')->name('reports.')->group(function() {
-        Route::get('unified', [App\Http\Controllers\Admin\UnifiedReportController::class, 'index'])->name('unified.index');
-        Route::get('unified/products', [App\Http\Controllers\Admin\UnifiedReportController::class, 'products'])->name('unified.products');
-        Route::get('unified/categories', [App\Http\Controllers\Admin\UnifiedReportController::class, 'categories'])->name('unified.categories');
+        
+        // Settings
+        Route::get('settings', [App\Http\Controllers\Admin\Pos\PosSettingController::class, 'index'])->name('settings.index');
+        Route::get('settings/{outlet_id}', [App\Http\Controllers\Admin\Pos\PosSettingController::class, 'show'])->name('settings.show');
+        Route::put('settings/{outlet_id}', [App\Http\Controllers\Admin\Pos\PosSettingController::class, 'update'])->name('settings.update');
         
         // Receipts
         Route::get('receipts/{transaction_id}/print', [App\Http\Controllers\Admin\Pos\PosReceiptController::class, 'print'])->name('receipts.print');
         Route::get('receipts/{transaction_id}/pdf', [App\Http\Controllers\Admin\Pos\PosReceiptController::class, 'pdf'])->name('receipts.pdf');
         Route::get('receipts/{transaction_id}/preview', [App\Http\Controllers\Admin\Pos\PosReceiptController::class, 'preview'])->name('receipts.preview');
         Route::post('receipts/{transaction_id}/mark-printed', [App\Http\Controllers\Admin\Pos\PosReceiptController::class, 'markPrinted'])->name('receipts.mark-printed');
-        
-        // Settings
-        Route::get('settings', [App\Http\Controllers\Admin\Pos\PosSettingController::class, 'index'])->name('settings.index');
-        Route::get('settings/{outlet_id}', [App\Http\Controllers\Admin\Pos\PosSettingController::class, 'show'])->name('settings.show');
-        Route::put('settings/{outlet_id}', [App\Http\Controllers\Admin\Pos\PosSettingController::class, 'update'])->name('settings.update');
         
         // Cash Movements
         Route::get('shifts/{shift_id}/cash-movements', [App\Http\Controllers\Admin\Pos\PosCashMovementController::class, 'index'])->name('cash-movements.index');
@@ -370,6 +363,13 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
         Route::put('receipt-templates/{id}', [App\Http\Controllers\Admin\Pos\PosReceiptTemplateController::class, 'update'])->name('receipt-templates.update');
         Route::get('receipt-templates/{id}/preview', [App\Http\Controllers\Admin\Pos\PosReceiptTemplateController::class, 'preview'])->name('receipt-templates.preview');
         Route::delete('receipt-templates/{id}', [App\Http\Controllers\Admin\Pos\PosReceiptTemplateController::class, 'destroy'])->name('receipt-templates.destroy');
+    });
+
+    // Unified Reports (Online + POS)
+    Route::prefix('reports')->name('reports.')->group(function() {
+        Route::get('unified', [App\Http\Controllers\Admin\UnifiedReportController::class, 'index'])->name('unified.index');
+        Route::get('unified/products', [App\Http\Controllers\Admin\UnifiedReportController::class, 'products'])->name('unified.products');
+        Route::get('unified/categories', [App\Http\Controllers\Admin\UnifiedReportController::class, 'categories'])->name('unified.categories');
     });
 });
 
