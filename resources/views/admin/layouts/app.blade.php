@@ -255,6 +255,27 @@
       content: '' !important;
     }
 
+    /* CRITICAL: Remove bullet from menu-link::before (Sneat framework default) */
+    .menu-sub > .menu-item > .menu-link::before,
+    .menu-sub .menu-item .menu-link::before,
+    .menu-sub .menu-item > .menu-link::before,
+    .menu-inner .menu-sub > .menu-item > .menu-link::before,
+    .menu-inner .menu-sub .menu-item .menu-link::before {
+      content: none !important;
+      display: none !important;
+      background: none !important;
+      width: 0 !important;
+      height: 0 !important;
+      border: none !important;
+    }
+
+    /* Remove any pseudo-elements that might create bullets */
+    .menu-sub .menu-item .menu-link::before,
+    .menu-sub .menu-item .menu-link::after {
+      content: none !important;
+      display: none !important;
+    }
+
     /* Enhanced Card Styles */
     .card {
       border: 1px solid #e7e7e7 !important;

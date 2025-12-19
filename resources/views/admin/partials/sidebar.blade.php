@@ -1,5 +1,5 @@
 <style>
-/* Force remove all list markers from submenu */
+/* Force remove all list markers and bullets from submenu */
 #layout-menu .menu-sub,
 #layout-menu .menu-sub ul,
 #layout-menu .menu-sub li,
@@ -22,6 +22,20 @@
   content: '' !important;
 }
 
+/* CRITICAL: Remove bullet from menu-link::before (Sneat framework default) */
+#layout-menu .menu-sub > .menu-item > .menu-link::before,
+#layout-menu .menu-sub .menu-item .menu-link::before,
+#layout-menu .menu-sub .menu-item > .menu-link::before {
+  content: none !important;
+  display: none !important;
+  background: none !important;
+  width: 0 !important;
+  height: 0 !important;
+  border: none !important;
+  position: absolute !important;
+  left: -9999px !important;
+}
+
 /* Additional override for any framework styles */
 .menu-vertical .menu-sub,
 .menu-vertical .menu-sub ul {
@@ -33,6 +47,11 @@
 .menu-vertical .menu-sub .menu-item {
   list-style: none !important;
   list-style-type: none !important;
+}
+
+.menu-vertical .menu-sub .menu-item .menu-link::before {
+  content: none !important;
+  display: none !important;
 }
 </style>
 
