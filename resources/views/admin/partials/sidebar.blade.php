@@ -256,12 +256,6 @@
                 </li>
             </ul>
         </li>
-        <li class="menu-item {{ request()->routeIs('admin.pages.*') ? 'active' : '' }}">
-            <a href="{{ route('admin.pages.index') }}" class="menu-link d-flex align-items-center gap-2 text-decoration-none">
-                <i class='bx bx-file-blank text-warning'></i>
-                <span>Halaman</span>
-            </a>
-        </li>
         <li class="menu-item {{ request()->routeIs('admin.features.*','admin.testimonials.*','admin.facts.*','admin.social_links.*') ? 'active open' : '' }}">
             <a href="javascript:void(0);" class="menu-link menu-toggle d-flex align-items-center gap-2 text-decoration-none">
                 <i class='bx bx-layer text-warning'></i>
@@ -314,7 +308,7 @@
                 </li>
             </ul>
         </li>
-        <li class="menu-item {{ request()->routeIs('admin.menus.*','admin.links.*') ? 'active open' : '' }}">
+        <li class="menu-item {{ request()->routeIs('admin.menus.*','admin.links.*','admin.pages.*') ? 'active open' : '' }}">
             <a href="javascript:void(0);" class="menu-link menu-toggle d-flex align-items-center gap-2 text-decoration-none">
                 <i class='bx bx-menu text-info'></i>
                 <span>Navigasi & Menu</span>
@@ -324,6 +318,12 @@
                     <a href="{{ route('admin.menus.index') }}" class="menu-link d-flex align-items-center gap-2 text-decoration-none">
                         <i class='bx bx-list-ol text-info'></i>
                         <span>Menu Utama</span>
+                    </a>
+                </li>
+                <li class="menu-item {{ request()->routeIs('admin.pages.*') ? 'active' : '' }}">
+                    <a href="{{ route('admin.pages.index') }}" class="menu-link d-flex align-items-center gap-2 text-decoration-none">
+                        <i class='bx bx-file-blank text-success'></i>
+                        <span>Halaman</span>
                     </a>
                 </li>
             </ul>
