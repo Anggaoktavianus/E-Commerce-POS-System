@@ -189,6 +189,28 @@
       color: #fff !important;
     }
 
+    /* Remove dots/bullets from submenu and sub-submenu */
+    .menu-sub,
+    .menu-sub .menu-sub {
+      list-style: none !important;
+      padding-left: 0 !important;
+    }
+
+    .menu-sub .menu-item,
+    .menu-sub .menu-sub .menu-item {
+      list-style: none !important;
+    }
+
+    .menu-sub .menu-item::before,
+    .menu-sub .menu-sub .menu-item::before {
+      content: none !important;
+    }
+
+    .menu-sub .menu-item::marker,
+    .menu-sub .menu-sub .menu-item::marker {
+      display: none !important;
+    }
+
     /* Enhanced Card Styles */
     .card {
       border: 1px solid #e7e7e7 !important;
