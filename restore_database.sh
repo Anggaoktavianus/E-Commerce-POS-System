@@ -23,13 +23,14 @@ fi
 export $(grep -v '^#' .env | grep -E '^DB_' | xargs)
 
 DB_HOST=${DB_HOST:-127.0.0.1}
-DB_PORT=${DB_PORT:-3306}
-DB_DATABASE=${DB_DATABASE:-samsae}
+DB_PORT=${DB_PORT:-8889}
+DB_DATABASE=${DB_DATABASE:-db_samsae_new}
 DB_USERNAME=${DB_USERNAME:-root}
 DB_PASSWORD=${DB_PASSWORD:-}
 
 # Check if backup file is provided
-BACKUP_FILE=${1:-db_samsae_new_2025-12-12.sql}
+# Default to latest backup
+BACKUP_FILE=${1:-db_samsae_new_2025-12-18.sql}
 
 if [ ! -f "$BACKUP_FILE" ]; then
     echo -e "${RED}Error: Backup file '$BACKUP_FILE' not found!${NC}"

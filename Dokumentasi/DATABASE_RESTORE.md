@@ -40,11 +40,15 @@ mysql -u root -p samsae < db_samsae_new_2025-12-12.sql
 
 ## 📁 File Backup yang Tersedia
 
-1. **db_samsae_new_2025-12-12.sql** (Backup terbaru - 12 Desember 2025)
-   - File besar (90,228 lines)
-   - Kemungkinan berisi data lengkap
+1. **db_samsae_new_2025-12-18.sql** (Backup TERBARU - 18 Desember 2025) ⭐
+   - Backup paling baru dan lengkap
+   - Disarankan untuk restore
 
-2. **db_samsae_2025-12-01.sql** (Backup lama - 1 Desember 2025)
+2. **db_samsae_new_2025-12-12.sql** (Backup - 12 Desember 2025)
+   - File besar (90,228 lines)
+   - Berisi data lengkap
+
+3. **db_samsae_2025-12-01.sql** (Backup lama - 1 Desember 2025)
    - File lebih kecil (1,158 lines)
    - Mungkin hanya struktur atau data awal
 
