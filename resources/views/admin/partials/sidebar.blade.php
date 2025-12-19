@@ -367,9 +367,9 @@
         <li class="menu-header small text-uppercase">
             <span class="menu-header-text">Sistem</span>
         </li>
-        <li class="menu-item">
-            <a href="javascript:void(0);" class="menu-link d-flex align-items-center gap-2 text-decoration-none">
-                <i class='bx bx-help-circle text-muted'></i>
+        <li class="menu-item {{ request()->routeIs('admin.help.*') ? 'active' : '' }}">
+            <a href="{{ route('admin.help.index') }}" class="menu-link d-flex align-items-center gap-2 text-decoration-none">
+                <i class='bx bx-help-circle text-info'></i>
                 <span>Bantuan</span>
             </a>
         </li>
