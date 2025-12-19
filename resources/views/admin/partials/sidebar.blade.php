@@ -10,7 +10,7 @@
         <i class="bx bx-chevron-left bx-sm align-middle"></i>
         </a>
     </div>
-    
+
     <!-- Admin User Info -->
     <div class="menu-inner-shadow"></div>
     <div class="px-3 py-2 border-bottom">
@@ -24,7 +24,7 @@
             </div>
         </div>
     </div>
-    
+
     <ul class="menu-inner py-1">
         <!-- Dashboard -->
         <li class="menu-item {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
@@ -33,19 +33,18 @@
                 <span>Dashboard</span>
             </a>
         </li>
-        
+
         <!-- Quick Stats -->
         <li class="menu-header small text-uppercase">
             <span class="menu-header-text">Ringkasan</span>
         </li>
-        <li class="menu-item">
-            <a href="javascript:void(0);" class="menu-link d-flex align-items-center gap-2 text-decoration-none">
+        <li class="menu-item {{ request()->routeIs('admin.statistics') ? 'active' : '' }}">
+            <a href="{{ route('admin.statistics') }}" class="menu-link d-flex align-items-center gap-2 text-decoration-none">
                 <i class='bx bx-chart text-info'></i>
                 <span>Statistik</span>
-                <span class="badge bg-label-primary rounded-pill ms-auto">12</span>
             </a>
         </li>
-        
+
         <!-- Content Management -->
         <li class="menu-header small text-uppercase">
             <span class="menu-header-text">Konten</span>
@@ -77,18 +76,18 @@
                 <span class="badge bg-label-warning rounded-pill ms-auto">8</span>
             </a>
         </li>
-        <li class="menu-item {{ request()->routeIs('admin.categories.*') ? 'active open' : '' }}">
+        {{-- <li class="menu-item {{ request()->routeIs('admin.categories.*') ? 'active open' : '' }}">
             <a href="{{ route('admin.categories.index') }}" class="menu-link d-flex align-items-center gap-2 text-decoration-none">
                 <i class='bx bx-category text-info'></i>
                 <span>Kategori</span>
             </a>
-        </li>
-        
+        </li> --}}
+
         <!-- Website Management -->
         <li class="menu-header small text-uppercase">
             <span class="menu-header-text">Pengaturan Website</span>
         </li>
-        
+
         <!-- General Settings -->
         <li class="menu-item {{ request()->routeIs('admin.settings.*') ? 'active open' : '' }}">
             <a href="{{ route('admin.settings.index') }}" class="menu-link d-flex align-items-center gap-2 text-decoration-none">
@@ -96,7 +95,7 @@
                 <span>Pengaturan Umum</span>
             </a>
         </li>
-        
+
         <!-- E-commerce Management -->
         <!-- <li class="menu-item {{ request()->routeIs('admin.products.*','admin.categories.*','admin.collections.*','admin.orders.*') ? 'active open' : '' }}">
             <a href="javascript:void(0);" class="menu-link menu-toggle">
@@ -200,6 +199,88 @@
                         <span>Pesanan</span>
                     </a>
                 </li>
+                <li class="menu-item {{ request()->routeIs('admin.stock_movements.*','admin.products.stock_history') ? 'active open' : '' }}">
+                    <a href="{{ route('admin.stock_movements.index') }}" class="menu-link d-flex align-items-center gap-2 text-decoration-none">
+                        <i class='bx bx-history text-info'></i>
+                        <span>Riwayat Stok</span>
+                    </a>
+                </li>
+                <li class="menu-item {{ request()->routeIs('admin.pos.*') ? 'active open' : '' }}">
+                    <a href="javascript:void(0);" class="menu-link menu-toggle">
+                        <i class='bx bx-calculator text-warning'></i>
+                        <div>POS & Kasir</div>
+                    </a>
+                    <ul class="menu-sub">
+                        <li class="menu-item {{ request()->routeIs('admin.pos.dashboard') ? 'active open' : '' }}">
+                            <a href="{{ route('admin.pos.dashboard') }}" class="menu-link d-flex align-items-center gap-2 text-decoration-none">
+                                <i class='bx bx-home text-warning'></i>
+                                <span>Dashboard POS</span>
+                            </a>
+                        </li>
+                        <li class="menu-item {{ request()->routeIs('admin.pos.shifts.*') ? 'active open' : '' }}">
+                            <a href="{{ route('admin.pos.shifts.index') }}" class="menu-link d-flex align-items-center gap-2 text-decoration-none">
+                                <i class='bx bx-time text-warning'></i>
+                                <span>Kelola Shift</span>
+                            </a>
+                        </li>
+                        <li class="menu-item {{ request()->routeIs('admin.pos.transactions.*') ? 'active open' : '' }}">
+                            <a href="{{ route('admin.pos.transactions.index') }}" class="menu-link d-flex align-items-center gap-2 text-decoration-none">
+                                <i class='bx bx-receipt text-warning'></i>
+                                <span>Transaksi</span>
+                            </a>
+                        </li>
+                        <li class="menu-item {{ request()->routeIs('admin.pos.reports.*') ? 'active open' : '' }}">
+                            <a href="javascript:void(0);" class="menu-link menu-toggle d-flex align-items-center gap-2 text-decoration-none">
+                                <i class='bx bx-bar-chart text-info'></i>
+                                <div>Laporan</div>
+                            </a>
+                            <ul class="menu-sub">
+                                <li class="menu-item {{ request()->routeIs('admin.pos.reports.daily') ? 'active' : '' }}">
+                                    <a href="{{ route('admin.pos.reports.daily') }}" class="menu-link d-flex align-items-center gap-2 text-decoration-none">
+                                        <i class='bx bx-calendar text-info'></i>
+                                        <span>Harian</span>
+                                    </a>
+                                </li>
+                                <li class="menu-item {{ request()->routeIs('admin.pos.reports.product') ? 'active' : '' }}">
+                                    <a href="{{ route('admin.pos.reports.product') }}" class="menu-link d-flex align-items-center gap-2 text-decoration-none">
+                                        <i class='bx bx-package text-info'></i>
+                                        <span>Produk</span>
+                                    </a>
+                                </li>
+                                <li class="menu-item {{ request()->routeIs('admin.pos.reports.category') ? 'active' : '' }}">
+                                    <a href="{{ route('admin.pos.reports.category') }}" class="menu-link d-flex align-items-center gap-2 text-decoration-none">
+                                        <i class='bx bx-category text-info'></i>
+                                        <span>Kategori</span>
+                                    </a>
+                                </li>
+                                <li class="menu-item {{ request()->routeIs('admin.pos.reports.payment') ? 'active' : '' }}">
+                                    <a href="{{ route('admin.pos.reports.payment') }}" class="menu-link d-flex align-items-center gap-2 text-decoration-none">
+                                        <i class='bx bx-credit-card text-info'></i>
+                                        <span>Pembayaran</span>
+                                    </a>
+                                </li>
+                                <li class="menu-item {{ request()->routeIs('admin.pos.reports.cashier') ? 'active' : '' }}">
+                                    <a href="{{ route('admin.pos.reports.cashier') }}" class="menu-link d-flex align-items-center gap-2 text-decoration-none">
+                                        <i class='bx bx-user text-info'></i>
+                                        <span>Kasir</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="menu-item {{ request()->routeIs('admin.pos.settings.*') ? 'active open' : '' }}">
+                            <a href="{{ route('admin.pos.settings.index') }}" class="menu-link d-flex align-items-center gap-2 text-decoration-none">
+                                <i class='bx bx-cog text-warning'></i>
+                                <span>Settings</span>
+                            </a>
+                        </li>
+                        <li class="menu-item {{ request()->routeIs('admin.pos.receipt-templates.*') ? 'active open' : '' }}">
+                            <a href="{{ route('admin.pos.receipt-templates.index') }}" class="menu-link d-flex align-items-center gap-2 text-decoration-none">
+                                <i class='bx bx-receipt text-info'></i>
+                                <span>Receipt Templates</span>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
                 <li class="menu-item {{ request()->routeIs('admin.shipping.*') ? 'active open' : '' }}">
                     <a href="javascript:void(0);" class="menu-link menu-toggle">
                         <i class='bx bx-truck text-primary'></i>
@@ -244,7 +325,7 @@
                 </li> -->
             </ul>
         </li>
-        
+
         <!-- Content Management -->
         <li class="menu-item {{ request()->routeIs('admin.features.*','admin.testimonials.*','admin.facts.*','admin.social_links.*') ? 'active open' : '' }}">
             <a href="javascript:void(0);" class="menu-link menu-toggle d-flex align-items-center gap-2 text-decoration-none">
@@ -278,7 +359,7 @@
                 </li>
             </ul>
         </li>
-        
+
         <!-- Media Management -->
         <li class="menu-item {{ request()->routeIs('admin.carousels.*','admin.slides.*','admin.banners.*','admin.collections.*','admin.collection_items.*') ? 'active open' : '' }}">
             <a href="javascript:void(0);" class="menu-link menu-toggle d-flex align-items-center gap-2 text-decoration-none">
@@ -306,7 +387,7 @@
                 </li>
             </ul>
         </li>
-        
+
         <!-- User Management -->
         <li class="menu-header small text-uppercase">
             <span class="menu-header-text">Pengguna</span>
@@ -325,7 +406,7 @@
                 <span class="badge bg-label-success rounded-pill ms-auto">12</span>
             </a>
         </li>
-        
+
         <!-- System -->
         <li class="menu-header small text-uppercase">
             <span class="menu-header-text">Sistem</span>

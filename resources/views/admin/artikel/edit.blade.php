@@ -5,21 +5,21 @@
 @section('content')
 <div class="container-xxl flex-grow-1 container-p-y">
   <!-- Header Section -->
-  <div class="card mb-4">
+  <div class="card page-header-card mb-4">
     <div class="card-body">
-      <div class="d-flex justify-content-between align-items-center">
+      <div class="d-flex justify-content-between align-items-center flex-wrap">
         <div>
           <h4 class="mb-1">
-            <i class="bx bx-edit me-2"></i>Edit Artikel
+            <i class="bx bx-edit me-2 text-primary"></i>Edit Artikel
           </h4>
           <p class="text-muted mb-0">Perbarui informasi artikel</p>
         </div>
-        <div>
-          <a href="{{ route('admin.artikel.show', $artikel) }}" class="btn btn-info me-2">
-            <i class="bx bx-eye me-1"></i> Lihat
+        <div class="d-flex gap-2 mt-2 mt-md-0">
+          <a href="{{ route('admin.artikel.show', $artikel) }}" class="btn btn-info btn-modern">
+            <i class="bx bx-eye me-1"></i>Lihat
           </a>
-          <a href="{{ route('admin.artikel.index') }}" class="btn btn-secondary">
-            <i class="bx bx-arrow-back me-1"></i> Kembali
+          <a href="{{ route('admin.artikel.index') }}" class="btn btn-secondary btn-modern">
+            <i class="bx bx-arrow-back me-1"></i>Kembali
           </a>
         </div>
       </div>
@@ -34,9 +34,9 @@
     <div class="row">
       <!-- Main Content -->
       <div class="col-md-8">
-        <div class="card mb-4">
+        <div class="card form-card mb-4">
           <div class="card-header">
-            <h5 class="mb-0">
+            <h5 class="card-title mb-0 fw-bold text-white">
               <i class="bx bx-edit me-2"></i>Konten Artikel
             </h5>
           </div>
@@ -203,7 +203,7 @@
               </h6>
               <div class="row small">
                 <div class="col-6">
-                  <strong>Views:</strong> {{ $artikel->views->format() }}
+                  <strong>Views:</strong> {{ number_format($artikel->views) }}
                 </div>
                 <div class="col-6">
                   <strong>Reading Time:</strong> {{ $artikel->reading_time }} min

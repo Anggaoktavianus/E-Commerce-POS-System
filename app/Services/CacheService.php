@@ -42,7 +42,14 @@ class CacheService
                 return [];
             }
             
-            return DB::table("loc_{$type}")->orderBy('name')->get()->toArray();
+            $query = DB::table("loc_{$type}")->orderBy('name');
+            
+            // For provinsis, only return ID 31, 32, 33, 34, 35
+            if ($type === 'provinsis') {
+                $query->whereIn('id', [31, 32, 33, 34, 35]);
+            }
+            
+            return $query->get()->toArray();
         });
     }
 

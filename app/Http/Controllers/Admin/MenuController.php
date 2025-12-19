@@ -80,6 +80,15 @@ class MenuController extends Controller
             DB::table('navigation_menus')->where('id',$id)->delete();
             $this->flushMenusCache($menu->location);
         }
+        
+        // Return JSON response for AJAX requests
+        if (request()->ajax() || request()->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Menu deleted successfully'
+            ]);
+        }
+        
         return redirect()->route('admin.menus.index')->with('success','Menu deleted');
     }
 

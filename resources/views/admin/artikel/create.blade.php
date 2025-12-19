@@ -5,17 +5,17 @@
 @section('content')
 <div class="container-xxl flex-grow-1 container-p-y">
   <!-- Header Section -->
-  <div class="card mb-4">
+  <div class="card page-header-card mb-4">
     <div class="card-body">
-      <div class="d-flex justify-content-between align-items-center">
+      <div class="d-flex justify-content-between align-items-center flex-wrap">
         <div>
           <h4 class="mb-1">
-            <i class="bx bx-plus me-2"></i>Tambah Artikel
+            <i class="bx bx-plus me-2 text-primary"></i>Tambah Artikel
           </h4>
           <p class="text-muted mb-0">Buat artikel baru untuk website</p>
         </div>
-        <a href="{{ route('admin.artikel.index') }}" class="btn btn-secondary">
-          <i class="bx bx-arrow-back me-1"></i> Kembali
+        <a href="{{ route('admin.artikel.index') }}" class="btn btn-secondary btn-modern mt-2 mt-md-0">
+          <i class="bx bx-arrow-back me-1"></i>Kembali
         </a>
       </div>
     </div>
@@ -28,9 +28,9 @@
     <div class="row">
       <!-- Main Content -->
       <div class="col-md-8">
-        <div class="card mb-4">
+        <div class="card form-card mb-4">
           <div class="card-header">
-            <h5 class="mb-0">
+            <h5 class="card-title mb-0 fw-bold text-white">
               <i class="bx bx-edit me-2"></i>Konten Artikel
             </h5>
           </div>

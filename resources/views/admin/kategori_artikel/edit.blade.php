@@ -5,41 +5,41 @@
 @section('content')
 <div class="container-xxl flex-grow-1 container-p-y">
   <!-- Header Section -->
-  <div class="card mb-4">
+  <div class="card page-header-card mb-4">
     <div class="card-body">
-      <div class="d-flex justify-content-between align-items-center">
+      <div class="d-flex justify-content-between align-items-center flex-wrap">
         <div>
           <h4 class="mb-1">
-            <i class="bx bx-edit me-2"></i>Edit Kategori Artikel
+            <i class="bx bx-edit me-2 text-primary"></i>Edit Kategori Artikel
           </h4>
           <p class="text-muted mb-0">Perbarui informasi kategori artikel</p>
         </div>
-        <a href="{{ route('admin.kategori_artikel.index') }}" class="btn btn-secondary">
-          <i class="bx bx-arrow-back me-1"></i> Kembali
+        <a href="{{ route('admin.kategori_artikel.index') }}" class="btn btn-secondary btn-modern mt-2 mt-md-0">
+          <i class="bx bx-arrow-back me-1"></i>Kembali
         </a>
       </div>
     </div>
   </div>
 
   <!-- Form Section -->
-  <div class="card">
+  <div class="card form-card">
     <div class="card-header">
-      <h5 class="mb-0">
-        <i class="bx bx-edit me-2"></i>Informasi Kategori
+      <h5 class="card-title mb-0 text-white fw-bold">
+        <i class="bx bx-edit me-2 "></i>Informasi Kategori
       </h5>
     </div>
     <div class="card-body">
       <form action="{{ route('admin.kategori_artikel.update', $kategoriArtikel) }}" method="POST" enctype="multipart/form-data">
         @csrf
         @method('PUT')
-        
+
         <div class="row">
           <div class="col-md-8">
             <!-- Nama Kategori -->
             <div class="mb-3">
               <label for="nama" class="form-label">Nama Kategori <span class="text-danger">*</span></label>
-              <input type="text" class="form-control @error('nama') is-invalid @enderror" 
-                     id="nama" name="nama" value="{{ old('nama', $kategoriArtikel->nama) }}" 
+              <input type="text" class="form-control @error('nama') is-invalid @enderror"
+                     id="nama" name="nama" value="{{ old('nama', $kategoriArtikel->nama) }}"
                      placeholder="Masukkan nama kategori" required>
               @error('nama')
                 <div class="invalid-feedback">{{ $message }}</div>
@@ -50,8 +50,8 @@
             <!-- Slug -->
             <div class="mb-3">
               <label for="slug" class="form-label">Slug</label>
-              <input type="text" class="form-control @error('slug') is-invalid @enderror" 
-                     id="slug" name="slug" value="{{ old('slug', $kategoriArtikel->slug) }}" 
+              <input type="text" class="form-control @error('slug') is-invalid @enderror"
+                     id="slug" name="slug" value="{{ old('slug', $kategoriArtikel->slug) }}"
                      placeholder="slug-otomatis-dari-nama">
               @error('slug')
                 <div class="invalid-feedback">{{ $message }}</div>
@@ -62,8 +62,8 @@
             <!-- Deskripsi -->
             <div class="mb-3">
               <label for="deskripsi" class="form-label">Deskripsi</label>
-              <textarea class="form-control @error('deskripsi') is-invalid @enderror" 
-                        id="deskripsi" name="deskripsi" rows="4" 
+              <textarea class="form-control @error('deskripsi') is-invalid @enderror"
+                        id="deskripsi" name="deskripsi" rows="4"
                         placeholder="Deskripsi kategori artikel">{{ old('deskripsi', $kategoriArtikel->deskripsi) }}</textarea>
               @error('deskripsi')
                 <div class="invalid-feedback">{{ $message }}</div>
@@ -75,16 +75,16 @@
             <div class="mb-3">
               <label class="form-label">Status <span class="text-danger">*</span></label>
               <div class="form-check form-check-inline">
-                <input class="form-check-input @error('status') is-invalid @enderror" 
-                       type="radio" name="status" id="status_aktif" value="aktif" 
+                <input class="form-check-input @error('status') is-invalid @enderror"
+                       type="radio" name="status" id="status_aktif" value="aktif"
                        {{ old('status', $kategoriArtikel->status) == 'aktif' ? 'checked' : '' }} required>
                 <label class="form-check-label" for="status_aktif">
                   <span class="badge bg-success">Aktif</span>
                 </label>
               </div>
               <div class="form-check form-check-inline">
-                <input class="form-check-input @error('status') is-invalid @enderror" 
-                       type="radio" name="status" id="status_nonaktif" value="nonaktif" 
+                <input class="form-check-input @error('status') is-invalid @enderror"
+                       type="radio" name="status" id="status_nonaktif" value="nonaktif"
                        {{ old('status', $kategoriArtikel->status) == 'nonaktif' ? 'checked' : '' }}>
                 <label class="form-check-label" for="status_nonaktif">
                   <span class="badge bg-secondary">Non-Aktif</span>
@@ -127,7 +127,7 @@
                     <i class="bx bx-image bx-5x text-muted"></i>
                   @endif
                 </div>
-                <input type="file" class="form-control @error('gambar') is-invalid @enderror" 
+                <input type="file" class="form-control @error('gambar') is-invalid @enderror"
                        id="gambar" name="gambar" accept="image/*" onchange="previewImage(event)">
                 @error('gambar')
                   <div class="invalid-feedback">{{ $message }}</div>
@@ -180,7 +180,7 @@
     document.getElementById('nama').addEventListener('input', function() {
         const nama = this.value;
         const slugField = document.getElementById('slug');
-        
+
         if (!slugField.value || slugField.dataset.original === slugField.value) {
             slugField.value = nama.toLowerCase()
                 .replace(/[^a-z0-9\s-]/g, '')
@@ -195,7 +195,7 @@
     function previewImage(event) {
         const file = event.target.files[0];
         const preview = document.getElementById('imagePreview');
-        
+
         if (file) {
             const reader = new FileReader();
             reader.onload = function(e) {

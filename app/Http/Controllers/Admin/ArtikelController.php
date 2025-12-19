@@ -23,18 +23,18 @@ class ArtikelController extends Controller
     public function data()
     {
         $artikel = Artikel::with(['kategoriArtikel', 'user'])->get();
-        
+
         return DataTables::of($artikel)
             ->addIndexColumn()
             ->addColumn('actions', function ($artikel) {
                 return '
-                    <a href="'.route('admin.artikel.show', $artikel).'" class="btn btn-sm btn-info" title="View">
+                    <a href="'.route('admin.artikel.show', $artikel).'" class="btn rounded-pill btn-xs btn-outline-info" title="View">
                         <i class="bx bx-show"></i>
                     </a>
-                    <a href="'.route('admin.artikel.edit', $artikel).'" class="btn btn-sm btn-warning" title="Edit">
+                    <a href="'.route('admin.artikel.edit', $artikel).'" class="btn rounded-pill btn-xs btn-outline-warning" title="Edit">
                         <i class="bx bx-edit"></i>
                     </a>
-                    <button type="button" class="btn btn-sm btn-danger" onclick="deleteItem('.$artikel->id.')" title="Delete">
+                    <button type="button" class="btn rounded-pill btn-xs btn-outline-danger" onclick="deleteItem('.$artikel->id.')" title="Delete">
                         <i class="bx bx-trash"></i>
                     </button>
                 ';
@@ -80,27 +80,27 @@ class ArtikelController extends Controller
     public function store(StoreArtikelRequest $request)
     {
         $data = $request->validated();
-        
+
         if ($request->hasFile('gambar_utama')) {
             $data['gambar_utama'] = $request->file('gambar_utama')->store('artikel', 'public');
         }
-        
+
         if ($request->hasFile('gambar_thumbnail')) {
             $data['gambar_thumbnail'] = $request->file('gambar_thumbnail')->store('artikel/thumbnails', 'public');
         }
-        
+
         if (empty($data['slug'])) {
             $data['slug'] = Str::slug($data['judul']);
         }
-        
+
         $data['user_id'] = auth()->id();
-        
+
         if ($data['status'] === 'published' && !isset($data['published_at'])) {
             $data['published_at'] = now();
         }
-        
+
         Artikel::create($data);
-        
+
         return redirect()->route('admin.artikel.index')
             ->with('success', 'Artikel berhasil ditambahkan');
     }
@@ -120,31 +120,31 @@ class ArtikelController extends Controller
     public function update(UpdateArtikelRequest $request, Artikel $artikel)
     {
         $data = $request->validated();
-        
+
         if ($request->hasFile('gambar_utama')) {
             if ($artikel->gambar_utama) {
                 Storage::disk('public')->delete($artikel->gambar_utama);
             }
             $data['gambar_utama'] = $request->file('gambar_utama')->store('artikel', 'public');
         }
-        
+
         if ($request->hasFile('gambar_thumbnail')) {
             if ($artikel->gambar_thumbnail) {
                 Storage::disk('public')->delete($artikel->gambar_thumbnail);
             }
             $data['gambar_thumbnail'] = $request->file('gambar_thumbnail')->store('artikel/thumbnails', 'public');
         }
-        
+
         if (empty($data['slug'])) {
             $data['slug'] = Str::slug($data['judul']);
         }
-        
+
         if ($data['status'] === 'published' && !$artikel->published_at) {
             $data['published_at'] = now();
         }
-        
+
         $artikel->update($data);
-        
+
         return redirect()->route('admin.artikel.index')
             ->with('success', 'Artikel berhasil diperbarui');
     }
@@ -154,13 +154,13 @@ class ArtikelController extends Controller
         if ($artikel->gambar_utama) {
             Storage::disk('public')->delete($artikel->gambar_utama);
         }
-        
+
         if ($artikel->gambar_thumbnail) {
             Storage::disk('public')->delete($artikel->gambar_thumbnail);
         }
-        
+
         $artikel->delete();
-        
+
         return response()->json([
             'success' => true,
             'message' => 'Artikel berhasil dihapus'

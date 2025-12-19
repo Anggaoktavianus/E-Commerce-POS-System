@@ -75,30 +75,19 @@ class HomeController extends Controller
         // Features
         $features = Cache::remember('home.features', 300, fn() => DB::table('features')->where('is_active', true)->orderBy('sort_order')->get());
 
-        // Categories & Products (dynamic tabs)
-        $categoriesTabs = Cache::remember('home.categories', 300, fn() => DB::table('categories')->where('is_active', true)->orderBy('name')->get());
+        // Fetch active stores for store selection
+        $stores = Cache::remember('home.stores', 300, fn() => DB::table('stores')->where('is_active', true)->orderBy('name')->get());
+        
+        // Get selected store from request (if any) - decode encoded store_id
+        $requestedStoreId = request('store_id');
+        $selectedStoreId = null;
+        if ($requestedStoreId && $requestedStoreId !== '') {
+            $decodedId = decode_id($requestedStoreId);
+            if ($decodedId !== null) {
+                $selectedStoreId = $decodedId;
+            }
+        }
 
-        // All products list for the first tab (paginated)
-        // Do not cache paginator to keep navigation accurate
-        $allProducts = DB::table('products')
-            ->where('is_active', true)
-            ->orderByDesc('is_featured')
-            ->orderBy('name')
-            ->paginate(12);
-
-        // Attach products for each category (limit 8), kept uncached for freshness
-        $categoriesTabs = $categoriesTabs->map(function ($cat) {
-            $cat->products = DB::table('products')
-                ->join('product_categories', 'products.id', '=', 'product_categories.product_id')
-                ->where('product_categories.category_id', $cat->id)
-                ->where('products.is_active', true)
-                ->select('products.*')
-                ->orderByDesc('products.is_featured')
-                ->orderBy('products.name')
-                ->limit(8)
-                ->get();
-            return $cat;
-        });
 
         // Specific Vegetables carousel data (backward compatibility with the template section)
         $vegetableProducts = (function(){
@@ -106,9 +95,10 @@ class HomeController extends Controller
             if (!$veggiesCat) return collect();
             return DB::table('products')
                 ->join('product_categories', 'products.id', '=', 'product_categories.product_id')
+                ->leftJoin('stores', 'products.store_id', '=', 'stores.id')
                 ->where('product_categories.category_id', $veggiesCat->id)
                 ->where('products.is_active', true)
-                ->select('products.*')
+                ->select('products.*', 'stores.short_name as store_short_name')
                 ->orderByDesc('products.is_featured')
                 ->orderBy('products.name')
                 ->limit(8)
@@ -126,8 +116,9 @@ class HomeController extends Controller
             if (!$bestseller) return collect();
             return DB::table('home_collection_items')
                 ->join('products', 'home_collection_items.product_id', '=', 'products.id')
+                ->leftJoin('stores', 'products.store_id', '=', 'stores.id')
                 ->where('home_collection_items.home_collection_id', $bestseller->id)
-                ->select('products.*', 'home_collection_items.sort_order')
+                ->select('products.*', 'home_collection_items.sort_order', 'stores.short_name as store_short_name')
                 ->orderBy('home_collection_items.sort_order')
                 ->get();
         });
@@ -143,8 +134,8 @@ class HomeController extends Controller
             'footerMenus' => $footerMenus,
             'slides' => $slides,
             'features' => $features,
-            'allProducts' => $allProducts,
-            'categoriesTabs' => $categoriesTabs,
+            'stores' => $stores,
+            'selectedStoreId' => $selectedStoreId,
             'bannersTop' => $bannersTop,
             'bannersMiddle' => $bannersMiddle,
             'bannersBottom' => $bannersBottom,

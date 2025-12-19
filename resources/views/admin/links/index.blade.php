@@ -5,21 +5,21 @@
 @section('content')
 <div class="container-xxl flex-grow-1 container-p-y">
   <!-- Header Section -->
-  <div class="card mb-4">
+  <div class="card page-header-card mb-4">
     <div class="card-body">
-      <div class="d-flex justify-content-between align-items-center">
+      <div class="d-flex justify-content-between align-items-center flex-wrap">
         <div>
           <h4 class="mb-1">
-            <i class="bx bx-link me-2"></i>Link Menu: {{ $parent->name }}
+            <i class="bx bx-link me-2 text-primary"></i>Link Menu: {{ $parent->name }}
           </h4>
           <p class="text-muted mb-0">Kelola link untuk menu "{{ $parent->name }}" ({{ $parent->location }})</p>
         </div>
-        <div>
-          <a href="{{ route('admin.menus.index') }}" class="btn btn-secondary me-2">
-            <i class="fas fa-arrow-left me-1"></i>Kembali ke Menu
+        <div class="d-flex gap-2 mt-2 mt-md-0">
+          <a href="{{ route('admin.menus.index') }}" class="btn btn-secondary btn-modern">
+            <i class="bx bx-arrow-back me-1"></i>Kembali ke Menu
           </a>
-          <a href="{{ route('admin.links.create', $parent->id) }}" class="btn btn-primary">
-            <i class="bx bx-plus me-1"></i> Tambah Link
+          <a href="{{ route('admin.links.create', $parent->id) }}" class="btn btn-primary btn-modern">
+            <i class="bx bx-plus me-1"></i>Tambah Link
           </a>
         </div>
       </div>
@@ -27,55 +27,63 @@
   </div>
 
   <!-- Quick Stats -->
-  <div class="row mb-4">
-    <div class="col-md-3">
-      <div class="card bg-primary text-white">
-        <div class="card-body">
-          <div class="d-flex justify-content-between">
-            <div>
-              <h6 class="card-title">Total Link</h6>
-              <h3 class="mb-0" id="totalLinks">0</h3>
+  <div class="row g-4 mb-4">
+    <div class="col-6 col-md-3">
+      <div class="card stat-card bg-primary text-white">
+        <div class="card-body p-4">
+          <div class="d-flex justify-content-between align-items-start">
+            <div class="flex-grow-1">
+              <p class="stat-label mb-2">Total Link</p>
+              <h3 class="stat-value mb-0" id="totalLinks">0</h3>
             </div>
-            <i class="bx bx-link bx-lg"></i>
+            <div class="stat-icon">
+              <i class="bx bx-link"></i>
+            </div>
           </div>
         </div>
       </div>
     </div>
-    <div class="col-md-3">
-      <div class="card bg-success text-white">
-        <div class="card-body">
-          <div class="d-flex justify-content-between">
-            <div>
-              <h6 class="card-title">Aktif</h6>
-              <h3 class="mb-0" id="activeLinks">0</h3>
+    <div class="col-6 col-md-3">
+      <div class="card stat-card bg-success text-white">
+        <div class="card-body p-4">
+          <div class="d-flex justify-content-between align-items-start">
+            <div class="flex-grow-1">
+              <p class="stat-label mb-2">Aktif</p>
+              <h3 class="stat-value mb-0" id="activeLinks">0</h3>
             </div>
-            <i class="bx bx-show bx-lg"></i>
+            <div class="stat-icon">
+              <i class="bx bx-show"></i>
+            </div>
           </div>
         </div>
       </div>
     </div>
-    <div class="col-md-3">
-      <div class="card bg-warning text-white">
-        <div class="card-body">
-          <div class="d-flex justify-content-between">
-            <div>
-              <h6 class="card-title">Non-Aktif</h6>
-              <h3 class="mb-0" id="inactiveLinks">0</h3>
+    <div class="col-6 col-md-3">
+      <div class="card stat-card bg-warning text-white">
+        <div class="card-body p-4">
+          <div class="d-flex justify-content-between align-items-start">
+            <div class="flex-grow-1">
+              <p class="stat-label mb-2">Non-Aktif</p>
+              <h3 class="stat-value mb-0" id="inactiveLinks">0</h3>
             </div>
-            <i class="bx bx-hide bx-lg"></i>
+            <div class="stat-icon">
+              <i class="bx bx-hide"></i>
+            </div>
           </div>
         </div>
       </div>
     </div>
-    <div class="col-md-3">
-      <div class="card bg-info text-white">
-        <div class="card-body">
-          <div class="d-flex justify-content-between">
-            <div>
-              <h6 class="card-title">Lokasi Menu</h6>
-              <h3 class="mb-0">{{ $parent->location }}</h3>
+    <div class="col-6 col-md-3">
+      <div class="card stat-card bg-info text-white">
+        <div class="card-body p-4">
+          <div class="d-flex justify-content-between align-items-start">
+            <div class="flex-grow-1">
+              <p class="stat-label mb-2">Lokasi Menu</p>
+              <h3 class="stat-value mb-0" style="font-size: 1.5rem;">{{ $parent->location }}</h3>
             </div>
-            <i class="bx bx-location-pin bx-lg"></i>
+            <div class="stat-icon">
+              <i class="bx bx-location-pin"></i>
+            </div>
           </div>
         </div>
       </div>

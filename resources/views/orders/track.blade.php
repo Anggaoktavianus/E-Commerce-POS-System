@@ -357,13 +357,46 @@ body {
                             <i class="bx bx-truck"></i>
                         </div>
                         <div>
-                            <h6 class="mb-1">2-3 hari kerja</h6>
-                            <p class="text-muted mb-0">Estimasi waktu pengiriman</p>
+                            {{-- DISABLED: ETA dari tracking disembunyikan karena masih menggunakan Gosend --}}
+                            {{-- @if($hasTracking && $order->deliveryTracking)
+                                <h6 class="mb-1" id="etaDisplay">{{ $order->deliveryTracking->formatted_eta ?? 'Menghitung...' }}</h6>
+                                <p class="text-muted mb-0">Estimasi waktu tiba</p>
+                            @else --}}
+                                <h6 class="mb-1">1-2 Jam</h6>
+                                <p class="text-muted mb-0">Estimasi waktu pengiriman</p>
+                            {{-- @endif --}}
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+
+        <!-- Live Tracking Map (for instant delivery) -->
+        {{-- DISABLED: Live tracking disembunyikan karena masih menggunakan Gosend (kurir pihak ketiga) --}}
+        {{-- Aktifkan kembali jika sudah menggunakan kurir sendiri --}}
+        @if(false && $isInstantDelivery)
+        <div class="tracking-card mb-4">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5 class="mb-0"><i class="bx bx-map"></i> Live Tracking</h5>
+                <div>
+                    <span id="trackingStatusBadge" class="badge bg-{{ $order->deliveryTracking ? 'success' : 'warning' }}">
+                        {{ $order->deliveryTracking ? $order->deliveryTracking->status_label : 'Belum Dimulai' }}
+                    </span>
+                    @if($order->deliveryTracking && $order->deliveryTracking->driver)
+                        <span class="badge bg-info ms-2">
+                            <i class="bx bx-user"></i> Kurir: {{ $order->deliveryTracking->driver->name }}
+                        </span>
+                    @endif
+                </div>
+            </div>
+            <div id="liveTrackingMap" style="height: 500px; width: 100%; border-radius: 8px; overflow: hidden;"></div>
+            <div class="mt-3">
+                <small class="text-muted">
+                    <i class="bx bx-info-circle"></i> Peta akan otomatis memperbarui setiap 5 detik
+                </small>
+            </div>
+        </div>
+        @endif
 
         <!-- Order Summary -->
         <div class="summary-table">
@@ -405,4 +438,197 @@ body {
             @endif
         </div>
     </div>
+
+{{-- DISABLED: Live tracking JavaScript disembunyikan karena masih menggunakan Gosend --}}
+{{-- Aktifkan kembali jika sudah menggunakan kurir sendiri --}}
+@if(false && $isInstantDelivery)
+@push('scripts')
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<script>
+let trackingMap;
+let driverMarker;
+let destinationMarker;
+let routeLine;
+let trackingInterval;
+
+document.addEventListener('DOMContentLoaded', function() {
+    initTrackingMap();
+    // Start auto-refresh for instant delivery (will update when driver starts tracking)
+    startAutoRefresh();
+});
+
+function initTrackingMap() {
+    @php
+        $trackingData = $order->deliveryTracking ? [
+            'id' => $order->deliveryTracking->id,
+            'status' => $order->deliveryTracking->status,
+            'latitude' => $order->deliveryTracking->latitude,
+            'longitude' => $order->deliveryTracking->longitude,
+            'address' => $order->deliveryTracking->address,
+            'driver' => $order->deliveryTracking->driver ? [
+                'name' => $order->deliveryTracking->driver->name,
+                'phone' => $order->deliveryTracking->driver->phone
+            ] : null
+        ] : null;
+    @endphp
+    const tracking = @json($trackingData);
+    const shippingAddress = @json($order->shipping_address ?? null);
+    
+    // Get destination coordinates
+    let destination = null;
+    if (shippingAddress && shippingAddress.latitude && shippingAddress.longitude) {
+        destination = {
+            lat: parseFloat(shippingAddress.latitude),
+            lng: parseFloat(shippingAddress.longitude),
+            address: shippingAddress.address || ''
+        };
+    }
+    
+    // Default center (Semarang)
+    let center = [-6.2088, 106.8456];
+    
+    // If we have driver location, use it as center
+    if (tracking && tracking.latitude && tracking.longitude) {
+        center = [parseFloat(tracking.latitude), parseFloat(tracking.longitude)];
+    } else if (destination) {
+        center = [destination.lat, destination.lng];
+    }
+    
+    // Initialize map
+    trackingMap = L.map('liveTrackingMap').setView(center, 13);
+    
+    // Add tile layer
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap contributors'
+    }).addTo(trackingMap);
+    
+    // Add destination marker
+    if (destination) {
+        destinationMarker = L.marker([destination.lat, destination.lng], {
+            icon: L.icon({
+                iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png',
+                iconSize: [25, 41],
+                iconAnchor: [12, 41],
+                popupAnchor: [1, -34]
+            })
+        }).addTo(trackingMap);
+        destinationMarker.bindPopup('<b>📍 Tujuan Pengiriman</b><br>' + (destination.address || ''));
+    } else {
+        // Show message if no destination coordinates
+        L.marker(center).addTo(trackingMap)
+            .bindPopup('<b>📍 Alamat Tujuan</b><br>Koordinat belum tersedia')
+            .openPopup();
+    }
+    
+    // Add driver marker if available
+    if (tracking && tracking.latitude && tracking.longitude) {
+        updateDriverMarker(tracking, destination);
+    } else {
+        // Show message that driver location will appear when tracking starts
+        const infoDiv = document.createElement('div');
+        infoDiv.className = 'alert alert-info mt-3 mb-0';
+        infoDiv.innerHTML = '<i class="bx bx-info-circle"></i> Peta tracking akan muncul setelah kurir mulai mengirim pesanan. Lokasi kurir akan terlihat di sini.';
+        const mapContainer = document.getElementById('liveTrackingMap');
+        if (mapContainer && mapContainer.parentElement) {
+            mapContainer.parentElement.appendChild(infoDiv);
+        }
+    }
+    
+    // Fit bounds to show both markers
+    if (driverMarker && destinationMarker) {
+        const group = new L.featureGroup([driverMarker, destinationMarker]);
+        trackingMap.fitBounds(group.getBounds().pad(0.1));
+    } else if (destination) {
+        trackingMap.setView([destination.lat, destination.lng], 15);
+    }
+}
+
+function updateDriverMarker(tracking, destination) {
+    // Remove existing marker
+    if (driverMarker) {
+        trackingMap.removeLayer(driverMarker);
+    }
+    
+    // Add new marker
+    driverMarker = L.marker([parseFloat(tracking.latitude), parseFloat(tracking.longitude)], {
+        icon: L.icon({
+            iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-green.png',
+            iconSize: [25, 41],
+            iconAnchor: [12, 41],
+            popupAnchor: [1, -34]
+        })
+    }).addTo(trackingMap);
+    
+    const driverInfo = tracking.driver ? 
+        `<b>🚚 Kurir: ${tracking.driver.name}</b><br>${tracking.address || 'Lokasi Kurir'}` :
+        'Lokasi Kurir';
+    driverMarker.bindPopup(driverInfo);
+    
+    // Draw route if we have both points
+    if (destination) {
+        drawRoute(
+            [parseFloat(tracking.latitude), parseFloat(tracking.longitude)],
+            [destination.lat, destination.lng]
+        );
+    }
+}
+
+function drawRoute(start, end) {
+    // Remove existing route
+    if (routeLine) {
+        trackingMap.removeLayer(routeLine);
+    }
+    
+    // Draw simple straight line (can be upgraded to use routing API)
+    routeLine = L.polyline([start, end], {
+        color: '#147440',
+        weight: 4,
+        opacity: 0.7,
+        dashArray: '10, 10'
+    }).addTo(trackingMap);
+}
+
+function startAutoRefresh() {
+    // Clear existing interval
+    if (trackingInterval) {
+        clearInterval(trackingInterval);
+    }
+    
+    // Refresh every 5 seconds
+    trackingInterval = setInterval(function() {
+        fetch(`/api/tracking/{{ $order->order_number }}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Update status badge
+                    if (data.tracking && document.getElementById('trackingStatusBadge')) {
+                        document.getElementById('trackingStatusBadge').textContent = data.tracking.status_label || 'Menunggu';
+                    }
+                    
+                    // Update ETA
+                    if (data.tracking && data.tracking.formatted_eta && document.getElementById('etaDisplay')) {
+                        document.getElementById('etaDisplay').textContent = data.tracking.formatted_eta;
+                    }
+                    
+                    // Update map if we have location
+                    if (data.tracking && data.tracking.current_location && data.order.destination) {
+                        updateDriverMarker(data.tracking, data.order.destination);
+                        
+                        // Remove info message if exists
+                        const infoDiv = document.querySelector('.alert-info');
+                        if (infoDiv) {
+                            infoDiv.remove();
+                        }
+                    }
+                }
+            })
+            .catch(error => {
+                console.error('Error refreshing tracking:', error);
+            });
+    }, 5000);
+}
+</script>
+@endpush
+@endif
 @endsection

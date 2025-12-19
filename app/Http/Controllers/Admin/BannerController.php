@@ -110,6 +110,15 @@ class BannerController extends Controller
             DB::table('banners')->where('id', $id)->delete();
             $this->flushCacheForPosition($banner->position);
         }
+        
+        // Return JSON response for AJAX requests
+        if (request()->ajax() || request()->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Banner deleted successfully'
+            ]);
+        }
+        
         return redirect()->route('admin.banners.index')->with('success', 'Banner deleted');
     }
 

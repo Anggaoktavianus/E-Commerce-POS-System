@@ -5,16 +5,16 @@
 @section('content')
 <div class="container-xxl flex-grow-1 container-p-y">
   <!-- Header Section -->
-  <div class="card mb-4">
+  <div class="card page-header-card mb-4">
     <div class="card-body">
-      <div class="d-flex justify-content-between align-items-center">
+      <div class="d-flex justify-content-between align-items-center flex-wrap">
         <div>
           <h4 class="mb-1">
-            <i class="bx bx-user me-2"></i>Kelola Pengguna
+            <i class="bx bx-user me-2 text-primary"></i>Kelola Pengguna
           </h4>
           <p class="text-muted mb-0">Buat dan kelola pengguna sistem dengan berbagai peran akses</p>
         </div>
-        <a href="{{ route('admin.users.create') }}" class="btn btn-primary">
+        <a href="{{ route('admin.users.create') }}" class="btn btn-primary btn-modern mt-2 mt-md-0">
           <i class="bx bx-plus me-1"></i> Tambah Pengguna
         </a>
       </div>
@@ -22,55 +22,63 @@
   </div>
 
   <!-- Quick Stats -->
-  <div class="row mb-4">
-    <div class="col-md-3">
-      <div class="card bg-primary text-white">
-        <div class="card-body">
-          <div class="d-flex justify-content-between">
-            <div>
-              <h6 class="card-title">Total Pengguna</h6>
-              <h3 class="mb-0" id="totalUsers">0</h3>
+  <div class="row g-4 mb-4">
+    <div class="col-6 col-md-3">
+      <div class="card stat-card bg-primary text-white">
+        <div class="card-body p-4">
+          <div class="d-flex justify-content-between align-items-start">
+            <div class="flex-grow-1">
+              <p class="stat-label mb-2">Total Pengguna</p>
+              <h3 class="stat-value mb-0" id="totalUsers">0</h3>
             </div>
-            <i class="bx bx-user bx-lg"></i>
+            <div class="stat-icon">
+              <i class="bx bx-user"></i>
+            </div>
           </div>
         </div>
       </div>
     </div>
-    <div class="col-md-3">
-      <div class="card bg-success text-white">
-        <div class="card-body">
-          <div class="d-flex justify-content-between">
-            <div>
-              <h6 class="card-title">Terverifikasi</h6>
-              <h3 class="mb-0" id="verifiedUsers">0</h3>
+    <div class="col-6 col-md-3">
+      <div class="card stat-card bg-success text-white">
+        <div class="card-body p-4">
+          <div class="d-flex justify-content-between align-items-start">
+            <div class="flex-grow-1">
+              <p class="stat-label mb-2">Terverifikasi</p>
+              <h3 class="stat-value mb-0" id="verifiedUsers">0</h3>
             </div>
-            <i class="bx bx-user-check bx-lg"></i>
+            <div class="stat-icon">
+              <i class="bx bx-user-check"></i>
+            </div>
           </div>
         </div>
       </div>
     </div>
-    <div class="col-md-3">
-      <div class="card bg-warning text-white">
-        <div class="card-body">
-          <div class="d-flex justify-content-between">
-            <div>
-              <h6 class="card-title">Menunggu</h6>
-              <h3 class="mb-0" id="pendingUsers">0</h3>
+    <div class="col-6 col-md-3">
+      <div class="card stat-card bg-warning text-white">
+        <div class="card-body p-4">
+          <div class="d-flex justify-content-between align-items-start">
+            <div class="flex-grow-1">
+              <p class="stat-label mb-2">Menunggu</p>
+              <h3 class="stat-value mb-0" id="pendingUsers">0</h3>
             </div>
-            <i class="bx bx-user-x bx-lg"></i>
+            <div class="stat-icon">
+              <i class="bx bx-user-x"></i>
+            </div>
           </div>
         </div>
       </div>
     </div>
-    <div class="col-md-3">
-      <div class="card bg-info text-white">
-        <div class="card-body">
-          <div class="d-flex justify-content-between">
-            <div>
-              <h6 class="card-title">Admin</h6>
-              <h3 class="mb-0" id="adminUsers">0</h3>
+    <div class="col-6 col-md-3">
+      <div class="card stat-card bg-info text-white">
+        <div class="card-body p-4">
+          <div class="d-flex justify-content-between align-items-start">
+            <div class="flex-grow-1">
+              <p class="stat-label mb-2">Admin</p>
+              <h3 class="stat-value mb-0" id="adminUsers">0</h3>
             </div>
-            <i class="bx bx-shield bx-lg"></i>
+            <div class="stat-icon">
+              <i class="bx bx-shield"></i>
+            </div>
           </div>
         </div>
       </div>

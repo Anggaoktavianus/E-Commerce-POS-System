@@ -4,84 +4,162 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Cache;
-use App\Services\CacheService;
 
 class ShopController extends Controller
 {
     public function index(Request $request)
     {
-        $storeId = app()->has('current_store') ? app('current_store')->id : 1;
+        // Get store_id from request parameter (from home page store selection or shop page switcher)
+        $requestedStoreId = $request->query('store_id');
         
-        // Cache categories for better performance
-        $categories = Cache::remember("categories_store_{$storeId}", 3600, function () {
-            return DB::table('categories')
-                ->where('is_active', true)
-                ->orderBy('name')
-                ->get();
-        });
-
-        // Build optimized product query
-        $query = DB::table('products')
+        // Debug: Log the requested store_id
+        \Log::info('ShopController - Requested store_id:', ['store_id' => $requestedStoreId]);
+        
+        // Determine which store to use
+        $storeId = null;
+        if ($requestedStoreId && $requestedStoreId !== '') {
+            // Decode the encoded store_id for security
+            $decodedStoreId = decode_id($requestedStoreId);
+            \Log::info('ShopController - Decoded store_id:', ['decoded' => $decodedStoreId, 'original' => $requestedStoreId]);
+            if ($decodedStoreId !== null) {
+                $storeId = $decodedStoreId;
+            }
+        }
+        
+        // Get all active stores for store selection
+        $stores = DB::table('stores')
             ->where('is_active', true)
-            ->where('store_id', $storeId)
-            ->select(['id', 'name', 'price', 'description', 'image', 'category_id', 'slug']);
+            ->orderBy('name')
+            ->get();
+        
+        // Get categories directly from database (no cache for real-time updates)
+        $categories = DB::table('categories')
+            ->where('is_active', true)
+            ->orderBy('name')
+            ->get();
+
+        // Build optimized product query with store join
+        $query = DB::table('products')
+            ->leftJoin('stores', 'products.store_id', '=', 'stores.id')
+            ->where('products.is_active', true);
+        
+        // Filter by store_id if specified (if empty string from "Semua Store", show all stores)
+        if ($storeId !== null) {
+            // Filter by specific store
+            $query->where('products.store_id', $storeId);
+            \Log::info('ShopController - Filtering by store_id:', ['store_id' => $storeId]);
+        } else {
+            \Log::info('ShopController - No store filter applied, showing all products');
+        }
+        
+        // Always select these fields including store short_name
+        $query->select([
+            'products.id', 
+            'products.name', 
+            'products.price', 
+            'products.description', 
+            'products.short_description', 
+            'products.main_image_path', 
+            'products.slug', 
+            'products.unit', 
+            'products.stock_qty', 
+            'products.is_featured', 
+            'products.is_bestseller',
+            'products.store_id',
+            'stores.short_name as store_short_name' // Include store short_name
+        ]);
 
         // Filter kategori berdasarkan slug (opsional)
         if ($categorySlug = $request->query('category')) {
             $query->join('product_categories', 'products.id', '=', 'product_categories.product_id')
                 ->join('categories', 'product_categories.category_id', '=', 'categories.id')
                 ->where('categories.slug', $categorySlug)
-                ->select('products.*');
+                ->where('categories.is_active', true);
+            
+            // Re-apply store filter after join (only if specific store selected)
+            if ($storeId !== null) {
+                $query->where('products.store_id', $storeId);
+            }
+            
+            // Re-select all fields including store_id and store short_name after join
+            $query->select([
+                'products.id', 
+                'products.name', 
+                'products.price', 
+                'products.description', 
+                'products.short_description', 
+                'products.main_image_path', 
+                'products.slug', 
+                'products.unit', 
+                'products.stock_qty', 
+                'products.is_featured', 
+                'products.is_bestseller',
+                'products.store_id',
+                'stores.short_name as store_short_name' // Include store short_name
+            ]);
         }
 
         // Apply search filter with caching
         if ($search = $request->query('search')) {
-            $query->where('name', 'LIKE', "%{$search}%");
+            $query->where('products.name', 'LIKE', "%{$search}%");
         }
 
         // Apply sorting with caching
         $sort = $request->query('sort', 'latest');
         switch ($sort) {
             case 'price_low':
-                $query->orderBy('price', 'asc');
+                $query->orderBy('products.price', 'asc');
                 break;
             case 'price_high':
-                $query->orderBy('price', 'desc');
+                $query->orderBy('products.price', 'desc');
                 break;
             case 'name':
-                $query->orderBy('name', 'asc');
+                $query->orderBy('products.name', 'asc');
                 break;
             default:
-                $query->latest();
+                $query->orderBy('products.created_at', 'desc');
         }
 
-        // Cache products with pagination
-        $cacheKey = "products_store_{$storeId}_" . md5(json_encode($request->query()));
-        $products = Cache::remember($cacheKey, 1800, function () use ($query, $request) {
-            return $query->paginate(12)->withQueryString();
-        });
+        // Get products directly from database (no cache for real-time stock updates)
+        $products = $query->paginate(12)->withQueryString();
+        
+        // Get selected store info for display
+        $selectedStore = null;
+        if ($storeId !== null) {
+            $selectedStore = DB::table('stores')->where('id', $storeId)->where('is_active', true)->first();
+        }
+        
+        // Pass encoded store_id to view for pagination links
+        $encodedStoreId = $requestedStoreId && $requestedStoreId !== '' ? $requestedStoreId : null;
+        
+        // Current selected store ID (decoded) for comparison in view
+        $currentSelectedStoreId = $storeId;
 
-        return view('shop.index', compact('products', 'categories'));
+        return view('pages.shop', compact('products', 'categories', 'selectedStore', 'storeId', 'encodedStoreId', 'stores', 'currentSelectedStoreId'));
     }
 
     public function show(string $slug)
     {
         $storeId = app()->has('current_store') ? app('current_store')->id : 1;
+        // Don't cache product detail to ensure stock is always up-to-date
         $product = DB::table('products')
-            ->where('slug', $slug)
-            ->where('is_active', true)
-            ->where('store_id', $storeId)
-            ->first();
+            ->leftJoin('stores', 'products.store_id', '=', 'stores.id')
+            ->where('products.slug', $slug)
+            ->where('products.is_active', true)
+            ->where('products.store_id', $storeId)
+            ->select('products.*', 'stores.short_name as store_short_name')
+            ->first(); // Get all columns including stock_qty
 
         abort_unless($product, 404);
 
         $related = DB::table('products')
-            ->where('is_active', true)
-            ->where('id', '!=', $product->id)
-            ->where('store_id', $storeId)
-            ->orderByDesc('is_featured')
-            ->orderBy('name')
+            ->leftJoin('stores', 'products.store_id', '=', 'stores.id')
+            ->where('products.is_active', true)
+            ->where('products.id', '!=', $product->id)
+            ->where('products.store_id', $storeId)
+            ->select('products.*', 'stores.short_name as store_short_name')
+            ->orderByDesc('products.is_featured')
+            ->orderBy('products.name')
             ->limit(8)
             ->get();
 
@@ -91,11 +169,13 @@ class ShopController extends Controller
             ->get();
 
         $sidebarFeatured = DB::table('products')
-            ->where('is_active', true)
-            ->where('id', '!=', $product->id)
-            ->where('store_id', $storeId)
-            ->orderByDesc('is_featured')
-            ->orderBy('name')
+            ->leftJoin('stores', 'products.store_id', '=', 'stores.id')
+            ->where('products.is_active', true)
+            ->where('products.id', '!=', $product->id)
+            ->where('products.store_id', $storeId)
+            ->select('products.*', 'stores.short_name as store_short_name')
+            ->orderByDesc('products.is_featured')
+            ->orderBy('products.name')
             ->limit(6)
             ->get();
         

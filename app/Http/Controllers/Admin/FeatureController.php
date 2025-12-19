@@ -107,6 +107,15 @@ class FeatureController extends Controller
             DB::table('features')->where('id', $id)->delete();
             Cache::forget('home.features');
         }
+        
+        // Return JSON response for AJAX requests
+        if (request()->ajax() || request()->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Feature deleted successfully'
+            ]);
+        }
+        
         return redirect()->route('admin.features.index')->with('success', 'Feature deleted');
     }
 }

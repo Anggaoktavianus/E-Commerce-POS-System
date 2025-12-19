@@ -4,6 +4,8 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    <!-- Permissions Policy for Geolocation (set via HTTP header, meta tag as fallback) -->
+    <meta http-equiv="Permissions-Policy" content="geolocation=(self)">
     
     <!-- SEO Meta Tags -->
     <title>@yield('title', config('app.name', 'Samsae Store'))</title>
@@ -108,9 +110,91 @@
             transition: color 0.3s ease, background-color 0.3s ease;
         }
         
+        /* Prevent horizontal overflow */
+        html, body {
+          overflow-x: hidden;
+          max-width: 100%;
+          width: 100%;
+        }
+        * {
+          box-sizing: border-box;
+        }
+        .container-fluid {
+          overflow-x: hidden;
+          max-width: 100%;
+        }
+        .row {
+          margin-left: 0;
+          margin-right: 0;
+        }
+        .row > [class*="col-"] {
+          padding-left: 0.75rem;
+          padding-right: 0.75rem;
+        }
         /* Fix body padding for fixed navbar */
         body {
             padding-top: 0 !important;
+        }
+        
+        /* Ensure navbar and dropdowns are above all content */
+        .fixed-top {
+            z-index: 9999 !important;
+        }
+        .navbar {
+            z-index: 9999 !important;
+            position: relative !important;
+        }
+        .navbar-collapse {
+            z-index: 9999 !important;
+        }
+        .dropdown {
+            z-index: 10000 !important;
+            position: relative !important;
+        }
+        .dropdown-menu {
+            z-index: 10000 !important;
+        }
+        /* Ensure all dropdowns are visible */
+        .navbar .dropdown-menu {
+            z-index: 10000 !important;
+            position: absolute !important;
+            margin-top: 0 !important;
+        }
+        /* Fix for nested dropdowns in navigation */
+        .navbar-nav .dropdown-menu {
+            z-index: 10000 !important;
+            position: absolute !important;
+        }
+        /* Ensure dropdown items are clickable */
+        .dropdown-item {
+            position: relative !important;
+            z-index: 10001 !important;
+        }
+        /* Prevent content from covering dropdowns */
+        .modern-page-header,
+        .page-header,
+        .container-fluid:not(.fixed-top) {
+            z-index: 1 !important;
+            position: relative !important;
+            overflow: visible !important;
+        }
+        /* Ensure no overflow hidden on navbar */
+        .navbar,
+        .navbar-collapse,
+        .navbar-nav,
+        .navbar-nav .nav-item {
+            overflow: visible !important;
+        }
+        /* Ensure dropdown can extend beyond container */
+        .container-fluid.fixed-top {
+            overflow: visible !important;
+        }
+        .container-fluid.fixed-top .container {
+            overflow: visible !important;
+        }
+        /* Force dropdown visibility when shown */
+        .dropdown.show > .dropdown-menu {
+            z-index: 10000 !important;
         }
         
         /* Remove our custom padding adjustments since fruitables handles it */
@@ -228,6 +312,52 @@
             }
           });
         }
+        
+        // Fix dropdown z-index and visibility
+        function fixDropdownZIndex() {
+          // Set high z-index for all dropdowns
+          document.querySelectorAll('.dropdown-menu').forEach(function(menu) {
+            menu.style.zIndex = '10000';
+            menu.style.position = 'absolute';
+          });
+          
+          // Ensure dropdown containers have proper z-index
+          document.querySelectorAll('.dropdown').forEach(function(dropdown) {
+            dropdown.style.zIndex = '10000';
+            dropdown.style.position = 'relative';
+            dropdown.style.overflow = 'visible';
+          });
+          
+          // Ensure navbar has high z-index
+          const navbar = document.querySelector('.navbar');
+          if (navbar) {
+            navbar.style.zIndex = '9999';
+            navbar.style.position = 'relative';
+            navbar.style.overflow = 'visible';
+          }
+          
+          // Ensure fixed-top container has high z-index
+          const fixedTop = document.querySelector('.fixed-top');
+          if (fixedTop) {
+            fixedTop.style.zIndex = '9999';
+            fixedTop.style.overflow = 'visible';
+          }
+        }
+        
+        // Run on load
+        fixDropdownZIndex();
+        
+        // Run when dropdown is shown
+        document.querySelectorAll('[data-bs-toggle="dropdown"]').forEach(function(toggle) {
+          toggle.addEventListener('shown.bs.dropdown', function() {
+            fixDropdownZIndex();
+          });
+        });
+        
+        // Also fix on any dropdown show event
+        document.addEventListener('show.bs.dropdown', function() {
+          fixDropdownZIndex();
+        });
       });
     </script>
     @if(session('success') || session('info') || session('error'))

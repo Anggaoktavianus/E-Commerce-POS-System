@@ -6,23 +6,29 @@
 
 @section('meta_keywords', $page->meta_keywords ?? str_replace(' ', ', ', $page->title) . ', ' . config('app.name') . ', halaman, informasi')
 
-@section('og_image', $page->featured_image ? asset($page->featured_image) : asset('storage/defaults/og-image.jpg'))
+@php
+    $ogImage = null;
+    if ($page->featured_image) {
+        $ogImage = Str::startsWith($page->featured_image, ['http://','https://','//'])
+            ? $page->featured_image
+            : asset($page->featured_image);
+    }
+@endphp
+@section('og_image', $ogImage ?? asset('storage/defaults/og-image.jpg'))
 
 @section('content')
 
-  <!-- Single Page Header start -->
-    <div class="container-fluid page-header py-5">
-        <h1 class="text-center text-white display-6">{{ $page->title }}</h1>
-        <ol class="breadcrumb justify-content-center mb-0">
-            <li class="breadcrumb-item"><a href="{{ url('/') }}">Beranda</a></li>
-            <li class="breadcrumb-item"><a href="#">Halaman</a></li>
-            <li class="breadcrumb-item active text-white">{{ $page->title }}</li>
-        </ol>
-    </div>
-    <!-- Single Page Header End -->
+    @include('partials.modern-page-header', [
+        'pageTitle' => $page->title,
+        'breadcrumbItems' => [
+            ['label' => 'Beranda', 'url' => url('/')],
+            ['label' => 'Halaman', 'url' => null],
+            ['label' => $page->title, 'url' => null]
+        ]
+    ])
 
 <!-- Content Start -->
-<div class="container-xxl py-5">
+<div class="container-xxl py-5" style="background: linear-gradient(180deg, #f8f9fa 0%, #ffffff 100%);">
     <div class="container">
         <div class="row g-5">
             <div class="col-lg-12">
@@ -31,8 +37,13 @@
                     <div class="card-body p-4 p-lg-5">
                         <!-- Featured Image -->
                         @if($page->featured_image)
+                        @php
+                            $featuredUrl = Str::startsWith($page->featured_image, ['http://','https://','//'])
+                                ? $page->featured_image
+                                : asset($page->featured_image);
+                        @endphp
                         <div class="mb-4 text-center">
-                            <img src="{{ asset('storage/' . $page->featured_image) }}" 
+                            <img src="{{ $featuredUrl }}" 
                                  alt="{{ $page->title }}" 
                                  class="img-fluid rounded-3 shadow-md hover-shadow-xl transition-all duration-300"
                                  style="max-height: 400px; object-fit: cover;">
@@ -66,7 +77,12 @@
                             <div class="row g-3">
                                 @foreach($page->attachments as $attachment)
                                 <div class="col-md-6">
-                                    <a href="{{ asset('storage/' . $attachment['path']) }}" 
+                                    @php
+                                        $attachmentUrl = Str::startsWith($attachment['path'], ['http://','https://','//'])
+                                            ? $attachment['path']
+                                            : asset($attachment['path']);
+                                    @endphp
+                                    <a href="{{ $attachmentUrl }}" 
                                        class="card border shadow-sm hover-shadow-xl hover-lift transition-all duration-300 text-decoration-none" 
                                        target="_blank"
                                        download>

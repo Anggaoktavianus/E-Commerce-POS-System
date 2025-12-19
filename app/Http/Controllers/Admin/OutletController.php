@@ -33,9 +33,13 @@ class OutletController extends Controller
         
         return DataTables::of($outlets)
             ->addColumn('store_name', function($outlet) {
+                $storeShortName = $outlet->store->short_name ? '<small class="text-muted">(' . e($outlet->store->short_name) . ')</small>' : '';
+                $outletShortName = $outlet->short_name ? '<small class="text-muted">(' . e($outlet->short_name) . ')</small>' : '';
                 return '<div>
-                    <strong>' . $outlet->store->name . '</strong><br>
-                    <small class="text-muted">' . $outlet->store->code . '</small>
+                    <strong>' . e($outlet->store->name) . '</strong> ' . $storeShortName . '<br>
+                    <small class="text-muted">' . e($outlet->store->code) . '</small><br>
+                    <strong>' . e($outlet->name) . '</strong> ' . $outletShortName . '<br>
+                    <small class="text-muted">Kode: ' . e($outlet->code) . '</small>
                 </div>';
             })
             ->addColumn('type_badge', function($outlet) {
@@ -88,7 +92,12 @@ class OutletController extends Controller
             'stores' => $currentStore ? Store::where('id', $currentStore->id)->get() : Store::where('is_active', true)->get(),
         ];
         
-        return view('admin.outlets.create', $data);
+        $response = response()->view('admin.outlets.create', $data);
+        // Set Permissions-Policy header for geolocation
+        if (!$response->headers->has('Permissions-Policy')) {
+            $response->headers->set('Permissions-Policy', 'geolocation=(self)');
+        }
+        return $response;
     }
 
     public function store(Request $request)
@@ -96,6 +105,7 @@ class OutletController extends Controller
         $request->validate([
             'store_id' => 'required|exists:stores,id',
             'name' => 'required|string|max:255',
+            'short_name' => 'required|string|max:20',
             'code' => 'required|string|max:50|unique:outlets,code',
             'type' => 'required|in:main,branch,pickup_point',
             'manager_name' => 'nullable|string|max:255',
@@ -118,6 +128,7 @@ class OutletController extends Controller
         $outlet = Outlet::create([
             'store_id' => $request->store_id,
             'name' => $request->name,
+            'short_name' => $request->short_name,
             'code' => $request->code,
             'type' => $request->type,
             'manager_name' => $request->manager_name,
@@ -155,7 +166,12 @@ class OutletController extends Controller
             'stores' => $currentStore ? Store::where('id', $currentStore->id)->get() : Store::where('is_active', true)->get(),
         ];
         
-        return view('admin.outlets.edit', $data);
+        $response = response()->view('admin.outlets.edit', $data);
+        // Set Permissions-Policy header for geolocation
+        if (!$response->headers->has('Permissions-Policy')) {
+            $response->headers->set('Permissions-Policy', 'geolocation=(self)');
+        }
+        return $response;
     }
 
     public function update(Request $request, $id)
@@ -165,6 +181,7 @@ class OutletController extends Controller
         $request->validate([
             'store_id' => 'required|exists:stores,id',
             'name' => 'required|string|max:255',
+            'short_name' => 'required|string|max:20',
             'code' => 'required|string|max:50|unique:outlets,code,' . $id,
             'type' => 'required|in:main,branch,pickup_point',
             'manager_name' => 'nullable|string|max:255',
@@ -187,6 +204,7 @@ class OutletController extends Controller
         $outlet->update([
             'store_id' => $request->store_id,
             'name' => $request->name,
+            'short_name' => $request->short_name,
             'code' => $request->code,
             'type' => $request->type,
             'manager_name' => $request->manager_name,

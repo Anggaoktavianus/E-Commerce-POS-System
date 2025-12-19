@@ -178,8 +178,26 @@ class MenuLinkController extends Controller
             $parent = $this->parentOrFail($link->navigation_menu_id);
             DB::table('navigation_links')->where('id',$linkId)->delete();
             $this->flushMenusCache($parent->location);
+            
+            // Return JSON response for AJAX requests
+            if (request()->ajax() || request()->wantsJson()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Link deleted successfully'
+                ]);
+            }
+            
             return redirect()->route('admin.links.index', $parent->id)->with('success','Link deleted');
         }
+        
+        // Return JSON response for AJAX requests
+        if (request()->ajax() || request()->wantsJson()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Link not found'
+            ], 404);
+        }
+        
         return redirect()->back()->with('error','Link not found');
     }
 

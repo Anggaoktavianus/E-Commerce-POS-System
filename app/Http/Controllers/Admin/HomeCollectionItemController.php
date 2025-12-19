@@ -89,8 +89,26 @@ class HomeCollectionItemController extends Controller
             $parent = $this->parentOrFail($row->home_collection_id);
             DB::table('home_collection_items')->where('id',$item)->delete();
             $this->flushCollectionsCache($parent->key);
+            
+            // Return JSON response for AJAX requests
+            if (request()->ajax() || request()->wantsJson()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Collection item deleted successfully'
+                ]);
+            }
+            
             return redirect()->route('admin.collection_items.index', $parent->id)->with('success','Item deleted');
         }
+        
+        // Return JSON response for AJAX requests
+        if (request()->ajax() || request()->wantsJson()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Item not found'
+            ], 404);
+        }
+        
         return redirect()->back()->with('error','Item not found');
     }
 

@@ -13,7 +13,9 @@ class LocationController extends Controller
     {
         // Log::info('locations.provinsis.request');
         try {
+            // Only return provinces with ID 31, 32, 33, 34, 35
             $items = DB::table('loc_provinsis')
+                ->whereIn('id', [31, 32, 33, 34, 35])
                 ->orderBy('name')
                 ->get(['id as id','name as name']);
             // Log::info('locations.provinsis.response', ['count' => $items->count()]);

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\ShippingMethod;
 
 class Order extends Model
 {
@@ -16,7 +17,7 @@ class Order extends Model
         'shipping_address', 'billing_address', 'midtrans_order_id',
         'midtrans_transaction_id', 'paid_at', 'processed_at', 
         'shipped_at', 'delivered_at', 'cancelled_at', 'cancel_reason',
-        'tracking_number'
+        'tracking_number', 'shipping_method_id'
     ];
 
     protected $casts = [
@@ -50,9 +51,24 @@ class Order extends Model
         return $this->hasMany(OrderItem::class);
     }
 
+    public function shippingMethod()
+    {
+        return $this->belongsTo(ShippingMethod::class);
+    }
+
     public function paymentTransactions()
     {
         return $this->hasMany(PaymentTransaction::class);
+    }
+
+    public function deliveryTracking()
+    {
+        return $this->hasOne(DeliveryTracking::class);
+    }
+
+    public function driver()
+    {
+        return $this->belongsTo(User::class, 'driver_id');
     }
 
     public function getFormattedTotalAttribute()

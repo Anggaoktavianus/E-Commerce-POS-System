@@ -9,34 +9,42 @@
 @section('og_image', $artikel->gambar_utama ? Storage::url($artikel->gambar_utama) : asset('storage/uploads/settings/pA4eU0uxj49qQm9buxJyHQVoP8u8u6MyfjDbSNic.png'))
 
 @section('content')
-<!-- Single Page Header start -->
-<div class="container-fluid page-header py-5">
-    <h1 class="text-center text-white display-6">{{ $artikel->judul }}</h1>
-    <ol class="breadcrumb justify-content-center mb-0">
-        <li class="breadcrumb-item"><a href="{{ route('home') }}">Beranda</a></li>
-        <li class="breadcrumb-item"><a href="{{ route('artikel.index') }}">Artikel</a></li>
-        <li class="breadcrumb-item active text-white">{{ Str::limit($artikel->judul, 50) }}</li>
-    </ol>
-    <div class="d-flex justify-content-center align-items-center gap-4 flex-wrap mt-3">
-        <span class="badge bg-light text-dark">
-            <i class="bx bx-category me-1"></i> {{ $artikel->kategoriArtikel->nama }}
-        </span>
-        <span class="text-white">
-            <i class="bx bx-calendar me-1"></i> {{ $artikel->published_at ? $artikel->published_at->format('d M Y') : $artikel->created_at->format('d M Y') }}
-        </span>
-        <span class="text-white">
-            <i class="bx bx-time me-1"></i> {{ $artikel->reading_time }} menit baca
-        </span>
-        <span class="text-white">
-            <i class="bx bx-user me-1"></i> {{ $artikel->user ? $artikel->user->name : 'Admin' }}
-        </span>
+@php
+    $pageTitle = $artikel->judul;
+    $breadcrumbItems = [
+        ['label' => 'Beranda', 'url' => url('/')],
+        ['label' => 'Artikel', 'url' => route('artikel.index')],
+        ['label' => Str::limit($artikel->judul, 50), 'url' => null]
+    ];
+@endphp
+@include('partials.modern-page-header', [
+    'pageTitle' => $pageTitle,
+    'breadcrumbItems' => $breadcrumbItems
+])
+
+<!-- Article Meta Info -->
+<div class="container-fluid py-3" style="background: rgba(20, 116, 64, 0.1);">
+    <div class="container">
+        <div class="d-flex justify-content-center align-items-center gap-4 flex-wrap">
+            <span class="badge bg-light text-dark">
+                <i class="bx bx-category me-1"></i> {{ $artikel->kategoriArtikel->nama }}
+            </span>
+            <span class="text-dark">
+                <i class="bx bx-calendar me-1"></i> {{ $artikel->published_at ? $artikel->published_at->format('d M Y') : $artikel->created_at->format('d M Y') }}
+            </span>
+            <span class="text-dark">
+                <i class="bx bx-time me-1"></i> {{ $artikel->reading_time }} menit baca
+            </span>
+            <span class="text-dark">
+                <i class="bx bx-user me-1"></i> {{ $artikel->user ? $artikel->user->name : 'Admin' }}
+            </span>
+        </div>
     </div>
 </div>
-<!-- Single Page Header End -->
 
 <!-- Featured Image -->
 @if($artikel->gambar_utama)
-<section class="py-4 bg-light">
+<section class="py-4" style="background: linear-gradient(180deg, #f8f9fa 0%, #ffffff 100%);">
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-lg-10">
@@ -51,7 +59,7 @@
 @endif
 
 <!-- Article Content -->
-<section class="py-5">
+<section class="py-5" style="background: linear-gradient(180deg, #f8f9fa 0%, #ffffff 100%);">
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-lg-8">
@@ -236,7 +244,7 @@
 </section>
 
 <!-- Navigation -->
-<section class="py-4 bg-light">
+<section class="py-4" style="background: linear-gradient(180deg, #f8f9fa 0%, #ffffff 100%);">
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-lg-8">

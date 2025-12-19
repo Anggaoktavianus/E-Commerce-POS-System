@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\Order;
 use App\Models\PaymentTransaction;
+use App\Services\StockMovementService;
 use Illuminate\Support\Facades\DB;
 use Midtrans\Config;
 use Midtrans\Snap;
@@ -46,6 +47,48 @@ class MidtransService
                 'name' => $item->product_name,
             ];
         })->toArray();
+        
+        // Add shipping cost as a separate item if shipping cost > 0
+        if ($order->shipping_cost > 0) {
+            $shippingMethodName = 'Ongkos Kirim';
+            if ($order->shippingMethod) {
+                $shippingMethodName = $order->shippingMethod->name;
+            }
+            
+            $itemDetails[] = [
+                'id' => 'shipping_' . ($order->shipping_method_id ?? 'default'),
+                'price' => (int) $order->shipping_cost,
+                'quantity' => 1,
+                'name' => 'Ongkos Kirim - ' . $shippingMethodName,
+            ];
+        }
+        
+        // Add discount as negative item if discount > 0
+        if ($order->discount > 0) {
+            $itemDetails[] = [
+                'id' => 'discount',
+                'price' => -(int) $order->discount, // Negative price for discount
+                'quantity' => 1,
+                'name' => 'Diskon',
+            ];
+        }
+        
+        // Validate that sum of item_details equals gross_amount
+        $itemsTotal = array_sum(array_map(function($item) {
+            return $item['price'] * $item['quantity'];
+        }, $itemDetails));
+        
+        if ($itemsTotal != $orderDetails['gross_amount']) {
+            \Log::warning('Item details total mismatch', [
+                'order_id' => $order->id,
+                'items_total' => $itemsTotal,
+                'gross_amount' => $orderDetails['gross_amount'],
+                'difference' => $orderDetails['gross_amount'] - $itemsTotal
+            ]);
+            
+            // Adjust gross_amount to match items total (Midtrans requirement)
+            $orderDetails['gross_amount'] = $itemsTotal;
+        }
 
         $shippingAddress = $order->shipping_address;
         $customerDetails = [
@@ -158,16 +201,19 @@ class MidtransService
             );
 
             // Update order status based on transaction status
+            $wasPaid = false;
             if ($transactionStatus == 'capture') {
                 if ($fraudStatus == 'challenge') {
                     $order->status = 'pending';
                 } else if ($fraudStatus == 'accept') {
                     $order->status = 'paid';
                     $order->paid_at = now();
+                    $wasPaid = true;
                 }
             } else if ($transactionStatus == 'settlement') {
                 $order->status = 'paid';
                 $order->paid_at = now();
+                $wasPaid = true;
             } else if ($transactionStatus == 'pending') {
                 $order->status = 'pending';
             } else if ($transactionStatus == 'deny') {
@@ -183,6 +229,75 @@ class MidtransService
             $order->payment_details = $notificationData;
             $order->midtrans_transaction_id = $notificationData['transaction_id'] ?? null;
             $order->save();
+
+            // Create delivery tracking for instant delivery if payment successful
+            if ($wasPaid && $order->status === 'paid') {
+                // Check if instant delivery and tracking not exists
+                if ($order->shipping_method_id) {
+                    try {
+                        $shippingMethod = \App\Models\ShippingMethod::find($order->shipping_method_id);
+                        // Check if instant delivery (by type or by ID = 1 as fallback)
+                        $isInstant = false;
+                        if ($shippingMethod) {
+                            $isInstant = $shippingMethod->type === 'instant';
+                        } elseif ($order->shipping_method_id == 1) {
+                            // Fallback: ID 1 is instant delivery
+                            $isInstant = true;
+                        }
+                        
+                        if ($isInstant) {
+                            $tracking = \App\Models\DeliveryTracking::firstOrCreate(
+                                ['order_id' => $order->id],
+                                [
+                                    'status' => \App\Models\DeliveryTracking::STATUS_PENDING
+                                ]
+                            );
+                            \Log::info('Delivery tracking created/verified for instant delivery after payment', [
+                                'order_id' => $order->id,
+                                'order_number' => $order->order_number,
+                                'tracking_id' => $tracking->id,
+                                'shipping_method_id' => $order->shipping_method_id,
+                                'shipping_method_type' => $shippingMethod ? $shippingMethod->type : 'instant (fallback)'
+                            ]);
+                        } else {
+                            \Log::info('Not creating tracking - not instant delivery', [
+                                'order_id' => $order->id,
+                                'shipping_method_id' => $order->shipping_method_id,
+                                'shipping_method_type' => $shippingMethod ? $shippingMethod->type : 'null'
+                            ]);
+                        }
+                    } catch (\Exception $e) {
+                        \Log::error('Failed to create delivery tracking after payment', [
+                            'order_id' => $order->id,
+                            'error' => $e->getMessage(),
+                            'trace' => $e->getTraceAsString()
+                        ]);
+                    }
+                }
+                
+                // Dispatch ProcessOrderJob untuk mengurangi stok jika pembayaran berhasil
+                \App\Jobs\ProcessOrderJob::dispatch($order);
+                \Log::info('ProcessOrderJob dispatched', ['order_id' => $order->id]);
+            }
+            
+            // Restore stock jika payment failed/expired dan stok sudah dikurangi sebelumnya
+            // Hanya restore jika order sudah pernah diproses (processed_at tidak null)
+            if (in_array($order->status, ['failed', 'expired', 'cancelled'])) {
+                // Cek apakah stok sudah dikurangi (order sudah diproses)
+                if ($order->processed_at) {
+                    $this->restoreOrderStock($order);
+                    \Log::info('Stock restored for failed/expired order', [
+                        'order_id' => $order->id, 
+                        'status' => $order->status,
+                        'processed_at' => $order->processed_at
+                    ]);
+                } else {
+                    \Log::info('Order failed/expired but stock not yet deducted, no restore needed', [
+                        'order_id' => $order->id,
+                        'status' => $order->status
+                    ]);
+                }
+            }
 
             \Log::info('Order updated successfully', [
                 'order_id' => $order->id,
@@ -223,6 +338,11 @@ class MidtransService
 
     private function getPaymentMethodName($paymentType, $notificationData)
     {
+        // Ensure notificationData is array
+        if (is_object($notificationData)) {
+            $notificationData = json_decode(json_encode($notificationData), true);
+        }
+        
         switch ($paymentType) {
             case 'credit_card':
                 return 'Credit Card';
@@ -233,7 +353,14 @@ class MidtransService
             case 'qris':
                 return 'QRIS';
             case 'bank_transfer':
-                $bank = $notificationData['va_numbers'][0]['bank'] ?? 'Unknown';
+                // Handle both array and object formats
+                $vaNumbers = $notificationData['va_numbers'] ?? [];
+                if (!empty($vaNumbers) && is_array($vaNumbers)) {
+                    $firstVa = is_object($vaNumbers[0]) ? (array) $vaNumbers[0] : $vaNumbers[0];
+                    $bank = $firstVa['bank'] ?? 'Unknown';
+                } else {
+                    $bank = 'Unknown';
+                }
                 return strtoupper($bank) . ' Virtual Account';
             case 'echannel':
                 return 'Mandiri Bill Payment';
@@ -264,5 +391,38 @@ class MidtransService
             return 'https://app.midtrans.com/snap/v4/vtweb/';
         }
         return 'https://app.sandbox.midtrans.com/snap/v4/vtweb/';
+    }
+
+    /**
+     * Restore stock for failed/expired/cancelled orders
+     */
+    private function restoreOrderStock(Order $order)
+    {
+        foreach ($order->items as $item) {
+            if ($item->product) {
+                $oldStock = $item->product->stock_qty ?? 0;
+                $item->product->increment('stock_qty', $item->quantity);
+                $item->product->refresh();
+                $newStock = $item->product->stock_qty ?? 0;
+                
+                // Log stock movement
+                StockMovementService::logRestore(
+                    $item->product,
+                    $item->quantity,
+                    Order::class,
+                    $order->id,
+                    $order->order_number,
+                    "Stock dikembalikan untuk order #{$order->order_number} (status: {$order->status})"
+                );
+                
+                \Log::info('Stock restored', [
+                    'product_id' => $item->product_id,
+                    'product_name' => $item->product_name,
+                    'quantity' => $item->quantity,
+                    'old_stock' => $oldStock,
+                    'new_stock' => $newStock
+                ]);
+            }
+        }
     }
 }

@@ -5,12 +5,12 @@
 @section('content')
 <div class="container-xxl flex-grow-1 container-p-y">
   <!-- Header Section -->
-  <div class="card mb-4">
+  <div class="card page-header-card mb-4">
     <div class="card-body">
-      <div class="d-flex justify-content-between align-items-center">
+      <div class="d-flex justify-content-between align-items-center flex-wrap">
         <div>
           <h4 class="mb-1">
-            <i class="bx bx-user me-2"></i>Kelola Mitra
+            <i class="bx bx-user me-2 text-primary"></i>Kelola Mitra
           </h4>
           <p class="text-muted mb-0">Kelola mitra dan verifikasi status kerjasama</p>
         </div>
@@ -19,55 +19,63 @@
   </div>
 
   <!-- Quick Stats -->
-  <div class="row mb-4">
-    <div class="col-md-3">
-      <div class="card bg-primary text-white">
-        <div class="card-body">
-          <div class="d-flex justify-content-between">
-            <div>
-              <h6 class="card-title">Total Mitra</h6>
-              <h3 class="mb-0" id="totalMitra">0</h3>
+  <div class="row g-4 mb-4">
+    <div class="col-6 col-md-3">
+      <div class="card stat-card bg-primary text-white">
+        <div class="card-body p-4">
+          <div class="d-flex justify-content-between align-items-start">
+            <div class="flex-grow-1">
+              <p class="stat-label mb-2">Total Mitra</p>
+              <h3 class="stat-value mb-0" id="totalMitra">0</h3>
             </div>
-            <i class="bx bx-user bx-lg"></i>
+            <div class="stat-icon">
+              <i class="bx bx-user"></i>
+            </div>
           </div>
         </div>
       </div>
     </div>
-    <div class="col-md-3">
-      <div class="card bg-success text-white">
-        <div class="card-body">
-          <div class="d-flex justify-content-between">
-            <div>
-              <h6 class="card-title">Terverifikasi</h6>
-              <h3 class="mb-0" id="verifiedMitra">0</h3>
+    <div class="col-6 col-md-3">
+      <div class="card stat-card bg-success text-white">
+        <div class="card-body p-4">
+          <div class="d-flex justify-content-between align-items-start">
+            <div class="flex-grow-1">
+              <p class="stat-label mb-2">Terverifikasi</p>
+              <h3 class="stat-value mb-0" id="verifiedMitra">0</h3>
             </div>
-            <i class="bx bx-user-check bx-lg"></i>
+            <div class="stat-icon">
+              <i class="bx bx-user-check"></i>
+            </div>
           </div>
         </div>
       </div>
     </div>
-    <div class="col-md-3">
-      <div class="card bg-warning text-white">
-        <div class="card-body">
-          <div class="d-flex justify-content-between">
-            <div>
-              <h6 class="card-title">Menunggu</h6>
-              <h3 class="mb-0" id="pendingMitra">0</h3>
+    <div class="col-6 col-md-3">
+      <div class="card stat-card bg-warning text-white">
+        <div class="card-body p-4">
+          <div class="d-flex justify-content-between align-items-start">
+            <div class="flex-grow-1">
+              <p class="stat-label mb-2">Menunggu</p>
+              <h3 class="stat-value mb-0" id="pendingMitra">0</h3>
             </div>
-            <i class="bx bx-user-x bx-lg"></i>
+            <div class="stat-icon">
+              <i class="bx bx-user-x"></i>
+            </div>
           </div>
         </div>
       </div>
     </div>
-    <div class="col-md-3">
-      <div class="card bg-info text-white">
-        <div class="card-body">
-          <div class="d-flex justify-content-between">
-            <div>
-              <h6 class="card-title">Bulan Ini</h6>
-              <h3 class="mb-0" id="monthlyMitra">0</h3>
+    <div class="col-6 col-md-3">
+      <div class="card stat-card bg-info text-white">
+        <div class="card-body p-4">
+          <div class="d-flex justify-content-between align-items-start">
+            <div class="flex-grow-1">
+              <p class="stat-label mb-2">Bulan Ini</p>
+              <h3 class="stat-value mb-0" id="monthlyMitra">0</h3>
             </div>
-            <i class="bx bx-calendar bx-lg"></i>
+            <div class="stat-icon">
+              <i class="bx bx-calendar"></i>
+            </div>
           </div>
         </div>
       </div>
@@ -75,7 +83,7 @@
   </div>
 
   <!-- Search and Filter -->
-  <div class="card mb-4">
+  <div class="card search-card mb-4">
     <div class="card-body">
       <div class="row g-3">
         <div class="col-md-8">

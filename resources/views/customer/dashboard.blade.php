@@ -203,11 +203,11 @@ body {
         padding: 1rem;
         border-radius: 15px;
     }
-    
+
     .dashboard-header {
         padding: 1.5rem;
     }
-    
+
     .stat-card {
         margin-bottom: 1rem;
     }
@@ -485,15 +485,15 @@ body {
 <div class="dashboard-wrapper">
     <!-- Single Page Header Start -->
     <div class="container-fluid page-header py-5" style="background: linear-gradient(135deg, #137440 0%, #0f5d33 100%);">
-        <h1 class="text-center text-white display-6">Dashboard Customer</h1>
+        <h1 class="text-center text-white display-6">Dashboard Pelanggan</h1>
         <ol class="breadcrumb justify-content-center mb-0">
-            <li class="breadcrumb-item"><a href="{{ url('/') }}" class="text-white">Home</a></li>
-            <li class="breadcrumb-item"><a href="#" class="text-white">Pages</a></li>
-            <li class="breadcrumb-item active text-white">Dashboard Customer</li>
+            <li class="breadcrumb-item"><a href="{{ url('/') }}" class="text-white">Beranda</a></li>
+            <li class="breadcrumb-item"><a href="#" class="text-white">Halaman</a></li>
+            <li class="breadcrumb-item active text-white">Dashboard Pelanggan</li>
         </ol>
     </div>
     <!-- Single Page Header End -->
-    
+
     <div class="dashboard-container">
         <!-- Stats Cards -->
         <div class="row g-4 mb-4">
@@ -502,34 +502,81 @@ body {
                     <div class="stat-icon primary">
                         <i class="bx bx-shopping-bag"></i>
                     </div>
-                    <h6 class="text-muted mb-2">Pembelian Bulan Ini</h6>
+                    <h6 class="text-white mb-2">Pembelian Bulan Ini</h6>
                     <h4 class="mb-2">{{ $monthlyOrderCount }}</h4>
-                    <p class="text-muted small mb-0">
-                        {{ $monthlyOrderCount }} pesanan • 
+                    <p class="text-white small mb-0">
+                        {{ $monthlyOrderCount }} pesanan •
                         <strong>Rp {{ number_format($monthlySpent, 0, ',', '.') }}</strong>
                     </p>
                 </div>
             </div>
-            
+
             <div class="col-lg-4 col-md-6">
                 <div class="stat-card slide-in" style="animation-delay: 0.2s;">
                     <div class="stat-icon success">
                         <i class="bx bx-package"></i>
                     </div>
-                    <h6 class="text-muted mb-2">Status Pesanan</h6>
-                    <h4 class="mb-2">{{ $orderStats['pending'] + $orderStats['paid'] + $orderStats['processing'] + $orderStats['shipped'] + $orderStats['delivered'] }}</h4>
-                    <p class="text-muted small mb-0">Total pesanan aktif</p>
+                    <h6 class="text-white mb-2">Total Pesanan</h6>
+                    <h4 class="mb-2">{{ $totalOrders ?? 0 }}</h4>
+                    <p class="text-white small mb-0">Total: Rp {{ number_format($totalSpent ?? 0, 0, ',', '.') }}</p>
                 </div>
             </div>
-            
+
             <div class="col-lg-4 col-md-12">
                 <div class="stat-card slide-in" style="animation-delay: 0.3s;">
                     <div class="stat-icon info">
-                        <i class="bx bx-heart"></i>
+                        <i class="bx bx-map-pin"></i>
                     </div>
-                    <h6 class="text-muted mb-2">Wishlist</h6>
-                    <h4 class="mb-2">{{ $wishlistCount }}</h4>
-                    <p class="text-muted small mb-0">Produk di wishlist</p>
+                    <h6 class="text-white mb-2">Alamat Tersimpan</h6>
+                    <h4 class="mb-2">{{ $addressCount ?? 0 }}</h4>
+                    <p class="text-white small mb-0">Alamat pengiriman tersimpan</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="row g-3 mb-4">
+            <div class="col-12">
+                <div class="card border-0 shadow-sm fade-in" style="animation-delay: 0.4s;">
+                    <div class="card-body p-4">
+                        <h6 class="card-title mb-3 fw-bold">
+                            <i class="bx bx-bolt me-2 text-success"></i>Aksi Cepat
+                        </h6>
+                        <div class="row g-3">
+                            <div class="col-md-3 col-6">
+                                <a href="{{ route('shop') }}" class="btn btn-outline-success w-100 d-flex flex-column align-items-center py-3">
+                                    <i class="bx bx-shopping-bag fs-4 mb-2"></i>
+                                    <span>Belanja</span>
+                                </a>
+                            </div>
+                            <div class="col-md-3 col-6">
+                                <a href="{{ route('cart') }}" class="btn btn-outline-success w-100 d-flex flex-column align-items-center py-3">
+                                    <i class="bx bx-cart fs-4 mb-2"></i>
+                                    <span>Keranjang</span>
+                                </a>
+                            </div>
+                            <div class="col-md-3 col-6">
+                                <a href="{{ route('customer.dashboard') }}#orders" class="btn btn-outline-success w-100 d-flex flex-column align-items-center py-3">
+                                    <i class="bx bx-package fs-4 mb-2"></i>
+                                    <span>Pesanan Saya</span>
+                                </a>
+                            </div>
+                            <div class="col-md-3 col-6">
+                                <a href="{{ route('user.addresses.index') }}" class="btn btn-outline-success w-100 d-flex flex-column align-items-center py-3">
+                                    <i class="bx bx-map-pin fs-4 mb-2"></i>
+                                    <span>Alamat Saya</span>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="row g-3 mt-2">
+                            <div class="col-md-6 col-6">
+                                <a href="{{ route('customer.profile.index') }}" class="btn btn-outline-primary w-100 d-flex flex-column align-items-center py-3">
+                                    <i class="bx bx-user fs-4 mb-2"></i>
+                                    <span>Profil Saya</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -537,7 +584,7 @@ body {
         <!-- Charts and Products -->
         <div class="row g-4 mb-4">
             <div class="col-lg-8">
-                <div class="chart-container fade-in" style="animation-delay: 0.4s;">
+                <div class="chart-container fade-in" style="animation-delay: 0.5s;">
                     <h6 class="card-title mb-4 fw-bold">
                         <i class="bx bx-line-chart me-2 text-primary"></i>
                         Grafik Pengeluaran 6 Bulan Terakhir
@@ -547,9 +594,9 @@ body {
                     </div>
                 </div>
             </div>
-            
+
             <div class="col-lg-4">
-                <div class="chart-container fade-in" style="animation-delay: 0.5s;">
+                <div class="chart-container fade-in" style="animation-delay: 0.6s;">
                     <h6 class="card-title mb-4 fw-bold">
                         <i class="bx bx-star me-2 text-warning"></i>
                         Produk Favorit
@@ -561,7 +608,7 @@ body {
                                     <div class="d-flex justify-content-between align-items-center">
                                         <div>
                                             <div class="fw-medium text-dark">{{ $product->product_name }}</div>
-                                            <div class="text-muted small">{{ $product->total_quantity }} pcs</div>
+                                            <div class="text-white small">{{ $product->total_quantity }} pcs</div>
                                         </div>
                                         <div class="text-end">
                                             <span class="badge bg-primary rounded-pill">{{ $product->order_count }}x</span>
@@ -574,15 +621,66 @@ body {
                         <div class="empty-state">
                             <i class="bx bx-package"></i>
                             <h6 class="mt-3">Belum Ada Data</h6>
-                            <p class="text-muted small">Belum ada data pembelian</p>
+                            <p class="text-white small">Belum ada data pembelian</p>
                         </div>
                     @endif
                 </div>
             </div>
         </div>
 
+        <!-- Order Status Breakdown -->
+        <div class="row g-3 mb-4">
+            <div class="col-12">
+                <div class="card border-0 shadow-sm fade-in" style="animation-delay: 0.7s;">
+                    <div class="card-body p-4">
+                        <h6 class="card-title mb-3 fw-bold">
+                            <i class="bx bx-bar-chart-alt-2 me-2 text-info"></i>Ringkasan Status Pesanan
+                        </h6>
+                        <div class="row g-3">
+                            <div class="col-md-2 col-6">
+                                <div class="text-center p-3 bg-warning bg-opacity-10 rounded">
+                                    <div class="fw-bold text-white fs-4">{{ $orderStats['pending'] ?? 0 }}</div>
+                                    <small class="text-white">Pending</small>
+                                </div>
+                            </div>
+                            <div class="col-md-2 col-6">
+                                <div class="text-center p-3 bg-success bg-opacity-10 rounded">
+                                    <div class="fw-bold text-white fs-4">{{ $orderStats['paid'] ?? 0 }}</div>
+                                    <small class="text-white">Dibayar</small>
+                                </div>
+                            </div>
+                            <div class="col-md-2 col-6">
+                                <div class="text-center p-3 bg-danger bg-opacity-10 rounded">
+                                    <div class="fw-bold text-white fs-4">{{ $orderStats['failed'] ?? 0 }}</div>
+                                    <small class="text-white">Gagal</small>
+                                </div>
+                            </div>
+                            <div class="col-md-2 col-6">
+                                <div class="text-center p-3 bg-secondary bg-opacity-10 rounded">
+                                    <div class="fw-bold text-white fs-4">{{ $orderStats['cancelled'] ?? 0 }}</div>
+                                    <small class="text-white">Dibatalkan</small>
+                                </div>
+                            </div>
+                            <div class="col-md-2 col-6">
+                                <div class="text-center p-3 bg-dark bg-opacity-10 rounded">
+                                    <div class="fw-bold text-white fs-4">{{ $orderStats['expired'] ?? 0 }}</div>
+                                    <small class="text-white">Kedaluwarsa</small>
+                                </div>
+                            </div>
+                            <div class="col-md-2 col-6">
+                                <div class="text-center p-3 bg-primary bg-opacity-10 rounded">
+                                    <div class="fw-bold text-white fs-4">{{ $totalOrders ?? 0 }}</div>
+                                    <small class="text-white">Total</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- Recent Orders -->
-        <div class="custom-table fade-in mb-4" style="animation-delay: 0.6s; margin: 2rem 0; padding: 1.5rem; background: white; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); border: 1px solid #e5e7eb;">
+        <div class="custom-table fade-in mb-4" id="orders" style="animation-delay: 0.8s; margin: 2rem 0; padding: 1.5rem; background: white; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); border: 1px solid #e5e7eb;">
             <div class="p-3 border-bottom bg-light">
                 <div class="row align-items-center">
                     <div class="col-md-8">
@@ -592,14 +690,14 @@ body {
                         </h6>
                     </div>
                     <div class="col-md-4 text-md-end">
-                        <small class="text-muted">
+                        <small class="text-white">
                             <i class="bx bx-user me-1"></i>
                             {{ auth()->user()->name }}
                         </small>
                     </div>
                 </div>
             </div>
-            
+
             <div class="table-responsive">
                 <table class="table mb-0" id="ordersTable">
                     <thead>
@@ -644,57 +742,121 @@ function downloadInvoice(orderNumber) {
 }
 
 function cancelOrder(orderNumber) {
-    if (confirm('Apakah Anda yakin ingin membatalkan pesanan ini?')) {
-        // Send AJAX request to cancel order
-        fetch(`/orders/${orderNumber}/cancel`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-            }
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                alert('Pesanan berhasil dibatalkan');
-                // Refresh the table
-                $('#ordersTable').DataTable().ajax.reload();
-            } else {
-                alert('Gagal membatalkan pesanan: ' + data.message);
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            alert('Terjadi kesalahan saat membatalkan pesanan');
-        });
-    }
+    Swal.fire({
+        title: 'Batalkan Pesanan?',
+        text: 'Apakah Anda yakin ingin membatalkan pesanan ini?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#dc3545',
+        cancelButtonColor: '#6c757d',
+        confirmButtonText: '<i class="bx bx-x-circle me-1"></i>Ya, Batalkan',
+        cancelButtonText: '<i class="bx bx-x me-1"></i>Batal',
+        reverseButtons: true
+    }).then((result) => {
+        if (result.isConfirmed) {
+            // Send AJAX request to cancel order
+            fetch(`/orders/${orderNumber}/cancel`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Berhasil!',
+                        text: 'Pesanan berhasil dibatalkan',
+                        confirmButtonColor: '#28a745',
+                        timer: 2000,
+                        timerProgressBar: true
+                    }).then(() => {
+                        // Refresh the table
+                        $('#ordersTable').DataTable().ajax.reload();
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error!',
+                        text: 'Gagal membatalkan pesanan: ' + (data.message || 'Terjadi kesalahan'),
+                        confirmButtonColor: '#dc3545'
+                    });
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error!',
+                    text: 'Terjadi kesalahan saat membatalkan pesanan',
+                    confirmButtonColor: '#dc3545'
+                });
+            });
+        }
+    });
 }
 
 function reorderItems(orderNumber) {
-    if (confirm('Apakah Anda ingin memesan kembali item dari pesanan ini?')) {
-        // Send AJAX request to reorder items
-        fetch(`/orders/${orderNumber}/reorder`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-            }
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                alert('Item berhasil ditambahkan ke keranjang');
-                // Redirect to cart or update cart count
-                window.location.href = '/cart';
-            } else {
-                alert('Gagal menambahkan item ke keranjang: ' + data.message);
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            alert('Terjadi kesalahan saat menambahkan item ke keranjang');
-        });
-    }
+    Swal.fire({
+        title: 'Pesan Lagi?',
+        text: 'Apakah Anda ingin memesan kembali item dari pesanan ini?',
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#28a745',
+        cancelButtonColor: '#6c757d',
+        confirmButtonText: '<i class="bx bx-refresh me-1"></i>Ya, Pesan Lagi',
+        cancelButtonText: '<i class="bx bx-x me-1"></i>Batal',
+        reverseButtons: true
+    }).then((result) => {
+        if (result.isConfirmed) {
+            // Send AJAX request to reorder items
+            fetch(`/orders/${orderNumber}/reorder`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Berhasil!',
+                        text: 'Item berhasil ditambahkan ke keranjang',
+                        confirmButtonColor: '#28a745',
+                        showCancelButton: true,
+                        cancelButtonText: 'Lanjut Belanja',
+                        confirmButtonText: 'Lihat Keranjang'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            window.location.href = '/cart';
+                        } else if (result.dismiss === Swal.DismissReason.cancel) {
+                            // Stay on page
+                        }
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error!',
+                        text: 'Gagal menambahkan item ke keranjang: ' + (data.message || 'Terjadi kesalahan'),
+                        confirmButtonColor: '#dc3545'
+                    });
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error!',
+                    text: 'Terjadi kesalahan saat menambahkan item ke keranjang',
+                    confirmButtonColor: '#dc3545'
+                });
+            });
+        }
+    });
 }
 
 // Initialize tooltips
@@ -708,7 +870,7 @@ document.addEventListener('DOMContentLoaded', function() {
     $('#ordersTable').DataTable({
         responsive: true,
         pageLength: 5,
-        lengthMenu: [[5, 10, 25, -1], [5, 10, 25, "All"]],
+        lengthMenu: [[5, 10, 25, -1], [5, 10, 25, "Semua"]],
         ordering: true,
         searching: true,
         info: true,
@@ -726,7 +888,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 console.error('DataTables error:', error);
                 // Show error message to user
                 $('#ordersTable tbody').html(
-                    '<tr><td colspan="5" class="text-center">Error loading data. Please try again.</td></tr>'
+                    '<tr><td colspan="5" class="text-center">Kesalahan memuat data. Silakan coba lagi.</td></tr>'
                 );
             }
         },
@@ -763,7 +925,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Chart initialization
     const ctx = document.getElementById('spendingChart').getContext('2d');
     const spendingData = @json($monthlySpending);
-    
+
     // Responsive configuration
     const config = {
         type: 'bar',
@@ -866,9 +1028,9 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
     };
-    
+
     const spendingChart = new Chart(ctx, config);
-    
+
     // Make chart responsive on window resize
     window.addEventListener('resize', function() {
         spendingChart.resize();

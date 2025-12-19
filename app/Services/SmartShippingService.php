@@ -18,8 +18,13 @@ class SmartShippingService
         $totalWeight = $this->calculateTotalWeight($cartItems);
         $sameCity = $this->isSameCity($origin, $destination);
         
-        // Always include pickup option for Semarang
+        // Get methods with shipping costs
         $availableMethods = $this->getAvailableMethods($origin, $destination, $totalWeight);
+        
+        // Add instant delivery methods that are distance-based (don't have shipping_costs)
+        // but are available for this destination based on service_areas
+        $instantMethods = $this->getInstantDeliveryMethods($origin, $destination);
+        $availableMethods = $instantMethods->concat($availableMethods);
         
         // Add pickup option if destination is Semarang
         if ($sameCity && $origin === 'Semarang') {
@@ -34,6 +39,46 @@ class SmartShippingService
         
         // Add recommendations and warnings
         return $this->addRecommendations($availableMethods, $hasFreshProducts, $sameCity);
+    }
+    
+    /**
+     * Get instant delivery methods (distance-based) that don't have shipping_costs
+     */
+    private function getInstantDeliveryMethods($origin, $destination)
+    {
+        $methods = ShippingMethod::where('type', 'instant')
+            ->where('is_active', true)
+            ->where('is_distance_based', true)
+            ->get();
+        
+        $availableMethods = collect([]);
+        
+        foreach ($methods as $method) {
+            // Check if destination is in service areas
+            $serviceAreas = $method->service_areas ?? [];
+            if (empty($serviceAreas) || in_array($destination, $serviceAreas)) {
+                $availableMethods->push([
+                    'id' => $method->id,
+                    'name' => $method->name,
+                    'code' => $method->code,
+                    'type' => $method->type,
+                    'logo' => $method->logo_url,
+                    'cost' => $method->min_cost ?? 0, // Will be calculated on frontend
+                    'formatted_cost' => 'Rp ' . number_format($method->min_cost ?? 0, 0, ',', '.'),
+                    'estimated_days' => '1-2 Jam',
+                    'estimated_text' => '1-2 Jam',
+                    'fresh_product_score' => 100,
+                    'is_fresh_friendly' => true,
+                    'type_badge' => $method->formatted_type,
+                    'type_color' => $method->type_badge_color,
+                    'is_distance_based' => true,
+                    'price_per_km' => $method->price_per_km,
+                    'min_cost' => $method->min_cost
+                ]);
+            }
+        }
+        
+        return $availableMethods;
     }
     
     /**

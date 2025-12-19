@@ -258,4 +258,66 @@ class PageController extends Controller
 
         return response()->json(['success' => 'Halaman berhasil dihapus']);
     }
+
+    /**
+     * Upload image from Summernote editor
+     */
+    public function uploadImage(Request $request)
+    {
+        $request->validate([
+            'image' => 'required|image|mimes:jpg,jpeg,png,gif,webp|max:2048'
+        ]);
+
+        try {
+            $file = $request->file('image');
+            $filename = time() . '_' . Str::random(10) . '.' . $file->getClientOriginalExtension();
+            
+            // Store in public storage
+            $path = $file->store('uploads/pages/content', 'public');
+            
+            // Return the URL with storage prefix
+            $url = asset('storage/' . $path);
+            
+            return response()->json([
+                'url' => $url,
+                'filename' => $filename
+            ]);
+            
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => 'Gagal mengupload gambar: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Upload video from Summernote editor
+     */
+    public function uploadVideo(Request $request)
+    {
+        $request->validate([
+            'video' => 'required|file|mimes:mp4,avi,mov,wmv,flv,webm|max:51200' // 50MB max
+        ]);
+
+        try {
+            $file = $request->file('video');
+            $filename = time() . '_' . Str::random(10) . '.' . $file->getClientOriginalExtension();
+            
+            // Store in public storage
+            $path = $file->store('uploads/pages/videos', 'public');
+            
+            // Return the URL with storage prefix
+            $url = asset('storage/' . $path);
+            
+            return response()->json([
+                'url' => $url,
+                'filename' => $filename
+            ]);
+            
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => 'Gagal mengupload video: ' . $e->getMessage()
+            ], 500);
+        }
+    }
 }

@@ -112,8 +112,26 @@ class CarouselSlideController extends Controller
             }
             DB::table('carousel_slides')->where('id',$slideId)->delete();
             if ($parent->key === 'home_hero') Cache::forget('home.slides.home_hero');
+            
+            // Return JSON response for AJAX requests
+            if (request()->ajax() || request()->wantsJson()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Carousel slide deleted successfully'
+                ]);
+            }
+            
             return redirect()->route('admin.slides.index', $parent->id)->with('success','Slide deleted');
         }
+        
+        // Return JSON response for AJAX requests
+        if (request()->ajax() || request()->wantsJson()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Slide not found'
+            ], 404);
+        }
+        
         return redirect()->back()->with('error','Slide not found');
     }
 }

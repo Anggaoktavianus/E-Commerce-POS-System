@@ -11,19 +11,16 @@
 @section('content')
     
 
-    <!-- Single Page Header start -->
-    <div class="container-fluid page-header py-5">
-        <h1 class="text-center text-white display-6">{{ $siteSettings['contact_page_title'] ?? 'Contact' }}</h1>
-        <ol class="breadcrumb justify-content-center mb-0">
-            <li class="breadcrumb-item"><a href="{{ url('/') }}">{{ $siteSettings['breadcrumb_home_text'] ?? 'Home' }}</a></li>
-            <li class="breadcrumb-item"><a href="#">{{ $siteSettings['breadcrumb_pages_text'] ?? 'Pages' }}</a></li>
-            <li class="breadcrumb-item active text-white">{{ $siteSettings['breadcrumb_contact_text'] ?? 'Contact' }}</li>
-        </ol>
-    </div>
-    <!-- Single Page Header End -->
+    @include('partials.modern-page-header', [
+        'pageTitle' => $siteSettings['contact_page_title'] ?? 'Kontak Kami',
+        'breadcrumbItems' => [
+            ['label' => 'Beranda', 'url' => url('/')],
+            ['label' => 'Kontak', 'url' => null]
+        ]
+    ])
 
     <!-- Contact Start -->
-    <div class="container-fluid contact py-5">
+    <div class="container-fluid contact py-5" style="background: linear-gradient(180deg, #f8f9fa 0%, #ffffff 100%);">
         <div class="container py-5">
             <div class="p-5 bg-light rounded">
                 <div class="row g-4">

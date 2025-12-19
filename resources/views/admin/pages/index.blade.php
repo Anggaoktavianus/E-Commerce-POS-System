@@ -5,72 +5,80 @@
 @section('content')
 <div class="container-xxl flex-grow-1 container-p-y">
   <!-- Header Section -->
-  <div class="card mb-4">
+  <div class="card page-header-card mb-4">
     <div class="card-body">
-      <div class="d-flex justify-content-between align-items-center">
+      <div class="d-flex justify-content-between align-items-center flex-wrap">
         <div>
-          <h4 class="mb-1">
-            <i class="bx bx-file me-2"></i>Kelola Halaman
+          <h4 class="mb-1 ">
+            <i class="bx bx-file me-2 text-primary"></i>Kelola Halaman
           </h4>
           <p class="text-muted mb-0">Buat dan kelola halaman statis website Anda dengan mudah</p>
         </div>
-        <a href="{{ route('admin.pages.create') }}" class="btn btn-primary">
-          <i class="bx bx-plus me-1"></i> Tambah Halaman
+        <a href="{{ route('admin.pages.create') }}" class="btn btn-primary btn-modern mt-2 mt-md-0">
+          <i class="bx bx-plus me-1"></i>Tambah Halaman
         </a>
       </div>
     </div>
   </div>
 
   <!-- Quick Stats -->
-  <div class="row mb-4">
-    <div class="col-md-3">
-      <div class="card bg-primary text-white">
-        <div class="card-body">
-          <div class="d-flex justify-content-between">
-            <div>
-              <h6 class="card-title">Total Halaman</h6>
-              <h3 class="mb-0" id="totalPages">0</h3>
+  <div class="row g-4 mb-4">
+    <div class="col-6 col-md-3">
+      <div class="card stat-card bg-primary text-white">
+        <div class="card-body p-4">
+          <div class="d-flex justify-content-between align-items-start">
+            <div class="flex-grow-1">
+              <p class="stat-label mb-2">Total Halaman</p>
+              <h3 class="stat-value mb-0 text-white" id="totalPages">0</h3>
             </div>
-            <i class="bx bx-file bx-lg"></i>
+            <div class="stat-icon">
+              <i class="bx bx-file"></i>
+            </div>
           </div>
         </div>
       </div>
     </div>
-    <div class="col-md-3">
-      <div class="card bg-success text-white">
-        <div class="card-body">
-          <div class="d-flex justify-content-between">
-            <div>
-              <h6 class="card-title">Diterbitkan</h6>
-              <h3 class="mb-0" id="publishedPages">0</h3>
+    <div class="col-6 col-md-3">
+      <div class="card stat-card bg-success text-white">
+        <div class="card-body p-4">
+          <div class="d-flex justify-content-between align-items-start">
+            <div class="flex-grow-1">
+              <p class="stat-label mb-2">Diterbitkan</p>
+              <h3 class="stat-value mb-0 text-white" id="publishedPages">0</h3>
             </div>
-            <i class="bx bx-show bx-lg"></i>
+            <div class="stat-icon">
+              <i class="bx bx-show"></i>
+            </div>
           </div>
         </div>
       </div>
     </div>
-    <div class="col-md-3">
-      <div class="card bg-warning text-white">
-        <div class="card-body">
-          <div class="d-flex justify-content-between">
-            <div>
-              <h6 class="card-title">Draft</h6>
-              <h3 class="mb-0" id="draftPages">0</h3>
+    <div class="col-6 col-md-3">
+      <div class="card stat-card bg-warning text-white">
+        <div class="card-body p-4">
+          <div class="d-flex justify-content-between align-items-start">
+            <div class="flex-grow-1">
+              <p class="stat-label mb-2">Draft</p>
+              <h3 class="stat-value mb-0 text-white" id="draftPages">0</h3>
             </div>
-            <i class="bx bx-edit bx-lg"></i>
+            <div class="stat-icon">
+              <i class="bx bx-edit"></i>
+            </div>
           </div>
         </div>
       </div>
     </div>
-    <div class="col-md-3">
-      <div class="card bg-info text-white">
-        <div class="card-body">
-          <div class="d-flex justify-content-between">
-            <div>
-              <h6 class="card-title">Dengan Gambar</h6>
-              <h3 class="mb-0" id="pagesWithImages">0</h3>
+    <div class="col-6 col-md-3">
+      <div class="card stat-card bg-info text-white">
+        <div class="card-body p-4">
+          <div class="d-flex justify-content-between align-items-start">
+            <div class="flex-grow-1">
+              <p class="stat-label mb-2">Dengan Gambar</p>
+              <h3 class="stat-value mb-0 text-white" id="pagesWithImages">0</h3>
             </div>
-            <i class="bx bx-image bx-lg"></i>
+            <div class="stat-icon">
+              <i class="bx bx-image"></i>
+            </div>
           </div>
         </div>
       </div>
@@ -101,7 +109,7 @@
   <!-- Pages Table -->
   <div class="card">
     <div class="card-header">
-      <h5 class="mb-0">
+      <h5 class="mb-0 text-white">
         <i class="bx bx-list-ul me-2"></i>Daftar Halaman
       </h5>
     </div>
@@ -124,7 +132,7 @@
   <!-- Help Guide -->
   <div class="card mt-4">
     <div class="card-header">
-      <h5 class="mb-0">
+      <h5 class="mb-0 text-white">
         <i class="bx bx-help-circle me-2"></i>Panduan Penggunaan
       </h5>
     </div>

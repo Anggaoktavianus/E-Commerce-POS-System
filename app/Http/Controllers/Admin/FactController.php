@@ -73,6 +73,15 @@ class FactController extends Controller
             DB::table('facts')->where('id',$id)->delete();
             Cache::forget('home.facts');
         }
+        
+        // Return JSON response for AJAX requests
+        if (request()->ajax() || request()->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Fact deleted successfully'
+            ]);
+        }
+        
         return redirect()->route('admin.facts.index')->with('success','Fact deleted');
     }
 }

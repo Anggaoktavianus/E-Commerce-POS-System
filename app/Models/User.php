@@ -21,6 +21,8 @@ class User extends Authenticatable
         'loc_kabkota_id',
         'loc_kecamatan_id',
         'loc_desa_id',
+        'latitude',
+        'longitude',
         'role',
         'company_name',
         'company_address',
@@ -39,6 +41,8 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
         'is_verified' => 'boolean',
+        'latitude' => 'decimal:8',
+        'longitude' => 'decimal:8',
     ];
 
     // Role check methods
@@ -55,6 +59,76 @@ class User extends Authenticatable
     public function isCustomer(): bool
     {
         return $this->role === 'customer' || $this->role === null;
+    }
+
+    public function isCashier(): bool
+    {
+        return $this->role === 'cashier';
+    }
+
+    public function isStaff(): bool
+    {
+        return $this->role === 'staff';
+    }
+
+    public function isManager(): bool
+    {
+        return $this->role === 'manager';
+    }
+
+    public function canAccessPos(): bool
+    {
+        return in_array($this->role, ['admin', 'manager', 'cashier', 'staff']);
+    }
+
+    public function canCloseShift(): bool
+    {
+        return in_array($this->role, ['admin', 'manager', 'cashier']);
+    }
+
+    public function canOpenShift(): bool
+    {
+        return in_array($this->role, ['admin', 'manager', 'cashier']);
+    }
+
+    public function canCancelTransaction(): bool
+    {
+        return in_array($this->role, ['admin', 'manager', 'cashier']);
+    }
+
+    public function canRefundTransaction(): bool
+    {
+        return in_array($this->role, ['admin', 'manager']);
+    }
+
+    public function canViewReports(): bool
+    {
+        return in_array($this->role, ['admin', 'manager', 'cashier']);
+    }
+
+    public function canExportReports(): bool
+    {
+        return in_array($this->role, ['admin', 'manager']);
+    }
+
+    public function canManageSettings(): bool
+    {
+        return in_array($this->role, ['admin', 'manager']);
+    }
+
+    public function canManageCash(): bool
+    {
+        return in_array($this->role, ['admin', 'manager', 'cashier']);
+    }
+
+    public function canWithdrawCash(): bool
+    {
+        return in_array($this->role, ['admin', 'manager']);
+    }
+
+    public function canTransferCash(): bool
+    {
+        return in_array($this->role, ['admin', 'manager']);
     }
 
     // Scope for each role
@@ -83,6 +157,11 @@ class User extends Authenticatable
     public function isVerified(): bool
     {
         return (bool) $this->is_verified;
+    }
+
+    public function cart()
+    {
+        return $this->hasOne(Cart::class);
     }
 
     // Get the user's full address
@@ -138,5 +217,16 @@ class User extends Authenticatable
             $this->loc_provinsi_name,
         ]);
         return $parts ? implode(', ', $parts) : null;
+    }
+
+    // Relationships
+    public function addresses()
+    {
+        return $this->hasMany(UserAddress::class);
+    }
+
+    public function primaryAddress()
+    {
+        return $this->hasOne(UserAddress::class)->where('is_primary', true);
     }
 }

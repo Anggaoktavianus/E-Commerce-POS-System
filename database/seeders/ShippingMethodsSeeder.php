@@ -13,13 +13,28 @@ class ShippingMethodsSeeder extends Seeder
         // Create shipping methods
         $methods = [
             [
+                'name' => 'Pengiriman Instan (Berdasarkan Jarak)',
+                'code' => 'instant_delivery',
+                'type' => 'instant',
+                'logo_url' => null,
+                'is_active' => true,
+                'max_distance_km' => null, // No limit
+                'price_per_km' => 5000, // Rp 5.000 per km
+                'is_distance_based' => true,
+                'min_cost' => 10000, // Minimum Rp 10.000
+                'service_areas' => ['Semarang']
+            ],
+            [
                 'name' => 'GoSend Instant',
                 'code' => 'gosend_instant',
                 'type' => 'instant',
                 'logo_url' => 'https://logos.gojek.io/gojek-brand-logo.png',
                 'is_active' => true,
                 'max_distance_km' => 20,
-                'service_areas' => ['Semarang', 'Jakarta', 'Surabaya', 'Bandung', 'Medan', 'Makassar']
+                'price_per_km' => null,
+                'is_distance_based' => false,
+                'min_cost' => null,
+                'service_areas' => ['Semarang']
             ],
             [
                 'name' => 'GrabExpress Instant',
@@ -28,7 +43,10 @@ class ShippingMethodsSeeder extends Seeder
                 'logo_url' => 'https://d3i4yxtzkt99as5.cloudfront.net/grab-id-cms/production/cms_images/grab-express-logo.png',
                 'is_active' => true,
                 'max_distance_km' => 20,
-                'service_areas' => ['Semarang', 'Jakarta', 'Surabaya', 'Bandung', 'Medan']
+                'price_per_km' => null,
+                'is_distance_based' => false,
+                'min_cost' => null,
+                'service_areas' => ['Semarang']
             ],
             [
                 'name' => 'SiCepat Same Day',
@@ -37,7 +55,10 @@ class ShippingMethodsSeeder extends Seeder
                 'logo_url' => 'https://www.sicepat.com/images/logo.png',
                 'is_active' => true,
                 'max_distance_km' => null,
-                'service_areas' => ['Semarang', 'Jakarta', 'Surabaya', 'Bandung', 'Medan']
+                'price_per_km' => null,
+                'is_distance_based' => false,
+                'min_cost' => null,
+                'service_areas' => ['Semarang']
             ],
             [
                 'name' => 'JNE OKE',
@@ -46,6 +67,9 @@ class ShippingMethodsSeeder extends Seeder
                 'logo_url' => 'https://www.jne.co.id/frontend/images/logo-jne.png',
                 'is_active' => true,
                 'max_distance_km' => null,
+                'price_per_km' => null,
+                'is_distance_based' => false,
+                'min_cost' => null,
                 'service_areas' => null
             ],
             [
@@ -55,6 +79,9 @@ class ShippingMethodsSeeder extends Seeder
                 'logo_url' => 'https://www.jne.co.id/frontend/images/logo-jne.png',
                 'is_active' => true,
                 'max_distance_km' => null,
+                'price_per_km' => null,
+                'is_distance_based' => false,
+                'min_cost' => null,
                 'service_areas' => null
             ],
             [
@@ -64,6 +91,9 @@ class ShippingMethodsSeeder extends Seeder
                 'logo_url' => 'https://www.jne.co.id/frontend/images/logo-jne.png',
                 'is_active' => true,
                 'max_distance_km' => null,
+                'price_per_km' => null,
+                'is_distance_based' => false,
+                'min_cost' => null,
                 'service_areas' => null
             ],
             [
@@ -73,6 +103,9 @@ class ShippingMethodsSeeder extends Seeder
                 'logo_url' => 'https://www.jnt.co.id/images/logo.png',
                 'is_active' => true,
                 'max_distance_km' => null,
+                'price_per_km' => null,
+                'is_distance_based' => false,
+                'min_cost' => null,
                 'service_areas' => null
             ],
             [
@@ -82,6 +115,9 @@ class ShippingMethodsSeeder extends Seeder
                 'logo_url' => 'https://www.sicepat.com/images/logo.png',
                 'is_active' => true,
                 'max_distance_km' => null,
+                'price_per_km' => null,
+                'is_distance_based' => false,
+                'min_cost' => null,
                 'service_areas' => null
             ],
             [
@@ -91,12 +127,18 @@ class ShippingMethodsSeeder extends Seeder
                 'logo_url' => 'https://www.posindonesia.co.id/assets/images/logo-pos.png',
                 'is_active' => true,
                 'max_distance_km' => null,
+                'price_per_km' => null,
+                'is_distance_based' => false,
+                'min_cost' => null,
                 'service_areas' => null
             ]
         ];
 
         foreach ($methods as $method) {
-            ShippingMethod::create($method);
+            ShippingMethod::updateOrCreate(
+                ['code' => $method['code']],
+                $method
+            );
         }
 
         // Create shipping costs for major routes
@@ -201,16 +243,26 @@ class ShippingMethodsSeeder extends Seeder
         foreach ($routes as $route) {
             $method = ShippingMethod::where('code', $route[2])->first();
             if ($method) {
-                ShippingCost::create([
-                    'shipping_method_id' => $method->id,
-                    'origin_city' => $route[0],
-                    'destination_city' => $route[1],
-                    'cost' => $route[3],
-                    'estimated_days' => $route[4],
-                    'min_weight' => 0.5,
-                    'max_weight' => 50,
-                    'is_active' => true
-                ]);
+                // Skip creating shipping_costs for distance-based methods
+                // They calculate cost dynamically based on distance
+                if ($method->is_distance_based) {
+                    continue;
+                }
+                
+                ShippingCost::updateOrCreate(
+                    [
+                        'shipping_method_id' => $method->id,
+                        'origin_city' => $route[0],
+                        'destination_city' => $route[1],
+                    ],
+                    [
+                        'cost' => $route[3],
+                        'estimated_days' => $route[4],
+                        'min_weight' => 0.5,
+                        'max_weight' => 50,
+                        'is_active' => true
+                    ]
+                );
             }
         }
 

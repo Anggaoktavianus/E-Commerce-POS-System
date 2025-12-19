@@ -9,6 +9,21 @@ class Product extends Model
 {
     use HasFactory;
 
+    /**
+     * Resolve route binding with encoded ID
+     */
+    public function resolveRouteBinding($value, $field = null)
+    {
+        // Try to decode if it's an encoded ID
+        $decodedId = decode_id($value);
+        if ($decodedId !== null) {
+            return $this->where($field ?: $this->getRouteKeyName(), $decodedId)->first();
+        }
+        
+        // Fallback to default behavior
+        return parent::resolveRouteBinding($value, $field);
+    }
+
     protected $fillable = [
         'store_id',
         'name',
@@ -19,6 +34,7 @@ class Product extends Model
         'collection_id',
         'is_active',
         'stock',
+        'stock_qty',
         'sku',
         'weight',
         'dimensions',
@@ -67,6 +83,11 @@ class Product extends Model
         return $this->hasMany(OrderItem::class, 'product_id');
     }
 
+    public function stockMovements()
+    {
+        return $this->hasMany(StockMovement::class);
+    }
+
     public function getFormattedPriceAttribute()
     {
         return 'IDR ' . number_format($this->price, 0, ',', '.');
@@ -84,7 +105,31 @@ class Product extends Model
 
     public function scopeInStock($query)
     {
-        return $query->where('stock', '>', 0);
+        return $query->where('stock_qty', '>', 0);
+    }
+
+    // Accessor untuk kompatibilitas dengan kode yang menggunakan 'stock'
+    public function getStockAttribute()
+    {
+        return $this->stock_qty ?? 0;
+    }
+
+    // Mutator untuk kompatibilitas dengan kode yang menggunakan 'stock'
+    public function setStockAttribute($value)
+    {
+        $this->attributes['stock_qty'] = $value;
+    }
+
+    // Helper method untuk cek stok tersedia
+    public function hasStock($quantity = 1)
+    {
+        return ($this->stock_qty ?? 0) >= $quantity;
+    }
+
+    // Helper method untuk mendapatkan sisa stok setelah pembelian
+    public function getRemainingStock($quantity)
+    {
+        return max(0, ($this->stock_qty ?? 0) - $quantity);
     }
 
     public function scopeForStore($query, $storeId)

@@ -22,20 +22,19 @@
 @endpush
 
 @section('content')
-<!-- Single Page Header start -->
-<div class="container-fluid page-header py-5">
-    <h1 class="text-center text-white display-6">Payment Status</h1>
-    <ol class="breadcrumb justify-content-center mb-0">
-        <li class="breadcrumb-item"><a href="{{ url('/') }}">Home</a></li>
-        <li class="breadcrumb-item"><a href="{{ route('cart') }}">Cart</a></li>
-        <li class="breadcrumb-item"><a href="{{ route('checkout') }}">Checkout</a></li>
-        <li class="breadcrumb-item active text-white">Payment Status</li>
-    </ol>
-</div>
-<!-- Single Page Header End -->
+@include('partials.modern-page-header', [
+    'pageTitle' => 'Status Pembayaran',
+    'breadcrumbItems' => [
+        ['label' => 'Beranda', 'url' => url('/')],
+        ['label' => 'Toko', 'url' => route('shop')],
+        ['label' => 'Keranjang', 'url' => route('cart')],
+        ['label' => 'Checkout', 'url' => route('checkout')],
+        ['label' => 'Status Pembayaran', 'url' => null]
+    ]
+])
 
 <!-- Payment Status Page Start -->
-<div class="container-fluid py-5">
+<div class="container-fluid py-5" style="background: linear-gradient(180deg, #f8f9fa 0%, #ffffff 100%);">
     <div class="container py-5">
         <div class="row justify-content-center">
             <div class="col-md-8">
@@ -68,7 +67,7 @@
                             <p class="text-muted mb-4">Pesanan Anda sedang diproses. Halaman akan diperbarui otomatis.</p>
                             <div class="mb-3">
                                 <div class="spinner-border text-warning" role="status">
-                                    <span class="visually-hidden">Loading...</span>
+                                    <span class="visually-hidden">Memuat...</span>
                                 </div>
                             </div>
                         @elseif($order->status === 'failed')

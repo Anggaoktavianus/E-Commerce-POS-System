@@ -7,19 +7,16 @@
 @section('meta_keywords', 'artikel, blog, informasi, tips, berita, ' . config('app.name'))
 
 @section('content')
-<!-- Single Page Header start -->
-<div class="container-fluid page-header py-5">
-    <h1 class="text-center text-white display-6">Artikel & Blog</h1>
-    <ol class="breadcrumb justify-content-center mb-0">
-        <li class="breadcrumb-item"><a href="{{ route('home') }}">Beranda</a></li>
-        <li class="breadcrumb-item active text-white">Artikel</li>
-    </ol>
-    <p class="text-center text-white mt-3">Temukan informasi menarik, tips berguna, dan berita terbaru dari kami</p>
-</div>
-<!-- Single Page Header End -->
+@include('partials.modern-page-header', [
+    'pageTitle' => 'Artikel & Blog',
+    'breadcrumbItems' => [
+        ['label' => 'Beranda', 'url' => url('/')],
+        ['label' => 'Artikel', 'url' => null]
+    ]
+])
 
 <!-- Search and Filter Section -->
-<section class="py-4 bg-light">
+<section class="py-4" style="background: linear-gradient(180deg, #f8f9fa 0%, #ffffff 100%);">
     <div class="container">
         <div class="row g-3">
             <div class="col-md-6">
@@ -49,7 +46,7 @@
 </section>
 
 <!-- Articles Grid -->
-<section class="py-5">
+<section class="py-5" style="background: linear-gradient(180deg, #f8f9fa 0%, #ffffff 100%);">
     <div class="container">
         <div class="row" id="artikelContainer">
             @forelse($artikel as $item)
