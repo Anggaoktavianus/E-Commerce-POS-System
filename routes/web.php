@@ -166,6 +166,9 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::put('social-links/{social_link}', [SocialLinkController::class, 'update'])->name('social_links.update');
     Route::delete('social-links/{social_link}', [SocialLinkController::class, 'destroy'])->name('social_links.destroy');
 
+    // Help & Documentation
+    Route::get('help', [App\Http\Controllers\Admin\HelpController::class, 'index'])->name('help.index');
+    
     // Settings
     Route::get('settings', [SettingController::class, 'index'])->name('settings.index');
     Route::get('settings/logo', [SettingController::class, 'logo'])->name('settings.logo');
