@@ -267,6 +267,33 @@
                                 </li>
                             </ul>
                         </li>
+                        <li class="menu-item {{ request()->routeIs('admin.reports.unified.*') ? 'active open' : '' }}">
+                            <a href="javascript:void(0);" class="menu-link menu-toggle d-flex align-items-center gap-2 text-decoration-none">
+                                <i class='bx bx-bar-chart-alt-2 text-success'></i>
+                                <div>Laporan Terpadu</div>
+                                <span class="badge bg-label-success rounded-pill ms-auto">Baru</span>
+                            </a>
+                            <ul class="menu-sub">
+                                <li class="menu-item {{ request()->routeIs('admin.reports.unified.index') ? 'active' : '' }}">
+                                    <a href="{{ route('admin.reports.unified.index') }}" class="menu-link d-flex align-items-center gap-2 text-decoration-none">
+                                        <i class='bx bx-trending-up text-success'></i>
+                                        <span>Dashboard Terpadu</span>
+                                    </a>
+                                </li>
+                                <li class="menu-item {{ request()->routeIs('admin.reports.unified.products') ? 'active' : '' }}">
+                                    <a href="{{ route('admin.reports.unified.products') }}" class="menu-link d-flex align-items-center gap-2 text-decoration-none">
+                                        <i class='bx bx-package text-success'></i>
+                                        <span>Produk Terpadu</span>
+                                    </a>
+                                </li>
+                                <li class="menu-item {{ request()->routeIs('admin.reports.unified.categories') ? 'active' : '' }}">
+                                    <a href="{{ route('admin.reports.unified.categories') }}" class="menu-link d-flex align-items-center gap-2 text-decoration-none">
+                                        <i class='bx bx-category text-success'></i>
+                                        <span>Kategori Terpadu</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
                         <li class="menu-item {{ request()->routeIs('admin.pos.settings.*') ? 'active open' : '' }}">
                             <a href="{{ route('admin.pos.settings.index') }}" class="menu-link d-flex align-items-center gap-2 text-decoration-none">
                                 <i class='bx bx-cog text-warning'></i>
