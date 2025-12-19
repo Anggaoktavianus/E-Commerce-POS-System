@@ -1,3 +1,41 @@
+<style>
+/* Force remove all list markers from submenu */
+#layout-menu .menu-sub,
+#layout-menu .menu-sub ul,
+#layout-menu .menu-sub li,
+#layout-menu .menu-sub .menu-item {
+  list-style: none !important;
+  list-style-type: none !important;
+}
+
+#layout-menu .menu-sub li::before,
+#layout-menu .menu-sub li::after,
+#layout-menu .menu-sub .menu-item::before,
+#layout-menu .menu-sub .menu-item::after {
+  content: none !important;
+  display: none !important;
+}
+
+#layout-menu .menu-sub li::marker,
+#layout-menu .menu-sub .menu-item::marker {
+  display: none !important;
+  content: '' !important;
+}
+
+/* Additional override for any framework styles */
+.menu-vertical .menu-sub,
+.menu-vertical .menu-sub ul {
+  list-style: none !important;
+  list-style-type: none !important;
+}
+
+.menu-vertical .menu-sub li,
+.menu-vertical .menu-sub .menu-item {
+  list-style: none !important;
+  list-style-type: none !important;
+}
+</style>
+
 <aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme">
     <div class="app-brand demo">
         <a href="{{ route('admin.dashboard') }}" class="app-brand-link d-flex align-items-center gap-2">
