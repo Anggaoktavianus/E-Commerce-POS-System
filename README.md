@@ -259,7 +259,7 @@ php artisan tinker
 ```php
 $user = new App\Models\User();
 $user->name = 'Admin';
-$user->email = 'admin@example.com'; // Ganti dengan email admin Anda
+$user->email = 'anggaoktavian13@gmail.com';
 $user->password = Hash::make('your-secure-password'); // Ganti dengan password yang aman
 $user->role = 'admin';
 $user->is_verified = true;
@@ -457,7 +457,7 @@ Lihat [Issues](https://github.com/Anggaoktavianus/E-Commerce-POS-System/issues) 
 
 Untuk support dan pertanyaan:
 
-- **Email**: support@example.com (Ganti dengan email support Anda)
+- **Email**: anggaoktavian13@gmail.com
 - **Issues**: [GitHub Issues](https://github.com/Anggaoktavianus/E-Commerce-POS-System/issues)
 - **Documentation**: [Dokumentasi](./Dokumentasi/README.md)
 
