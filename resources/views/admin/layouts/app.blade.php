@@ -189,26 +189,70 @@
       color: #fff !important;
     }
 
-    /* Remove dots/bullets from submenu and sub-submenu */
+    /* Remove dots/bullets from submenu and sub-submenu - FORCE REMOVAL */
     .menu-sub,
-    .menu-sub .menu-sub {
+    .menu-sub ul,
+    .menu-sub .menu-sub,
+    .menu-sub .menu-sub ul {
       list-style: none !important;
+      list-style-type: none !important;
       padding-left: 0 !important;
+      margin-left: 0 !important;
     }
 
+    .menu-sub li,
     .menu-sub .menu-item,
-    .menu-sub .menu-sub .menu-item {
+    .menu-sub .menu-sub li,
+    .menu-sub .menu-sub .menu-item,
+    .menu-sub ul li,
+    .menu-sub .menu-sub ul li {
       list-style: none !important;
+      list-style-type: none !important;
     }
 
+    .menu-sub li::before,
     .menu-sub .menu-item::before,
-    .menu-sub .menu-sub .menu-item::before {
+    .menu-sub .menu-sub li::before,
+    .menu-sub .menu-sub .menu-item::before,
+    .menu-sub ul li::before,
+    .menu-sub .menu-sub ul li::before {
+      content: none !important;
+      display: none !important;
+    }
+
+    .menu-sub li::after,
+    .menu-sub .menu-item::after,
+    .menu-sub .menu-sub li::after,
+    .menu-sub .menu-sub .menu-item::after {
+      content: none !important;
+      display: none !important;
+    }
+
+    .menu-sub li::marker,
+    .menu-sub .menu-item::marker,
+    .menu-sub .menu-sub li::marker,
+    .menu-sub .menu-sub .menu-item::marker {
+      display: none !important;
       content: none !important;
     }
 
-    .menu-sub .menu-item::marker,
-    .menu-sub .menu-sub .menu-item::marker {
+    /* Additional fix for any remaining bullets */
+    .menu-inner .menu-sub,
+    .menu-inner .menu-sub ul {
+      list-style: none !important;
+      list-style-type: none !important;
+    }
+
+    .menu-inner .menu-sub li,
+    .menu-inner .menu-sub .menu-item {
+      list-style: none !important;
+      list-style-type: none !important;
+    }
+
+    .menu-inner .menu-sub li::marker,
+    .menu-inner .menu-sub .menu-item::marker {
       display: none !important;
+      content: '' !important;
     }
 
     /* Enhanced Card Styles */
